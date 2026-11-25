@@ -41,10 +41,16 @@ function getRouteKey(route: RoutePath): string {
 export default function App() {
   const [route, setRoute] = useState<RoutePath>(() => parseRoute(window.location.pathname));
   const [introComplete, setIntroComplete] = useState(false);
+  const routeKey = getRouteKey(route);
+  const [routeSettled, setRouteSettled] = useState(false);
 
   const handleIntroComplete = useCallback(() => {
     setIntroComplete(true);
   }, []);
+
+  useEffect(() => {
+    setRouteSettled(false);
+  }, [routeKey]);
 
   useEffect(() => {
     const onPopState = () => {
@@ -89,11 +95,13 @@ export default function App() {
         <div className="relative z-10">
           <AnimatePresence mode="wait">
             <motion.div
-              key={getRouteKey(route)}
+              key={routeKey}
               initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
               exit={{ opacity: 0, y: -6, filter: 'blur(3px)' }}
               transition={{ duration: 0.42, ease: EDITORIAL_EASE }}
+              onAnimationComplete={() => setRouteSettled(true)}
+              style={routeSettled ? { filter: 'none', transform: 'none' } : undefined}
             >
               {route.page === 'home' && (
                 <main>

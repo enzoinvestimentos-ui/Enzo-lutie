@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   AnimatePresence,
   motion,
@@ -837,95 +838,120 @@ export function SocialProofSection() {
         </div>
       </div>
 
-      {/* Modal de reprodução/ampliação para vídeo 9:16 e print real */}
-      <AnimatePresence>
-        {(activeVideo || activePrint) && (
-          <motion.div
-            role="dialog"
-            aria-modal="true"
-            aria-label={activeVideo ? activeVideo.label : activePrint?.label}
-            initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0 }}
-            transition={{ duration: 0.28, ease: EDITORIAL_EASE }}
-            onClick={() => {
-              setActiveVideo(null);
-              setActivePrint(null);
-            }}
-            className="fixed inset-0 z-[90] flex items-center justify-center bg-[#080808]/92 p-4 md:p-8 backdrop-blur-md"
-          >
-            <motion.div
-              initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.97, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={prefersReducedMotion ? undefined : { opacity: 0, scale: 0.97, y: 8 }}
-              transition={{ duration: 0.35, ease: EDITORIAL_EASE }}
-              onClick={(e) => e.stopPropagation()}
-              className={`relative w-full overflow-hidden rounded-2xl border border-[#252525] bg-[#121212] p-4 md:p-6 shadow-[0_32px_90px_-24px_rgba(0,0,0,0.95)] ${
-                activeVideo ? 'max-w-[460px]' : 'max-w-[920px]'
-              }`}
-            >
-              <div className="mb-4 flex items-center justify-between gap-4">
-                <div className="flex flex-col">
-                  <span className="text-[12px] font-medium text-[#8e8e8e]">
-                    {activeVideo ? activeVideo.label : activePrint?.label}
-                  </span>
-                  <span className="text-[15px] font-semibold text-[#f2f2f2]">
-                    {activeVideo ? activeVideo.authorName : activePrint?.authorLabel}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveVideo(null);
-                    setActivePrint(null);
-                  }}
-                  aria-label="Fechar visualização"
-                  className="btn-interactive inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#2a2a2a] bg-[#181818] text-[#f2f2f2] cursor-pointer"
-                >
-                  <X className="h-4 w-4" aria-hidden="true" />
-                </button>
-              </div>
+      {/* Modal de reprodução/ampliação isolado em portal no body para evitar conflito com filter/transform ancestrais */}
+      {typeof document !== 'undefined' &&
+        createPortal(
+          <AnimatePresence>
+            {(activeVideo || activePrint) && (
+              <div
+                role="dialog"
+                aria-modal="true"
+                aria-label={activeVideo ? activeVideo.label : activePrint?.label}
+                onClick={() => {
+                  setActiveVideo(null);
+                  setActivePrint(null);
+                }}
+                className="fixed inset-0 z-[90] overflow-y-auto"
+              >
+                {/* Backdrop isolado como camada irmã para não aplicar backdrop-filter sobre o iframe */}
+                <motion.div
+                  aria-hidden="true"
+                  initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.28, ease: EDITORIAL_EASE }}
+                  className="fixed inset-0 bg-[#080808]/92 backdrop-blur-md"
+                />
 
-              {activeVideo && (() => {
-                const embedSrc = getEmbedUrl(activeVideo.videoUrl);
-                return (
-                  <div className="mx-auto aspect-[9/16] max-h-[75vh] w-auto overflow-hidden rounded-xl border border-[#252525] bg-[#080808]">
-                    {embedSrc ? (
-                      <iframe
-                        src={embedSrc}
-                        title={activeVideo.label}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                        className="h-full w-full border-0"
-                      />
-                    ) : (
-                      <video
-                        src={activeVideo.videoUrl}
-                        poster={activeVideo.posterUrl || undefined}
-                        controls
-                        autoPlay
-                        playsInline
-                        className="h-full w-full object-contain"
-                      />
+                <div className="relative z-10 flex min-h-full items-center justify-center p-4 md:p-8">
+                  <motion.div
+                    initial={
+                      prefersReducedMotion
+                        ? false
+                        : activeVideo
+                          ? { opacity: 0 }
+                          : { opacity: 0, scale: 0.97, y: 10 }
+                    }
+                    animate={activeVideo ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
+                    exit={
+                      prefersReducedMotion
+                        ? undefined
+                        : activeVideo
+                          ? { opacity: 0 }
+                          : { opacity: 0, scale: 0.97, y: 8 }
+                    }
+                    transition={{ duration: 0.3, ease: EDITORIAL_EASE }}
+                    onClick={(e) => e.stopPropagation()}
+                    className={`relative w-full rounded-2xl border border-[#252525] bg-[#121212] p-4 md:p-6 shadow-[0_32px_90px_-24px_rgba(0,0,0,0.95)] ${
+                      activeVideo ? 'max-w-[440px]' : 'max-w-[920px] overflow-hidden'
+                    }`}
+                  >
+                    <div className="mb-4 flex items-center justify-between gap-4">
+                      <div className="flex flex-col">
+                        <span className="text-[12px] font-medium text-[#8e8e8e]">
+                          {activeVideo ? activeVideo.label : activePrint?.label}
+                        </span>
+                        <span className="text-[15px] font-semibold text-[#f2f2f2]">
+                          {activeVideo ? activeVideo.authorName : activePrint?.authorLabel}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveVideo(null);
+                          setActivePrint(null);
+                        }}
+                        aria-label="Fechar visualização"
+                        className="btn-interactive inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#2a2a2a] bg-[#181818] text-[#f2f2f2] cursor-pointer"
+                      >
+                        <X className="h-4 w-4" aria-hidden="true" />
+                      </button>
+                    </div>
+
+                    {activeVideo && (() => {
+                      const embedSrc = getEmbedUrl(activeVideo.videoUrl);
+                      return (
+                        <div className="mx-auto aspect-[9/16] w-full max-w-[min(360px,calc(74vh*9/16))] overflow-hidden rounded-xl border border-[#252525] bg-[#080808]">
+                          {embedSrc ? (
+                            <iframe
+                              src={embedSrc}
+                              title={activeVideo.label}
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                              referrerPolicy="strict-origin-when-cross-origin"
+                              allowFullScreen
+                              className="block h-full w-full border-0"
+                            />
+                          ) : (
+                            <video
+                              src={activeVideo.videoUrl}
+                              poster={activeVideo.posterUrl || undefined}
+                              controls
+                              autoPlay
+                              playsInline
+                              className="block h-full w-full object-contain"
+                            />
+                          )}
+                        </div>
+                      );
+                    })()}
+
+                    {activePrint && (
+                      <div className="flex max-h-[75vh] w-full items-center justify-center overflow-hidden rounded-xl border border-[#252525] bg-[#080808]">
+                        <img
+                          src={activePrint.imageUrl}
+                          alt={`${activePrint.label} — ${activePrint.authorLabel}`}
+                          referrerPolicy="no-referrer"
+                          className="max-h-[75vh] w-auto object-contain"
+                        />
+                      </div>
                     )}
-                  </div>
-                );
-              })()}
-
-              {activePrint && (
-                <div className="flex max-h-[75vh] w-full items-center justify-center overflow-hidden rounded-xl border border-[#252525] bg-[#080808]">
-                  <img
-                    src={activePrint.imageUrl}
-                    alt={`${activePrint.label} — ${activePrint.authorLabel}`}
-                    referrerPolicy="no-referrer"
-                    className="max-h-[75vh] w-auto object-contain"
-                  />
+                  </motion.div>
                 </div>
-              )}
-            </motion.div>
-          </motion.div>
+              </div>
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
     </section>
   );
 }
