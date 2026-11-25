@@ -35,7 +35,7 @@
   }
 }
 
-/* Editorial Type Scale matching reference proportions */
+/* Editorial Type Scale balanced for mobile legibility & desktop presence */
 .type-display-xl {
   font-size: clamp(2.5rem, 8.6vw, 7.75rem);
   font-weight: 800;
@@ -44,40 +44,41 @@
 }
 
 .type-display-lg {
-  font-size: clamp(2.875rem, 5.5vw, 4.75rem); /* 46px -> 62px -> 76px */
+  font-size: clamp(2.05rem, 5.2vw, 4.5rem); /* 33px mobile -> 72px desktop */
   font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1;
+  letter-spacing: -0.025em;
+  line-height: 1.04;
   text-wrap: balance;
 }
 
 .type-section-h2 {
-  font-size: clamp(2.75rem, 4.8vw, 4.25rem); /* 44px -> 58px -> 68px */
+  font-size: clamp(1.85rem, 4.4vw, 3.85rem); /* 30px mobile -> 62px desktop */
   font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1;
+  letter-spacing: -0.022em;
+  line-height: 1.06;
   text-wrap: balance;
 }
 
 .type-manifesto {
-  font-size: clamp(1.75rem, 3.2vw, 2.75rem); /* 28px -> 42px -> 44px */
+  font-size: clamp(1.5rem, 3.1vw, 2.65rem); /* 24px mobile -> 42px desktop */
   font-weight: 400;
   letter-spacing: -0.02em;
-  line-height: 1.2;
+  line-height: 1.24;
+  text-wrap: balance;
 }
 
 .type-card-h3 {
-  font-size: clamp(1.5rem, 2.4vw, 2rem); /* 24px -> 28px -> 32px */
+  font-size: clamp(1.375rem, 2.2vw, 1.875rem); /* 22px -> 30px */
   font-weight: 500;
   letter-spacing: -0.02em;
-  line-height: 1.2;
+  line-height: 1.22;
 }
 
 .type-project-title {
-  font-size: clamp(1.375rem, 1.9vw, 1.625rem); /* 22px -> 24px -> 26px */
+  font-size: clamp(1.3rem, 1.8vw, 1.55rem); /* 21px -> 25px */
   font-weight: 500;
-  letter-spacing: -0.01em;
-  line-height: 1.2;
+  letter-spacing: -0.015em;
+  line-height: 1.22;
 }
 
 /* Rolling text character-cascade hover animation */

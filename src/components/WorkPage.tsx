@@ -8,37 +8,38 @@ interface WorkPageProps {
 
 export function WorkPage({ onSelectProject }: WorkPageProps) {
   return (
-    <main id="work-hero" className="mx-auto w-full max-w-[1180px] px-6 pt-36 pb-20">
-      <div className="mb-12 max-w-[740px]">
-        <Reveal>
-          <h1 className="type-display-lg text-[#f5f5f5]">Projetos Selecionados</h1>
+    <main id="work-hero" className="mx-auto w-full max-w-[1180px] px-6 pt-28 pb-16 md:pt-36 md:pb-20">
+      <div className="mb-10 max-w-[740px]">
+        <Reveal className="flex flex-col gap-3">
+          <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
+            Direcionamento aplicado
+          </span>
+          <h1 className="type-display-lg text-[#f2f2f2]">Projetos Selecionados</h1>
         </Reveal>
-        <Reveal delay={0.08}>
-          <p className="mt-5 text-[18px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]">
-            Participo do direcionamento e desenvolvimento de projetos que conectam necessidades de
-            negócio a soluções digitais, trabalhando em parceria com profissionais e equipes
-            especializadas. Cada projeto parte de um contexto específico: um desafio a resolver, uma
-            oportunidade a explorar ou uma estrutura que precisa evoluir.
+        <Reveal delay={0.06}>
+          <p className="mt-4 text-[17px] md:text-[18px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]">
+            Projetos que conectam necessidades reais de negócio a soluções digitais, estruturados
+            com foco em raciocínio estratégico e execução consistente.
           </p>
         </Reveal>
       </div>
 
       <HairlineRule />
-      <div className="grid grid-cols-1 gap-4 py-8 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-4 py-7 sm:grid-cols-2 lg:grid-cols-5">
         {PROJECT_DECISION_PILLARS.map((pillar, idx) => (
-          <Reveal key={pillar.label} delay={idx * 0.05} className="flex flex-col gap-1.5">
-            <span className="text-[14px] font-semibold text-[#f5f5f5]">{pillar.label}</span>
-            <span className="text-[14px] leading-[1.5] text-[#a1a1a1]">
+          <Reveal key={pillar.label} delay={idx * 0.04} className="flex flex-col gap-1">
+            <span className="text-[14px] font-semibold text-[#f2f2f2]">{pillar.label}</span>
+            <span className="text-[13px] leading-[1.45] text-[#8e8e8e]">
               {pillar.description}
             </span>
           </Reveal>
         ))}
       </div>
-      <HairlineRule className="mb-14" />
+      <HairlineRule className="mb-10 md:mb-12" />
 
-      <div className="grid grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
         {PROJECTS.map((project, idx) => (
-          <Reveal key={project.slug} delay={idx * 0.08}>
+          <Reveal key={project.slug} delay={idx * 0.05} className="h-full">
             <ProjectCard project={project} onSelect={onSelectProject} index={idx} />
           </Reveal>
         ))}

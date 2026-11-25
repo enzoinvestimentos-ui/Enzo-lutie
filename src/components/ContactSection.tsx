@@ -69,38 +69,46 @@ export function ContactSection() {
   ];
 
   return (
-    <section id="contact" className="mx-auto w-full max-w-[1180px] px-6 py-20 md:py-[120px]">
+    <section id="contact" className="mx-auto w-full max-w-[1180px] px-6 py-14 md:py-24">
       <div className="flex flex-col gap-10 lg:flex-row lg:items-stretch">
-        {/* Coluna Esquerda: Narrativa de contato e links */}
-        <div className="flex flex-1 flex-col justify-between gap-10">
+        {/* Coluna Esquerda: Narrativa em camadas para decisão de contato */}
+        <div className="flex flex-1 flex-col justify-between gap-8">
           <div className="flex flex-col gap-5">
-            <Reveal>
+            <Reveal className="flex flex-col gap-3">
+              <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
+                Próximo passo
+              </span>
               <h2 className="type-display-lg text-[#f2f2f2]">
                 Vamos entender o que seu negócio precisa.
               </h2>
             </Reveal>
 
-            <Reveal delay={0.08}>
-              <div className="flex max-w-[520px] flex-col gap-4 text-[17px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]">
-                <p>
-                  Talvez seja a maneira como seus clientes conhecem seus serviços. Um processo
-                  comercial que precisa de organização. Uma operação que depende de tarefas manuais.
-                  Ou uma estrutura digital que já não acompanha as necessidades do negócio.
-                </p>
-                <p>Nem sempre o caminho está claro desde o início. E tudo bem.</p>
-                <p>
-                  O primeiro passo é entender o cenário, identificar o que precisa mudar e descobrir
-                  quais caminhos realmente fazem sentido.
-                </p>
-                <p className="font-medium text-[#f2f2f2]">
-                  Se existe algo na sua empresa que precisa ser compreendido, organizado ou
-                  desenvolvido, podemos começar por uma conversa.
-                </p>
-              </div>
+            <Reveal delay={0.05}>
+              <p className="max-w-[520px] text-[16px] md:text-[18px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]">
+                Nem sempre o caminho está claro desde o início. O primeiro passo é entender o
+                cenário para descobrir o que precisa mudar e quais frentes fazem sentido:
+              </p>
+            </Reveal>
+
+            {/* Chunking dos cenários de conversa */}
+            <Reveal delay={0.1}>
+              <ul className="flex max-w-[500px] flex-col divide-y divide-[#252525] border-y border-[#252525] text-[15px] leading-[1.5] text-[#d4d4d4]">
+                <li className="py-3">Apresentação de serviços e fortalecimento da presença digital</li>
+                <li className="py-3">Organização de processo comercial e estruturação de CRM</li>
+                <li className="py-3">Redução de tarefas manuais e gargalos na operação</li>
+                <li className="py-3">Estrutura digital alinhada ao momento atual da empresa</li>
+              </ul>
+            </Reveal>
+
+            <Reveal delay={0.14}>
+              <p className="max-w-[520px] text-[16px] font-medium leading-[1.55] tracking-[-0.015em] text-[#f2f2f2]">
+                Se existe algo que precisa ser compreendido, organizado ou desenvolvido, podemos
+                começar por uma conversa.
+              </p>
             </Reveal>
           </div>
 
-          <Reveal delay={0.14}>
+          <Reveal delay={0.16}>
             <div className="flex items-center gap-3">
               {socialLinks.map((social) => (
                 <a
@@ -119,7 +127,7 @@ export function ContactSection() {
         </div>
 
         {/* Coluna Direita: Formulário editorial (escuro em repouso -> off-white quente #F1EFE9 no hover/foco) */}
-        <Reveal delay={0.12} className="flex-1">
+        <Reveal delay={0.1} className="flex-1">
           <div
             onMouseEnter={() => {
               if (isFinePointer) setIsHovered(true);
@@ -127,7 +135,7 @@ export function ContactSection() {
             onMouseLeave={() => setIsHovered(false)}
             onFocus={() => setIsFocusedWithin(true)}
             onBlur={handleCardBlur}
-            className={`rounded-2xl border p-7 md:p-9 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            className={`rounded-2xl border p-6 sm:p-7 md:p-9 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
               isEngaged
                 ? 'border-[#e2dfd7] bg-[#f1efe9] text-[#111111] shadow-[0_28px_60px_-24px_rgba(0,0,0,0.85)]'
                 : 'border-[#252525] bg-[#121212] text-[#f2f2f2]'
@@ -176,6 +184,23 @@ export function ContactSection() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
+                <div className="flex flex-col gap-1 pb-1">
+                  <h3
+                    className={`text-[20px] font-semibold tracking-[-0.02em] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                      isEngaged ? 'text-[#111111]' : 'text-[#f2f2f2]'
+                    }`}
+                  >
+                    Envie uma mensagem
+                  </h3>
+                  <p
+                    className={`text-[14px] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                      isEngaged ? 'text-[#52524e]' : 'text-[#8e8e8e]'
+                    }`}
+                  >
+                    Compartilhe o momento da empresa para iniciarmos a conversa.
+                  </p>
+                </div>
+
                 <div className="flex flex-col gap-2">
                   <label
                     htmlFor="contact-name"

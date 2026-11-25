@@ -67,24 +67,26 @@ export function ThoughtsSection({ onSelectArticle, onViewAllArticles }: Thoughts
   const featuredItems = PRACTICE_HIGHLIGHTS.filter((a) => a.featuredOnHome).slice(0, 2);
 
   return (
-    <section className="mx-auto w-full max-w-[1180px] px-6 py-20 md:py-28">
-      <div className="mb-12 md:mb-14 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-end">
-        <Reveal className="lg:col-span-5">
+    <section className="mx-auto w-full max-w-[1180px] px-6 py-14 md:py-24">
+      <div className="mb-10 md:mb-12 grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
+        <Reveal className="lg:col-span-5 flex flex-col gap-3">
+          <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
+            Sobre mim
+          </span>
           <h2 className="type-section-h2 text-[#f2f2f2]">Sobre e Parcerias</h2>
         </Reveal>
 
-        <div className="lg:col-span-7 flex flex-col gap-4 text-[17px] md:text-[18px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]">
-          <Reveal delay={0.08}>
-            <p>
-              Sou profissional da área de negócios e tecnologia, com atuação no desenvolvimento
-              comercial, direcionamento de projetos e construção de soluções digitais.
+        <div className="lg:col-span-7 flex flex-col gap-3 text-[16px] md:text-[18px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]">
+          <Reveal delay={0.05}>
+            <p className="font-medium text-[#f2f2f2]">
+              Atuo na interseção entre negócios, desenvolvimento comercial, direcionamento de
+              projetos e construção de soluções digitais.
             </p>
           </Reveal>
-          <Reveal delay={0.14}>
+          <Reveal delay={0.1}>
             <p>
-              Meu trabalho envolve compreender necessidades empresariais, identificar oportunidades e
-              conectar diferentes competências para transformar problemas em projetos bem
-              direcionados.
+              Compreendo necessidades empresariais e conecto diferentes competências — da execução
+              técnica à direção criativa — para transformar problemas em projetos bem direcionados.
             </p>
           </Reveal>
         </div>
@@ -92,28 +94,26 @@ export function ThoughtsSection({ onSelectArticle, onViewAllArticles }: Thoughts
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {featuredItems.map((article, idx) => (
-          <Reveal key={article.slug} delay={idx * 0.08}>
+          <Reveal key={article.slug} delay={idx * 0.06}>
             <ArticleCard article={article} onSelect={onSelectArticle} index={idx} />
           </Reveal>
         ))}
 
         {/* Card de síntese: grafite em repouso -> off-white quente #F1EFE9 no hover */}
-        <Reveal delay={0.16} className="md:col-span-2 lg:col-span-1">
-          <div className="card-interactive group/card flex h-full min-h-[460px] flex-col justify-between gap-6 rounded-2xl border border-[#252525] bg-[#151515] p-6 text-[#f2f2f2] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#e2dfd7] hover:bg-[#f1efe9] hover:shadow-[0_26px_54px_-24px_rgba(0,0,0,0.85)]">
+        <Reveal delay={0.12} className="md:col-span-2 lg:col-span-1">
+          <div className="card-interactive group/card flex h-full min-h-[380px] md:min-h-[460px] flex-col justify-between gap-6 rounded-2xl border border-[#252525] bg-[#151515] p-6 text-[#f2f2f2] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#e2dfd7] hover:bg-[#f1efe9] hover:shadow-[0_26px_54px_-24px_rgba(0,0,0,0.85)]">
             <div className="card-hover-content flex flex-1 flex-col justify-between gap-6">
-              <div className="text-[13px] text-[#8e8e8e] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:text-[#52524e]">
+              <div className="text-[13px] font-medium text-[#8e8e8e] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:text-[#52524e]">
                 <span>Visão de Negócio</span>
               </div>
 
-              <div className="my-auto flex flex-col gap-4">
-                <p className="text-[18px] md:text-[19px] font-medium leading-[1.45] tracking-[-0.02em] text-[#f2f2f2] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:text-[#111111]">
-                  Tenho interesse especial em entender como as empresas funcionam: como conquistam
-                  clientes, organizam suas operações, tomam decisões e encontram oportunidades de
-                  crescimento.
-                </p>
+              <div className="my-auto flex flex-col gap-3.5">
+                <h3 className="text-[22px] md:text-[24px] font-semibold leading-[1.22] tracking-[-0.02em] text-[#f2f2f2] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:text-[#111111]">
+                  Entender como a empresa gera valor antes de escolher a ferramenta.
+                </h3>
                 <p className="text-[15px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:text-[#3a3a38]">
-                  Acredito que boas soluções não dependem apenas de conhecimento técnico. Dependem,
-                  principalmente, da capacidade de compreender o contexto e fazer as escolhas certas.
+                  Boas soluções não dependem apenas de conhecimento técnico, mas da capacidade de
+                  compreender operação, clientes e decisões para fazer as escolhas certas.
                 </p>
               </div>
             </div>

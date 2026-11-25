@@ -7,6 +7,7 @@ export interface ServiceItem {
 
 export interface ApproachStep {
   number: string;
+  title: string;
   description: string;
 }
 
@@ -63,23 +64,27 @@ export const HERO_MEDIA = {
 export const APPROACH_STEPS: ApproachStep[] = [
   {
     number: '01',
+    title: 'Entendimento do negócio',
     description:
-      'Conhecer a empresa, seus objetivos, sua operação, seus clientes e os desafios que fazem parte da rotina do negócio.',
+      'Conhecer a empresa, seus objetivos, operação, clientes e os desafios que fazem parte da rotina.',
   },
   {
     number: '02',
+    title: 'Diagnóstico de gargalos',
     description:
-      'Identificar gargalos, oportunidades comerciais, processos ineficientes e pontos de desconexão entre estratégia e execução.',
+      'Identificar oportunidades comerciais, processos ineficientes e pontos de desconexão entre estratégia e execução.',
   },
   {
     number: '03',
+    title: 'Direcionamento integrado',
     description:
-      'Estruturar um caminho coerente com as necessidades da empresa, conectando estratégia, comunicação, processos e tecnologia.',
+      'Estruturar um caminho coerente conectando estratégia, comunicação, processos e tecnologia.',
   },
   {
     number: '04',
+    title: 'Coordenação e entrega',
     description:
-      'Transformar o direcionamento em soluções concretas, coordenando projetos e conectando as competências necessárias para tirar as ideias do papel.',
+      'Transformar o direcionamento em soluções concretas, conectando as competências necessárias para tirar as ideias do papel.',
   },
 ];
 
@@ -88,28 +93,28 @@ export const SERVICES: ServiceItem[] = [
     id: 'comercial',
     title: 'Estratégia Comercial',
     description:
-      'Entendimento da jornada do cliente, estruturação de processos de venda, identificação de oportunidades de conversão, aquisição e desenvolvimento de estratégias comerciais.',
+      'Mapeamento da jornada do cliente e estruturação do processo de vendas para ampliar aquisição e oportunidades de conversão.',
     capabilities: ['Jornada do cliente', 'Processos de venda', 'Conversão'],
   },
   {
     id: 'processos',
     title: 'Processos e Operação',
     description:
-      'Análise e organização de fluxos de trabalho, identificação de gargalos, melhoria de processos e integração entre atividades e áreas da empresa.',
+      'Análise e organização de fluxos de trabalho para reduzir gargalos e integrar atividades entre diferentes áreas da empresa.',
     capabilities: ['Fluxos de trabalho', 'Gargalos', 'Integração'],
   },
   {
     id: 'posicionamento',
     title: 'Posicionamento e Experiência Digital',
     description:
-      'Desenvolvimento e direcionamento de experiências digitais que fortalecem o posicionamento da empresa, comunicam melhor suas ofertas e facilitam a relação com seus clientes.',
+      'Direcionamento de experiências digitais que fortalecem o posicionamento, comunicam valor com clareza e facilitam a relação com clientes.',
     capabilities: ['Posicionamento', 'Comunicação de ofertas', 'Relacionamento'],
   },
   {
     id: 'tecnologia',
     title: 'Tecnologia e Implementação',
     description:
-      'Direcionamento e desenvolvimento de sites, sistemas, CRM, integrações e automações, sempre considerando as necessidades, os processos e os objetivos da operação.',
+      'Desenvolvimento de sites, sistemas, CRM, integrações e automações sempre orientados às necessidades e objetivos reais da operação.',
     capabilities: ['Sites e sistemas', 'CRM', 'Integrações e automações'],
   },
 ];

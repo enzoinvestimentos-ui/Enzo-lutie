@@ -255,69 +255,64 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
       {/* SEÇÃO 1: HERO */}
       <section
         id="hero-section"
-        className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1180px] flex-col justify-between px-6 pt-28 pb-10 lg:min-h-screen"
+        className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1180px] flex-col justify-between px-6 pt-24 pb-8 md:pt-28 md:pb-10 lg:min-h-screen"
       >
-        <div className="my-auto grid w-full grid-cols-1 items-center gap-10 py-6 lg:grid-cols-12">
-          {/* Coluna Esquerda: Título, Proposta e Ações */}
-          <div className="lg:col-span-7 flex flex-col items-start gap-6">
+        <div className="my-auto grid w-full grid-cols-1 items-center gap-8 py-4 md:gap-10 md:py-6 lg:grid-cols-12">
+          {/* Coluna Esquerda: Hierarquia clara em camadas (Kicker -> H1 -> Posicionamento -> CTA) */}
+          <div className="lg:col-span-7 flex flex-col items-start gap-5 md:gap-6">
             <motion.div
-              initial={prefersReducedMotion ? false : { opacity: 0, y: 10, filter: 'blur(4px)' }}
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              transition={{ duration: 0.75, ease: EDITORIAL_EASE }}
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: EDITORIAL_EASE }}
               className="flex items-center"
             >
-              <span className="text-[13px] font-medium tracking-[0.04em] text-[#a1a1a1] uppercase">
-                Negócios primeiro · Tecnologia com propósito
+              <span className="text-[13px] font-medium tracking-[0.02em] text-[#a1a1a1]">
+                Enzo Lutiê · Negócios, estratégia comercial e tecnologia
               </span>
             </motion.div>
 
             <motion.h1
-              initial={prefersReducedMotion ? false : { opacity: 0, y: 16, filter: 'blur(5px)' }}
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 10, filter: 'blur(2px)' }}
               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              transition={{ duration: 0.9, delay: 0.08, ease: EDITORIAL_EASE }}
-              className="type-display-lg text-[#f5f5f5]"
+              transition={{ duration: 0.48, ease: EDITORIAL_EASE }}
+              className="type-display-lg text-[#f2f2f2]"
             >
               Estratégia de negócios, processos e tecnologia.
             </motion.h1>
 
             <motion.div
-              initial={prefersReducedMotion ? false : { opacity: 0, y: 14, filter: 'blur(4px)' }}
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              transition={{ duration: 0.85, delay: 0.16, ease: EDITORIAL_EASE }}
-              className="flex max-w-[600px] flex-col gap-4 text-[17px] md:text-[18px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]"
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.48, delay: 0.06, ease: EDITORIAL_EASE }}
+              className="flex max-w-[560px] flex-col gap-3 text-[16px] md:text-[18px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]"
             >
               <p>
-                Ajudo empresas a identificar oportunidades, superar gargalos e transformar
-                necessidades de negócio em soluções que conectam estratégia comercial, processos e
-                tecnologia.
+                Ajudo empresas a identificar oportunidades, superar gargalos e conectar estratégia
+                comercial, operação e soluções digitais para melhorar resultados.
               </p>
-              <p>
-                Meu trabalho começa entendendo como a empresa funciona, onde estão os desafios e o
-                que pode ser feito para melhorar seus resultados.
-              </p>
-              <p className="font-medium text-[#f5f5f5]">
+              <p className="font-medium text-[#f2f2f2]">
                 A tecnologia entra como parte da solução, não como ponto de partida.
               </p>
             </motion.div>
 
             <motion.div
-              initial={prefersReducedMotion ? false : { opacity: 0, y: 12, filter: 'blur(3px)' }}
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              transition={{ duration: 0.8, delay: 0.24, ease: EDITORIAL_EASE }}
-              className="flex flex-wrap items-center gap-4 pt-2"
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.48, delay: 0.12, ease: EDITORIAL_EASE }}
+              className="flex flex-wrap items-center gap-3.5 pt-1 md:gap-4 md:pt-2"
             >
               <ArrowButton label="Vamos conversar" onClick={onGetStarted} variant="primary" />
               <button
                 type="button"
                 onClick={onExploreProjects}
-                className="group inline-flex items-center justify-center rounded-full border border-[#2a2a2a] bg-transparent px-6 py-3.5 text-[15px] font-medium tracking-[-0.02em] text-[#f5f5f5] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#f5f5f5]/55 hover:bg-[#141414] active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f5f5f5]"
+                className="group inline-flex items-center justify-center rounded-full border border-[#2a2a2a] bg-transparent px-6 py-3.5 text-[15px] font-medium tracking-[-0.02em] text-[#f2f2f2] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#f1efe9]/55 hover:bg-[#141414] active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f2f2f2]"
               >
                 <RollingText text="Conhecer projetos" />
               </button>
             </motion.div>
 
             {/* Retrato Mobile / Tablet com giro 3D no scroll e toque */}
-            <div className="mt-4 lg:hidden">
+            <div className="mt-3 lg:hidden">
               <MobileFlipPortrait mode="hero" />
             </div>
           </div>
@@ -326,19 +321,22 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
           <div className="hidden lg:block lg:col-span-5" aria-hidden="true" />
         </div>
 
-        {/* Faixa inferior de metadados com linha divisória animada */}
+        {/* Faixa inferior discreta de posicionamento */}
         <div>
-          <HairlineRule delay={0.28} />
+          <HairlineRule delay={0.16} />
           <motion.div
-            initial={prefersReducedMotion ? false : { opacity: 0, y: 10, filter: 'blur(3px)' }}
-            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            transition={{ duration: 0.75, delay: 0.34, ease: EDITORIAL_EASE }}
-            className="flex flex-wrap items-center justify-between gap-4 pt-5 text-[13px] md:text-[14px] font-medium tracking-[0.04em] text-[#d4d4d4]"
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.18, ease: EDITORIAL_EASE }}
+            className="flex flex-wrap items-center justify-between gap-3 pt-4 text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]"
           >
-            <span>ESTRATÉGIA · PROCESSOS · TECNOLOGIA</span>
-            <div className="flex items-center gap-5 tabular-nums text-[#8e8e8e]">
+            <span className="text-[#a1a1a1]">Estratégia · Processos · Tecnologia</span>
+            <div className="flex items-center gap-4 tabular-nums">
+              <span>Lumo · Krios Creative</span>
+              <span aria-hidden="true" className="text-[#404040]">
+                ·
+              </span>
               <span>©2026</span>
-              <span>/LUMO · KRIOS CREATIVE</span>
             </div>
           </motion.div>
         </div>
@@ -347,55 +345,73 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
       {/* SEÇÃO 2: DIAGNÓSTICO / ANTES DA TECNOLOGIA */}
       <section
         id="bio-section"
-        className="relative z-10 mx-auto flex w-full max-w-[1180px] items-center px-6 py-20 lg:min-h-screen lg:py-24"
+        className="relative z-10 mx-auto flex w-full max-w-[1180px] items-center px-6 py-14 md:py-20 lg:min-h-screen lg:py-24"
       >
-        <div className="grid w-full grid-cols-1 items-center gap-12 lg:grid-cols-12">
+        <div className="grid w-full grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-12">
           {/* Espaçador Esquerdo ocupado visualmente pelo Retrato Sticky no Desktop */}
           <div className="hidden lg:block lg:col-span-6" aria-hidden="true" />
 
-          {/* Coluna Direita: Texto integral sobre o problema antes da tecnologia */}
-          <div className="lg:col-span-6 flex flex-col items-start gap-6 max-w-[560px]">
+          {/* Coluna Direita: Leitura por camadas com chunking dos diagnósticos */}
+          <div className="lg:col-span-6 flex flex-col items-start gap-5 md:gap-6 max-w-[560px]">
             {/* Retrato Mobile / Tablet entrando com giro 3D para o verso */}
             <div className="lg:hidden">
               <MobileFlipPortrait mode="bio" />
             </div>
 
-            <Reveal>
-              <h2 className="text-[36px] sm:text-[42px] md:text-[48px] font-semibold leading-[1.06] tracking-[-0.02em] text-[#f5f5f5]">
+            <Reveal className="flex flex-col gap-3">
+              <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
+                Diagnóstico
+              </span>
+              <h2 className="text-[30px] sm:text-[38px] md:text-[46px] font-semibold leading-[1.08] tracking-[-0.025em] text-[#f2f2f2] text-balance">
                 O problema, muitas vezes, está antes da tecnologia.
               </h2>
             </Reveal>
 
-            <div className="flex flex-col gap-4 text-[17px] md:text-[18px] font-normal leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]">
-              <Reveal delay={0.06}>
-                <p>
-                  É comum encontrar empresas que investem em sites, ferramentas, sistemas e
-                  automações sem necessariamente resolver aquilo que motivou o investimento.
-                </p>
-              </Reveal>
-              <Reveal delay={0.12}>
-                <p>
-                  Um novo CRM não organiza, por si só, um processo comercial desestruturado. Um site
-                  novo não resolve uma comunicação que não deixa claro o valor da empresa. Uma
-                  automação não corrige um processo que nunca foi bem definido.
-                </p>
-              </Reveal>
-              <Reveal delay={0.18}>
-                <p>
-                  Por isso, minha primeira preocupação é entender o negócio: sua operação, seus
-                  objetivos, a experiência dos clientes e a maneira como as diferentes áreas se
-                  conectam.
-                </p>
-              </Reveal>
-              <Reveal delay={0.24}>
-                <p className="text-[#d4d4d4]">
-                  É a partir dessa visão que identifico oportunidades e direciono soluções que
-                  realmente contribuem para a evolução da empresa.
-                </p>
-              </Reveal>
-            </div>
+            <Reveal delay={0.05}>
+              <p className="text-[16px] md:text-[18px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]">
+                É comum empresas investirem em sites, sistemas e automações sem resolver o que
+                motivou o investimento:
+              </p>
+            </Reveal>
 
-            <Reveal delay={0.28} className="pt-2">
+            {/* Chunking visual dos 3 contrastes centrais para leitura imediata */}
+            <Reveal delay={0.1} className="w-full">
+              <div className="flex flex-col divide-y divide-[#252525] border-y border-[#252525]">
+                <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3 py-3.5">
+                  <span className="w-[116px] shrink-0 text-[14px] font-semibold text-[#f2f2f2]">
+                    Novo CRM
+                  </span>
+                  <span className="text-[15px] leading-[1.5] text-[#a1a1a1]">
+                    Não organiza, por si só, um processo comercial desestruturado.
+                  </span>
+                </div>
+                <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3 py-3.5">
+                  <span className="w-[116px] shrink-0 text-[14px] font-semibold text-[#f2f2f2]">
+                    Novo site
+                  </span>
+                  <span className="text-[15px] leading-[1.5] text-[#a1a1a1]">
+                    Não resolve uma comunicação que não deixa claro o valor da empresa.
+                  </span>
+                </div>
+                <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3 py-3.5">
+                  <span className="w-[116px] shrink-0 text-[14px] font-semibold text-[#f2f2f2]">
+                    Automação
+                  </span>
+                  <span className="text-[15px] leading-[1.5] text-[#a1a1a1]">
+                    Não corrige um processo que nunca foi bem definido.
+                  </span>
+                </div>
+              </div>
+            </Reveal>
+
+            <Reveal delay={0.14}>
+              <p className="text-[16px] md:text-[17px] leading-[1.55] tracking-[-0.015em] text-[#d4d4d4]">
+                Por isso, minha primeira preocupação é entender a operação, os objetivos e a
+                experiência dos clientes para direcionar soluções que realmente evoluem o negócio.
+              </p>
+            </Reveal>
+
+            <Reveal delay={0.16} className="pt-1">
               <ArrowButton label="Vamos conversar" onClick={onGetStarted} variant="primary" />
             </Reveal>
           </div>

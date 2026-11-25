@@ -15,13 +15,13 @@ export function Footer({ onNavigate }: FooterProps) {
   ];
 
   return (
-    <footer className="mx-auto w-full max-w-[1180px] px-6 pt-12 pb-10">
+    <footer className="mx-auto w-full max-w-[1180px] px-6 pt-10 pb-10">
       <HairlineRule />
-      <div className="pt-14 pb-16">
+      <div className="pt-12 pb-12 md:pt-14 md:pb-16">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-12">
           {/* Assinatura e posicionamento à esquerda */}
           <Reveal className="md:col-span-5 flex flex-col gap-3">
-            <p className="max-w-[340px] text-[22px] md:text-[26px] font-medium leading-[1.2] tracking-[-0.02em] text-[#f5f5f5]">
+            <p className="max-w-[340px] text-[22px] md:text-[26px] font-medium leading-[1.2] tracking-[-0.02em] text-[#f2f2f2]">
               Negócios primeiro. Tecnologia com propósito.
             </p>
             <p className="text-[16px] tracking-[-0.015em] text-[#a1a1a1]">
@@ -31,7 +31,7 @@ export function Footer({ onNavigate }: FooterProps) {
 
           {/* Links Rápidos */}
           <Reveal delay={0.08} className="md:col-span-4 flex flex-col gap-4">
-            <span className="text-[14px] font-medium text-[#8e8e8e]">/Navegação</span>
+            <span className="text-[13px] font-medium text-[#8e8e8e]">Navegação</span>
             <ul className="flex flex-col gap-2.5">
               {quickLinks.map((link) => (
                 <li key={link.label}>
@@ -49,7 +49,7 @@ export function Footer({ onNavigate }: FooterProps) {
 
           {/* Canais */}
           <Reveal delay={0.14} className="md:col-span-3 flex flex-col gap-4">
-            <span className="text-[14px] font-medium text-[#8e8e8e]">/Canais</span>
+            <span className="text-[13px] font-medium text-[#8e8e8e]">Canais</span>
             <div className="flex flex-wrap items-center gap-2 text-[16px] font-medium tracking-[-0.015em] text-[#d4d4d4]">
               <a
                 href="https://www.linkedin.com/"

@@ -21,9 +21,9 @@ interface RevealProps {
 export function Reveal({
   children,
   delay = 0,
-  y = 14,
-  blur = 5,
-  duration = 0.85,
+  y = 10,
+  blur = 2,
+  duration = 0.52,
   className = '',
 }: RevealProps) {
   const prefersReducedMotion = useReducedMotion();
@@ -34,12 +34,12 @@ export function Reveal({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y, filter: `blur(${blur}px)` }}
+      initial={{ opacity: 0, y, filter: blur > 0 ? `blur(${blur}px)` : 'none' }}
       whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
       viewport={{ once: true, amount: 'some' }}
       transition={{
         duration,
-        delay,
+        delay: Math.min(delay, 0.18),
         ease: EDITORIAL_EASE,
       }}
       className={className}
