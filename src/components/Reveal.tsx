@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { motion, useScroll, useSpring, useReducedMotion } from 'motion/react';
 
 export const EDITORIAL_EASE = [0.22, 1, 0.36, 1] as const;
@@ -14,19 +14,24 @@ interface RevealProps {
   delay?: number;
   y?: number;
   blur?: number;
+  initialOpacity?: number;
   duration?: number;
+  amount?: 'some' | 'all' | number;
   className?: string;
 }
 
 export function Reveal({
   children,
   delay = 0,
-  y = 10,
-  blur = 2,
-  duration = 0.52,
+  y = 18,
+  blur = 7,
+  initialOpacity = 0.18,
+  duration = 0.82,
+  amount = 0.12,
   className = '',
 }: RevealProps) {
   const prefersReducedMotion = useReducedMotion();
+  const [settled, setSettled] = useState(false);
 
   if (prefersReducedMotion) {
     return <div className={className}>{children}</div>;
@@ -34,14 +39,24 @@ export function Reveal({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y, filter: blur > 0 ? `blur(${blur}px)` : 'none' }}
-      whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-      viewport={{ once: true, amount: 'some' }}
+      initial={{
+        opacity: initialOpacity,
+        y,
+        filter: blur > 0 ? `blur(${blur}px)` : 'none',
+      }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+        filter: blur > 0 ? 'blur(0px)' : 'none',
+      }}
+      viewport={{ once: true, amount }}
       transition={{
         duration,
-        delay: Math.min(delay, 0.18),
+        delay: Math.min(delay, 0.24),
         ease: EDITORIAL_EASE,
       }}
+      onAnimationComplete={() => setSettled(true)}
+      style={settled ? { filter: 'none' } : undefined}
       className={className}
     >
       {children}

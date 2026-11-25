@@ -91,14 +91,20 @@ export function ContactSection() {
             </Reveal>
 
             {/* Chunking dos cenários de conversa */}
-            <Reveal delay={0.1}>
-              <ul className="flex max-w-[500px] flex-col divide-y divide-[#252525] border-y border-[#252525] text-[15px] leading-[1.5] text-[#d4d4d4]">
-                <li className="py-3">Apresentação de serviços e fortalecimento da presença digital</li>
-                <li className="py-3">Organização de processo comercial e estruturação de CRM</li>
-                <li className="py-3">Redução de tarefas manuais e gargalos na operação</li>
-                <li className="py-3">Estrutura digital alinhada ao momento atual da empresa</li>
-              </ul>
-            </Reveal>
+            <ul className="flex max-w-[500px] flex-col divide-y divide-[#252525] border-y border-[#252525] text-[15px] leading-[1.5] text-[#d4d4d4]">
+              <li className="py-3">
+                <Reveal delay={0.06}>Apresentação de serviços e fortalecimento da presença digital</Reveal>
+              </li>
+              <li className="py-3">
+                <Reveal delay={0.1}>Organização de processo comercial e estruturação de CRM</Reveal>
+              </li>
+              <li className="py-3">
+                <Reveal delay={0.14}>Redução de tarefas manuais e gargalos na operação</Reveal>
+              </li>
+              <li className="py-3">
+                <Reveal delay={0.18}>Estrutura digital alinhada ao momento atual da empresa</Reveal>
+              </li>
+            </ul>
 
             <Reveal delay={0.14}>
               <p className="max-w-[520px] text-[16px] font-medium leading-[1.55] tracking-[-0.015em] text-[#f2f2f2]">

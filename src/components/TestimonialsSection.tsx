@@ -152,7 +152,7 @@ function PerspectiveCard({ item }: { item: ValuePerspectiveItem }) {
             />
           </div>
 
-          <div className="flex flex-col gap-2.5">
+          <Reveal delay={0.05} className="flex flex-col gap-2.5">
             <h3
               className={`text-[19px] font-semibold leading-[1.25] tracking-[-0.02em] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                 isActive ? 'text-[#111111]' : 'text-[#f2f2f2]'
@@ -167,7 +167,7 @@ function PerspectiveCard({ item }: { item: ValuePerspectiveItem }) {
             >
               {item.statement}
             </p>
-          </div>
+          </Reveal>
 
           <div
             className={`border-t pt-4 transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
@@ -216,10 +216,10 @@ export function TestimonialsSection() {
             Critério de decisão
           </span>
         </Reveal>
-        <Reveal delay={0.04}>
+        <Reveal delay={0.05}>
           <h2 className="type-section-h2 text-[#f2f2f2]">O valor de cada solução</h2>
         </Reveal>
-        <Reveal delay={0.08}>
+        <Reveal delay={0.1}>
           <p className="text-[17px] md:text-[19px] leading-[1.5] tracking-[-0.015em] text-[#a1a1a1]">
             É essa perspectiva que orienta minhas decisões e a forma como participo de cada projeto.
           </p>
@@ -228,7 +228,7 @@ export function TestimonialsSection() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {VALUE_PERSPECTIVES.map((item, idx) => (
-          <Reveal key={item.id} delay={idx * 0.05}>
+          <Reveal key={item.id} delay={idx * 0.06} blur={0}>
             <PerspectiveCard item={item} />
           </Reveal>
         ))}

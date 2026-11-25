@@ -104,18 +104,18 @@ export function ProjectsSection({ onSelectProject, onViewAllWork }: ProjectsSect
           </p>
         </Reveal>
 
-        <Reveal delay={0.08}>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            {PROJECT_DECISION_PILLARS.map((pillar) => (
-              <div key={pillar.label} className="flex flex-col gap-1 border-t border-[#252525] pt-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {PROJECT_DECISION_PILLARS.map((pillar, idx) => (
+            <div key={pillar.label} className="border-t border-[#252525] pt-3">
+              <Reveal delay={0.05 + idx * 0.04} className="flex flex-col gap-1">
                 <span className="text-[14px] font-semibold text-[#f2f2f2]">{pillar.label}</span>
                 <span className="text-[13px] leading-[1.45] text-[#8e8e8e]">
                   {pillar.description}
                 </span>
-              </div>
-            ))}
-          </div>
-        </Reveal>
+              </Reveal>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">

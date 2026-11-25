@@ -374,35 +374,39 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
               </p>
             </Reveal>
 
-            {/* Chunking visual dos 3 contrastes centrais para leitura imediata */}
-            <Reveal delay={0.1} className="w-full">
-              <div className="flex flex-col divide-y divide-[#252525] border-y border-[#252525]">
-                <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3 py-3.5">
+            {/* Chunking visual dos 3 contrastes centrais com revelação progressiva no scroll */}
+            <div className="w-full flex flex-col divide-y divide-[#252525] border-y border-[#252525]">
+              <div className="py-3.5">
+                <Reveal delay={0.06} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
                   <span className="w-[116px] shrink-0 text-[14px] font-semibold text-[#f2f2f2]">
                     Novo CRM
                   </span>
                   <span className="text-[15px] leading-[1.5] text-[#a1a1a1]">
                     Não organiza, por si só, um processo comercial desestruturado.
                   </span>
-                </div>
-                <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3 py-3.5">
+                </Reveal>
+              </div>
+              <div className="py-3.5">
+                <Reveal delay={0.12} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
                   <span className="w-[116px] shrink-0 text-[14px] font-semibold text-[#f2f2f2]">
                     Novo site
                   </span>
                   <span className="text-[15px] leading-[1.5] text-[#a1a1a1]">
                     Não resolve uma comunicação que não deixa claro o valor da empresa.
                   </span>
-                </div>
-                <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3 py-3.5">
+                </Reveal>
+              </div>
+              <div className="py-3.5">
+                <Reveal delay={0.18} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
                   <span className="w-[116px] shrink-0 text-[14px] font-semibold text-[#f2f2f2]">
                     Automação
                   </span>
                   <span className="text-[15px] leading-[1.5] text-[#a1a1a1]">
                     Não corrige um processo que nunca foi bem definido.
                   </span>
-                </div>
+                </Reveal>
               </div>
-            </Reveal>
+            </div>
 
             <Reveal delay={0.14}>
               <p className="text-[16px] md:text-[17px] leading-[1.55] tracking-[-0.015em] text-[#d4d4d4]">
