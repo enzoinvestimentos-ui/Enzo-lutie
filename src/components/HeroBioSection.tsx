@@ -39,6 +39,72 @@ function HoloTriangle({ className = '' }: { className?: string }) {
   );
 }
 
+function MobileFlipPortrait({ mode }: { mode: 'hero' | 'bio' }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+  const [manualFlipped, setManualFlipped] = useState(false);
+
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: mode === 'hero' ? ['center 0.62', 'end 0.1'] : ['start 0.92', 'center 0.5'],
+  });
+
+  const scrollRotateY = useTransform(scrollYProgress, [0, 1], [0, 180]);
+  const rotateY = useTransform(scrollRotateY, (v) => (manualFlipped ? v + 180 : v));
+
+  return (
+    <div ref={cardRef} className="perspective-1200 w-[230px] sm:w-[270px]">
+      <motion.button
+        type="button"
+        onClick={() => setManualFlipped((prev) => !prev)}
+        aria-label="Alternar cartão do retrato"
+        style={
+          prefersReducedMotion
+            ? {
+                rotateY:
+                  mode === 'bio'
+                    ? manualFlipped
+                      ? 0
+                      : 180
+                    : manualFlipped
+                      ? 180
+                      : 0,
+              }
+            : { rotateY }
+        }
+        transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+        className="preserve-3d relative block w-full aspect-[0.877] cursor-pointer rounded-2xl shadow-[0_18px_40px_-20px_rgba(17,17,17,0.25)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#eb4d6d]"
+      >
+        {/* Frente */}
+        <div
+          style={{ transform: 'rotateY(0deg) translateZ(1px)' }}
+          className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#111111]/10 bg-[#111111]"
+        >
+          <SafeImage
+            src={HERO_MEDIA.frontAvatar}
+            alt="Retrato editorial em preto e branco"
+            fallbackTitle="Estratégia & Tecnologia"
+            className="h-full w-full object-cover object-center"
+          />
+        </div>
+
+        {/* Verso */}
+        <div
+          style={{ transform: 'rotateY(180deg) translateZ(1px)' }}
+          className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#111111]/10 bg-[#111111]"
+        >
+          <SafeImage
+            src={HERO_MEDIA.backAvatar}
+            alt="Retrato editorial em fundo vermelho"
+            fallbackTitle="Estratégia & Tecnologia"
+            className="h-full w-full object-cover object-center"
+          />
+        </div>
+      </motion.button>
+    </div>
+  );
+}
+
 export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSectionProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
@@ -122,7 +188,10 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
                 className="preserve-3d relative block w-[320px] xl:w-[360px] aspect-[0.877] cursor-pointer rounded-2xl shadow-[0_20px_50px_-24px_rgba(17,17,17,0.22)] transition-shadow duration-300 hover:shadow-[0_28px_60px_-22px_rgba(17,17,17,0.3)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#eb4d6d]"
               >
                 {/* Frente */}
-                <div className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#111111]/10 bg-[#111111]">
+                <div
+                  style={{ transform: 'rotateY(0deg) translateZ(1px)' }}
+                  className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#111111]/10 bg-[#111111]"
+                >
                   <SafeImage
                     src={HERO_MEDIA.frontAvatar}
                     alt="Retrato editorial em preto e branco"
@@ -133,7 +202,7 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
 
                 {/* Verso */}
                 <div
-                  style={{ transform: 'rotateY(180deg)' }}
+                  style={{ transform: 'rotateY(180deg) translateZ(1px)' }}
                   className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#111111]/10 bg-[#111111]"
                 >
                   <SafeImage
@@ -219,14 +288,9 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
               </button>
             </motion.div>
 
-            {/* Retrato Mobile / Tablet (Frente) */}
-            <div className="mt-4 w-[220px] sm:w-[260px] aspect-[0.877] overflow-hidden rounded-2xl border border-[#111111]/10 bg-[#111111] lg:hidden">
-              <SafeImage
-                src={HERO_MEDIA.frontAvatar}
-                alt="Retrato editorial em preto e branco"
-                fallbackTitle="Estratégia & Tecnologia"
-                className="h-full w-full object-cover object-center"
-              />
+            {/* Retrato Mobile / Tablet com giro 3D no scroll e toque */}
+            <div className="mt-4 lg:hidden">
+              <MobileFlipPortrait mode="hero" />
             </div>
           </div>
 
@@ -263,14 +327,9 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
 
           {/* Coluna Direita: Texto integral sobre o problema antes da tecnologia */}
           <div className="lg:col-span-6 flex flex-col items-start gap-6 max-w-[560px]">
-            {/* Retrato Mobile / Tablet (Verso ao descer a página) */}
-            <div className="w-[220px] sm:w-[260px] aspect-[0.877] overflow-hidden rounded-2xl border border-[#111111]/10 bg-[#111111] lg:hidden">
-              <SafeImage
-                src={HERO_MEDIA.backAvatar}
-                alt="Retrato editorial em fundo vermelho"
-                fallbackTitle="Estratégia & Tecnologia"
-                className="h-full w-full object-cover object-center"
-              />
+            {/* Retrato Mobile / Tablet entrando com giro 3D para o verso */}
+            <div className="lg:hidden">
+              <MobileFlipPortrait mode="bio" />
             </div>
 
             <Reveal>
