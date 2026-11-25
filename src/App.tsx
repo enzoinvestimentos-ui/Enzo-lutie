@@ -8,6 +8,7 @@ import { HeroBioSection } from './components/HeroBioSection';
 import { QuoteSection } from './components/QuoteSection';
 import { ServicesSection } from './components/ServicesSection';
 import { ProjectsSection } from './components/ProjectsSection';
+import { SocialProofSection } from './components/SocialProofSection';
 import { TestimonialsSection } from './components/TestimonialsSection';
 import { ThoughtsSection } from './components/ThoughtsSection';
 import { ContactSection } from './components/ContactSection';
@@ -106,6 +107,7 @@ export default function App() {
                     onSelectProject={(slug) => navigate(`/work/${slug}`)}
                     onViewAllWork={() => navigate('/work')}
                   />
+                  <SocialProofSection />
                   <TestimonialsSection />
                   <ThoughtsSection
                     onSelectArticle={(slug) => navigate(`/blog/${slug}`)}
