@@ -88,7 +88,7 @@ export function Footer({ onNavigate }: FooterProps) {
       {/* Marca Tipográfica Gigante + Copyright */}
       <HairlineRule />
       <div className="pt-8 flex flex-col gap-5">
-        <Reveal>
+        <Reveal y={18} blur={6} duration={0.95}>
           <div className="type-display-xl select-none tracking-[-0.03em] text-[#111111]">
             ESTRATÉGIA
           </div>

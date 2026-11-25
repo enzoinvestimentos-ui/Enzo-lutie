@@ -34,22 +34,22 @@ export function ArrowButton({
     <>
       <RollingText text={label} className="text-[15px] font-medium tracking-[-0.02em]" />
       <span
-        className={`relative inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105 ${circleClasses}`}
+        className={`relative inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 ${circleClasses}`}
         aria-hidden="true"
       >
         <ArrowUpRight
-          className="h-4 w-4 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-5 group-hover:-translate-y-5"
+          className="h-4 w-4 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-5 group-hover:-translate-y-5"
           strokeWidth={2}
         />
         <ArrowUpRight
-          className="absolute h-4 w-4 -translate-x-5 translate-y-5 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0 group-hover:translate-y-0"
+          className="absolute h-4 w-4 -translate-x-5 translate-y-5 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0 group-hover:translate-y-0"
           strokeWidth={2}
         />
       </span>
     </>
   );
 
-  const sharedClasses = `group inline-flex items-center justify-between gap-4 rounded-full py-2 pl-5 pr-2 transition-all duration-200 active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#eb4d6d] ${baseClasses} ${
+  const sharedClasses = `group inline-flex items-center justify-between gap-4 rounded-full py-2 pl-5 pr-2 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#eb4d6d] ${baseClasses} ${
     fullWidth ? 'w-full' : ''
   } ${className}`;
 

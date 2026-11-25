@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { RollingText } from './RollingText';
+import { EDITORIAL_EASE } from './Reveal';
 
 export type RoutePath =
   | { page: 'home' }
@@ -67,7 +68,7 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
     <header className="fixed top-0 left-0 right-0 z-40 flex flex-col items-center px-4 pt-3 pb-2 pointer-events-none">
       <div
         ref={containerRef}
-        className={`pointer-events-auto w-full max-w-[1180px] rounded-2xl border backdrop-blur-md px-5 py-3 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        className={`pointer-events-auto w-full max-w-[1180px] rounded-2xl border backdrop-blur-md px-5 py-3 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           scrolled
             ? 'border-[#111111]/15 bg-[#faf7f3]/92 shadow-[0_10px_30px_-18px_rgba(17,17,17,0.22)]'
             : 'border-[#111111]/10 bg-[#faf7f3]/82'
@@ -83,7 +84,7 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
             }}
             className="group text-[18px] font-bold tracking-[-0.03em] text-[#111111] whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#eb4d6d]"
           >
-            <RollingText text="Estratégia & Tech" />
+            <RollingText text="Enzo Lutiê" />
           </a>
 
           {/* Zona 2: Links de navegação em linha única */}
@@ -107,7 +108,9 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
                 >
                   <RollingText text={item.label} />
                   {isActive && (
-                    <span
+                    <motion.span
+                      layoutId="nav-active-indicator"
+                      transition={{ duration: 0.45, ease: EDITORIAL_EASE }}
                       aria-hidden="true"
                       className="absolute -bottom-1 left-0 right-0 h-[1.5px] bg-[#eb4d6d]"
                     />
@@ -122,7 +125,7 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
             <button
               type="button"
               onClick={() => handleNav('/', '#contact')}
-              className="group hidden md:inline-flex items-center justify-center rounded-full bg-[#111111] px-4 py-2 text-[14px] font-medium tracking-[-0.02em] text-[#faf7f3] transition-all duration-200 hover:bg-[#eb4d6d] active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#eb4d6d]"
+              className="group hidden md:inline-flex items-center justify-center rounded-full bg-[#111111] px-4 py-2 text-[14px] font-medium tracking-[-0.02em] text-[#faf7f3] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[#eb4d6d] active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#eb4d6d]"
             >
               <RollingText text="Vamos conversar" />
             </button>
@@ -132,20 +135,20 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
               onClick={() => setMenuOpen((prev) => !prev)}
               aria-expanded={menuOpen}
               aria-label={menuOpen ? 'Fechar menu de navegação' : 'Abrir menu de navegação'}
-              className="md:hidden inline-flex h-10 w-10 flex-col items-center justify-center gap-[5px] rounded-xl border border-[#111111]/10 bg-[#faf7f3] transition-colors hover:border-[#111111]/30 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#eb4d6d]"
+              className="md:hidden inline-flex h-10 w-10 flex-col items-center justify-center gap-[5px] rounded-xl border border-[#111111]/10 bg-[#faf7f3] transition-colors duration-300 hover:border-[#111111]/30 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#eb4d6d]"
             >
               <span
-                className={`h-[1.5px] w-5 bg-[#111111] transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                className={`h-[1.5px] w-5 bg-[#111111] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                   menuOpen ? 'translate-y-[6.5px] rotate-45' : ''
                 }`}
               />
               <span
-                className={`h-[1.5px] w-5 bg-[#111111] transition-opacity duration-200 ${
+                className={`h-[1.5px] w-5 bg-[#111111] transition-opacity duration-300 ${
                   menuOpen ? 'opacity-0' : 'opacity-100'
                 }`}
               />
               <span
-                className={`h-[1.5px] w-5 bg-[#111111] transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                className={`h-[1.5px] w-5 bg-[#111111] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                   menuOpen ? '-translate-y-[6.5px] -rotate-45' : ''
                 }`}
               />
@@ -157,10 +160,10 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
         <AnimatePresence>
           {menuOpen && (
             <motion.nav
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              initial={{ opacity: 0, y: -8, filter: 'blur(4px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, y: -6, filter: 'blur(3px)' }}
+              transition={{ duration: 0.34, ease: EDITORIAL_EASE }}
               aria-label="Navegação móvel"
               className="md:hidden mt-3 border-t border-[#111111]/10 pt-3 pb-2 flex flex-col gap-1"
             >
@@ -170,9 +173,9 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
                   type="button"
                   initial={{ opacity: 0, x: -6 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.2, delay: idx * 0.03 }}
+                  transition={{ duration: 0.32, delay: idx * 0.04, ease: EDITORIAL_EASE }}
                   onClick={() => handleNav(item.path, item.hash)}
-                  className="w-full text-left py-2.5 px-2 text-[17px] font-medium tracking-[-0.02em] text-[#111111] hover:text-[#eb4d6d] transition-colors cursor-pointer"
+                  className="w-full text-left py-2.5 px-2 text-[17px] font-medium tracking-[-0.02em] text-[#111111] hover:text-[#eb4d6d] transition-colors duration-300 cursor-pointer"
                 >
                   {item.label}
                 </motion.button>
@@ -180,7 +183,7 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
               <button
                 type="button"
                 onClick={() => handleNav('/', '#contact')}
-                className="mt-2 w-full rounded-full bg-[#111111] py-3 text-center text-[15px] font-medium text-[#faf7f3] hover:bg-[#eb4d6d] transition-colors cursor-pointer"
+                className="mt-2 w-full rounded-full bg-[#111111] py-3 text-center text-[15px] font-medium text-[#faf7f3] hover:bg-[#eb4d6d] transition-colors duration-300 cursor-pointer"
               >
                 Vamos conversar
               </button>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import { Navbar, type RoutePath } from './components/Navbar';
-import { ScrollProgressBar } from './components/Reveal';
+import { ScrollProgressBar, EDITORIAL_EASE } from './components/Reveal';
 import { HeroBioSection } from './components/HeroBioSection';
 import { QuoteSection } from './components/QuoteSection';
 import { ServicesSection } from './components/ServicesSection';
@@ -78,10 +78,10 @@ export default function App() {
         <AnimatePresence mode="wait">
           <motion.div
             key={getRouteKey(route)}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: -6, filter: 'blur(3px)' }}
+            transition={{ duration: 0.42, ease: EDITORIAL_EASE }}
           >
             {route.page === 'home' && (
               <main>

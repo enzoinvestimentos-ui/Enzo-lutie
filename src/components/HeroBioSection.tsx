@@ -1,4 +1,4 @@
-import { useRef, useState, type MouseEvent } from 'react';
+import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import {
   motion,
   useScroll,
@@ -10,7 +10,7 @@ import {
 import { ArrowButton } from './ArrowButton';
 import { RollingText } from './RollingText';
 import { SafeImage } from './SafeImage';
-import { Reveal, HairlineRule } from './Reveal';
+import { Reveal, HairlineRule, EDITORIAL_EASE } from './Reveal';
 import { HERO_MEDIA } from '../data/portfolioData';
 
 interface HeroBioSectionProps {
@@ -18,26 +18,17 @@ interface HeroBioSectionProps {
   onExploreProjects: () => void;
 }
 
-function HoloTriangle({ className = '' }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 64 64" fill="none" aria-hidden="true" className={className}>
-      <defs>
-        <linearGradient id="holoPrism" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#111111" stopOpacity="0.88" />
-          <stop offset="52%" stopColor="#eb4d6d" stopOpacity="0.72" />
-          <stop offset="100%" stopColor="#111111" stopOpacity="0.92" />
-        </linearGradient>
-      </defs>
-      <path
-        d="M27.6 10.4C29.5 7.1 34.5 7.1 36.4 10.4L54.2 41.2C56.1 44.5 53.7 48.6 49.8 48.6H14.2C10.3 48.6 7.9 44.5 9.8 41.2L27.6 10.4Z"
-        stroke="url(#holoPrism)"
-        strokeWidth="2.2"
-        fill="none"
-      />
-      <path d="M32 17.5L45.2 40.5H18.8L32 17.5Z" fill="url(#holoPrism)" fillOpacity="0.14" />
-    </svg>
-  );
-}
+const PORTRAIT_SCROLL_SPRING = {
+  stiffness: 110,
+  damping: 26,
+  mass: 0.65,
+} as const;
+
+const PORTRAIT_FLIP_SPRING = {
+  stiffness: 80,
+  damping: 22,
+  mass: 0.9,
+} as const;
 
 function MobileFlipPortrait({ mode }: { mode: 'hero' | 'bio' }) {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -49,11 +40,26 @@ function MobileFlipPortrait({ mode }: { mode: 'hero' | 'bio' }) {
     offset: mode === 'hero' ? ['center 0.62', 'end 0.1'] : ['start 0.92', 'center 0.5'],
   });
 
-  const scrollRotateY = useTransform(scrollYProgress, [0, 1], [0, 180]);
-  const rotateY = useTransform(scrollRotateY, (v) => (manualFlipped ? v + 180 : v));
+  const scrollRotateYRaw = useTransform(scrollYProgress, [0, 1], [0, 180]);
+  const scrollRotateY = useSpring(scrollRotateYRaw, PORTRAIT_SCROLL_SPRING);
+  const manualTarget = useMotionValue(0);
+  const manualAngle = useSpring(manualTarget, PORTRAIT_FLIP_SPRING);
+
+  useEffect(() => {
+    manualTarget.set(manualFlipped ? 180 : 0);
+  }, [manualFlipped, manualTarget]);
+
+  const rotateY = useTransform([scrollRotateY, manualAngle], ([s, m]) => (s as number) + (m as number));
 
   return (
-    <div ref={cardRef} className="perspective-1200 w-[230px] sm:w-[270px]">
+    <motion.div
+      ref={cardRef}
+      initial={prefersReducedMotion ? false : { opacity: 0, y: 14, scale: 0.97 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, amount: 'some' }}
+      transition={{ duration: 0.9, ease: EDITORIAL_EASE }}
+      className="perspective-1200 w-[230px] sm:w-[270px]"
+    >
       <motion.button
         type="button"
         onClick={() => setManualFlipped((prev) => !prev)}
@@ -72,7 +78,6 @@ function MobileFlipPortrait({ mode }: { mode: 'hero' | 'bio' }) {
               }
             : { rotateY }
         }
-        transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
         className="preserve-3d relative block w-full aspect-[0.877] cursor-pointer rounded-2xl shadow-[0_18px_40px_-20px_rgba(17,17,17,0.25)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#eb4d6d]"
       >
         {/* Frente */}
@@ -84,6 +89,7 @@ function MobileFlipPortrait({ mode }: { mode: 'hero' | 'bio' }) {
             src={HERO_MEDIA.frontAvatar}
             alt="Retrato editorial em preto e branco"
             fallbackTitle="Estratégia & Tecnologia"
+            disableEntrance
             className="h-full w-full object-cover object-center"
           />
         </div>
@@ -97,11 +103,12 @@ function MobileFlipPortrait({ mode }: { mode: 'hero' | 'bio' }) {
             src={HERO_MEDIA.backAvatar}
             alt="Retrato editorial em fundo vermelho"
             fallbackTitle="Estratégia & Tecnologia"
+            disableEntrance
             className="h-full w-full object-cover object-center"
           />
         </div>
       </motion.button>
-    </div>
+    </motion.div>
   );
 }
 
@@ -109,31 +116,57 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const [manualFlipped, setManualFlipped] = useState(false);
+  const [canHoverTilt, setCanHoverTilt] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const update = () => setCanHoverTilt(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end end'],
   });
 
-  // Em desktop, o retrato sticky desliza da coluna direita (Hero) para a coluna esquerda (Diagnóstico/Bio) e gira 180° para revelar o verso
-  const avatarX = useTransform(scrollYProgress, [0.08, 0.72], ['88%', '-88%']);
-  const scrollRotateY = useTransform(scrollYProgress, [0.1, 0.72], [0, 180]);
-  const avatarRotateY = useTransform(scrollRotateY, (v) => (manualFlipped ? v + 180 : v));
-  const avatarScale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.96, 1]);
+  // Em desktop, o retrato sticky desliza suavemente da coluna direita (Hero) para a esquerda (Diagnóstico/Bio) e gira 180°
+  const avatarXRaw = useTransform(scrollYProgress, [0.08, 0.72], [88, -88]);
+  const avatarXSpring = useSpring(avatarXRaw, PORTRAIT_SCROLL_SPRING);
+  const avatarX = useTransform(avatarXSpring, (v) => `${v}%`);
 
-  // Microinteração 3D suave ao mover o cursor sobre o cartão do retrato
+  const scrollRotateYRaw = useTransform(scrollYProgress, [0.1, 0.72], [0, 180]);
+  const scrollRotateY = useSpring(scrollRotateYRaw, PORTRAIT_SCROLL_SPRING);
+
+  const manualTarget = useMotionValue(0);
+  const manualAngle = useSpring(manualTarget, PORTRAIT_FLIP_SPRING);
+
+  useEffect(() => {
+    manualTarget.set(manualFlipped ? 180 : 0);
+  }, [manualFlipped, manualTarget]);
+
+  const avatarRotateY = useTransform(
+    [scrollRotateY, manualAngle],
+    ([s, m]) => (s as number) + (m as number)
+  );
+
+  const avatarScaleRaw = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.965, 1]);
+  const avatarScale = useSpring(avatarScaleRaw, PORTRAIT_SCROLL_SPRING);
+
+  // Microinteração 3D controlada e suave ao mover o cursor sobre o cartão do retrato
   const tiltXRaw = useMotionValue(0);
   const tiltYRaw = useMotionValue(0);
-  const tiltX = useSpring(tiltXRaw, { stiffness: 220, damping: 24 });
-  const tiltY = useSpring(tiltYRaw, { stiffness: 220, damping: 24 });
+  const tiltX = useSpring(tiltXRaw, { stiffness: 105, damping: 26, mass: 0.85 });
+  const tiltY = useSpring(tiltYRaw, { stiffness: 105, damping: 26, mass: 0.85 });
 
   const handleAvatarMouseMove = (e: MouseEvent<HTMLButtonElement>) => {
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion || !canHoverTilt) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width - 0.5;
     const py = (e.clientY - rect.top) / rect.height - 0.5;
-    tiltXRaw.set(-py * 8);
-    tiltYRaw.set(px * 8);
+    tiltXRaw.set(-py * 4.2);
+    tiltYRaw.set(px * 4.2);
   };
 
   const handleAvatarMouseLeave = () => {
@@ -147,9 +180,9 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
       <div className="hidden lg:block pointer-events-none absolute inset-0 z-20 mx-auto w-full max-w-[1180px] px-6">
         <div className="sticky top-0 flex h-screen items-center justify-center">
           <motion.div
-            initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.94, y: 14 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.96, y: 14 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ type: 'spring', duration: 1.1, bounce: 0.12, delay: 0.15 }}
+            transition={{ duration: 1.0, delay: 0.14, ease: EDITORIAL_EASE }}
             style={
               prefersReducedMotion
                 ? { x: '88%' }
@@ -162,7 +195,7 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
           >
             <motion.div
               style={
-                prefersReducedMotion
+                prefersReducedMotion || !canHoverTilt
                   ? undefined
                   : {
                       rotateX: tiltX,
@@ -184,8 +217,7 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
                         rotateY: avatarRotateY,
                       }
                 }
-                transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-                className="preserve-3d relative block w-[320px] xl:w-[360px] aspect-[0.877] cursor-pointer rounded-2xl shadow-[0_20px_50px_-24px_rgba(17,17,17,0.22)] transition-shadow duration-300 hover:shadow-[0_28px_60px_-22px_rgba(17,17,17,0.3)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#eb4d6d]"
+                className="preserve-3d relative block w-[320px] xl:w-[360px] aspect-[0.877] cursor-pointer rounded-2xl shadow-[0_20px_50px_-24px_rgba(17,17,17,0.22)] transition-shadow duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_28px_60px_-22px_rgba(17,17,17,0.28)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#eb4d6d]"
               >
                 {/* Frente */}
                 <div
@@ -196,6 +228,7 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
                     src={HERO_MEDIA.frontAvatar}
                     alt="Retrato editorial em preto e branco"
                     fallbackTitle="Estratégia & Tecnologia"
+                    disableEntrance
                     className="h-full w-full object-cover object-center"
                   />
                 </div>
@@ -209,6 +242,7 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
                     src={HERO_MEDIA.backAvatar}
                     alt="Retrato editorial em fundo vermelho"
                     fallbackTitle="Estratégia & Tecnologia"
+                    disableEntrance
                     className="h-full w-full object-cover object-center"
                   />
                 </div>
@@ -227,35 +261,29 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
           {/* Coluna Esquerda: Título, Proposta e Ações */}
           <div className="lg:col-span-7 flex flex-col items-start gap-6">
             <motion.div
-              initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ type: 'spring', duration: 0.7, bounce: 0 }}
-              className="flex items-center gap-3"
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 10, filter: 'blur(4px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              transition={{ duration: 0.75, ease: EDITORIAL_EASE }}
+              className="flex items-center"
             >
-              <motion.div
-                animate={prefersReducedMotion ? undefined : { rotate: [0, 8, 0] }}
-                transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-              >
-                <HoloTriangle className="h-8 w-8 md:h-10 md:w-10 shrink-0" />
-              </motion.div>
               <span className="text-[13px] font-medium tracking-[0.04em] text-[#111111]/60 uppercase">
                 Negócios primeiro · Tecnologia com propósito
               </span>
             </motion.div>
 
             <motion.h1
-              initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ type: 'spring', duration: 0.9, bounce: 0.1, delay: 0.08 }}
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 16, filter: 'blur(5px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              transition={{ duration: 0.9, delay: 0.08, ease: EDITORIAL_EASE }}
               className="type-display-lg text-[#111111]"
             >
               Estratégia de negócios, processos e tecnologia.
             </motion.h1>
 
             <motion.div
-              initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ type: 'spring', duration: 0.85, bounce: 0.08, delay: 0.18 }}
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 14, filter: 'blur(4px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              transition={{ duration: 0.85, delay: 0.16, ease: EDITORIAL_EASE }}
               className="flex max-w-[600px] flex-col gap-4 text-[17px] md:text-[18px] leading-[1.5] tracking-[-0.02em] text-[#111111]/85"
             >
               <p>
@@ -273,16 +301,16 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
             </motion.div>
 
             <motion.div
-              initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ type: 'spring', duration: 0.8, bounce: 0.1, delay: 0.28 }}
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 12, filter: 'blur(3px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              transition={{ duration: 0.8, delay: 0.24, ease: EDITORIAL_EASE }}
               className="flex flex-wrap items-center gap-4 pt-2"
             >
               <ArrowButton label="Vamos conversar" onClick={onGetStarted} variant="dark" />
               <button
                 type="button"
                 onClick={onExploreProjects}
-                className="group inline-flex items-center justify-center rounded-full border border-[#111111]/20 bg-[#faf7f3] px-6 py-3.5 text-[15px] font-medium tracking-[-0.02em] text-[#111111] transition-all duration-200 hover:border-[#111111] hover:bg-[#f4efe7] active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#eb4d6d]"
+                className="group inline-flex items-center justify-center rounded-full border border-[#111111]/20 bg-[#faf7f3] px-6 py-3.5 text-[15px] font-medium tracking-[-0.02em] text-[#111111] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#111111] hover:bg-[#f4efe7] active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#eb4d6d]"
               >
                 <RollingText text="Conhecer projetos" />
               </button>
@@ -300,11 +328,11 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
 
         {/* Faixa inferior de metadados com linha divisória animada */}
         <div>
-          <HairlineRule delay={0.3} />
+          <HairlineRule delay={0.28} />
           <motion.div
-            initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 10, filter: 'blur(3px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            transition={{ duration: 0.75, delay: 0.34, ease: EDITORIAL_EASE }}
             className="flex flex-wrap items-center justify-between gap-4 pt-5 text-[13px] md:text-[14px] font-medium tracking-[0.04em] text-[#111111]"
           >
             <span>ESTRATÉGIA · PROCESSOS · TECNOLOGIA</span>
@@ -338,30 +366,36 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
               </h2>
             </Reveal>
 
-            <Reveal delay={0.1}>
-              <div className="flex flex-col gap-4 text-[17px] md:text-[18px] font-normal leading-[1.5] tracking-[-0.02em] text-[#111111]/85">
+            <div className="flex flex-col gap-4 text-[17px] md:text-[18px] font-normal leading-[1.5] tracking-[-0.02em] text-[#111111]/85">
+              <Reveal delay={0.06}>
                 <p>
                   É comum encontrar empresas que investem em sites, ferramentas, sistemas e
                   automações sem necessariamente resolver aquilo que motivou o investimento.
                 </p>
+              </Reveal>
+              <Reveal delay={0.12}>
                 <p>
                   Um novo CRM não organiza, por si só, um processo comercial desestruturado. Um site
                   novo não resolve uma comunicação que não deixa claro o valor da empresa. Uma
                   automação não corrige um processo que nunca foi bem definido.
                 </p>
+              </Reveal>
+              <Reveal delay={0.18}>
                 <p>
                   Por isso, minha primeira preocupação é entender o negócio: sua operação, seus
                   objetivos, a experiência dos clientes e a maneira como as diferentes áreas se
                   conectam.
                 </p>
+              </Reveal>
+              <Reveal delay={0.24}>
                 <p>
                   É a partir dessa visão que identifico oportunidades e direciono soluções que
                   realmente contribuem para a evolução da empresa.
                 </p>
-              </div>
-            </Reveal>
+              </Reveal>
+            </div>
 
-            <Reveal delay={0.18} className="pt-2">
+            <Reveal delay={0.28} className="pt-2">
               <ArrowButton label="Vamos conversar" onClick={onGetStarted} variant="dark" />
             </Reveal>
           </div>

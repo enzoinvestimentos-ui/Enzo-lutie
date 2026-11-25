@@ -27,17 +27,19 @@ export function WorkDetailPage({ slug, onBack, onSelectProject }: WorkDetailPage
       <button
         type="button"
         onClick={onBack}
-        className="group mb-10 inline-flex items-center gap-2 text-[15px] font-medium text-[#111111]/65 transition-colors hover:text-[#111111] cursor-pointer"
+        className="group mb-10 inline-flex items-center gap-2 text-[15px] font-medium text-[#111111]/65 transition-colors duration-300 hover:text-[#111111] cursor-pointer"
       >
-        <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
+        <ArrowLeft className="h-4 w-4 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-x-1" />
         <span>Todos os projetos</span>
       </button>
 
-      <Reveal>
-        <div className="mb-12 flex flex-col gap-8">
+      <div className="mb-12 flex flex-col gap-8">
+        <Reveal>
           <h1 className="type-display-lg text-[#111111]">{project.title}</h1>
+        </Reveal>
 
-          <HairlineRule />
+        <HairlineRule />
+        <Reveal delay={0.06}>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 py-2 text-[15px] text-[#111111]/75">
             <div>
               <span className="mr-2 text-[#111111]/45">Frente</span>
@@ -51,24 +53,25 @@ export function WorkDetailPage({ slug, onBack, onSelectProject }: WorkDetailPage
               <span className="font-medium text-[#111111]">{project.scope}</span>
             </div>
           </div>
-          <HairlineRule />
+        </Reveal>
+        <HairlineRule />
 
+        <Reveal delay={0.1}>
           <p className="max-w-[780px] text-[20px] md:text-[22px] font-normal leading-[1.45] tracking-[-0.02em] text-[#111111]/85">
             {project.summary}
           </p>
-        </div>
-      </Reveal>
+        </Reveal>
+      </div>
 
-      <Reveal delay={0.1}>
-        <div className="mb-16 aspect-[16/10] w-full overflow-hidden rounded-2xl border border-[#111111]/10 bg-[#efeae2]">
-          <SafeImage
-            src={project.image}
-            alt={project.title}
-            fallbackTitle={project.title}
-            className="h-full w-full object-cover"
-          />
-        </div>
-      </Reveal>
+      <div className="mb-16 aspect-[16/10] w-full overflow-hidden rounded-2xl border border-[#111111]/10 bg-[#efeae2]">
+        <SafeImage
+          src={project.image}
+          alt={project.title}
+          fallbackTitle={project.title}
+          entranceDelay={0.12}
+          className="h-full w-full object-cover"
+        />
+      </div>
 
       {/* Estrutura de 5 decisões da copy oficial */}
       <div className="mx-auto flex max-w-[760px] flex-col gap-10 pb-20">
@@ -88,11 +91,13 @@ export function WorkDetailPage({ slug, onBack, onSelectProject }: WorkDetailPage
 
       <HairlineRule />
       <div className="pt-16">
-        <h2 className="type-card-h3 mb-8 text-[#111111]">Outros Projetos</h2>
+        <Reveal>
+          <h2 className="type-card-h3 mb-8 text-[#111111]">Outros Projetos</h2>
+        </Reveal>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {related.map((item, idx) => (
             <Reveal key={item.slug} delay={idx * 0.08}>
-              <ProjectCard project={item} onSelect={onSelectProject} />
+              <ProjectCard project={item} onSelect={onSelectProject} index={idx} />
             </Reveal>
           ))}
         </div>

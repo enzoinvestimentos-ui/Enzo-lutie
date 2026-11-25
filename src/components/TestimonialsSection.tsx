@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { RotateCw } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
 import { VALUE_PERSPECTIVES, type ValuePerspectiveItem } from '../data/portfolioData';
-import { Reveal } from './Reveal';
+import { Reveal, EDITORIAL_EASE } from './Reveal';
 
 function PerspectiveMark({ id }: { id: ValuePerspectiveItem['iconId'] }) {
   switch (id) {
@@ -49,25 +50,75 @@ function PerspectiveMark({ id }: { id: ValuePerspectiveItem['iconId'] }) {
 
 function PerspectiveCard({ item }: { item: ValuePerspectiveItem }) {
   const [flipped, setFlipped] = useState(false);
+  const [isFinePointer, setIsFinePointer] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
+  const hoverTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const update = () => setIsFinePointer(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => {
+      mq.removeEventListener('change', update);
+      if (hoverTimerRef.current !== null) {
+        window.clearTimeout(hoverTimerRef.current);
+      }
+    };
+  }, []);
+
+  const handleMouseEnter = () => {
+    if (!isFinePointer) return;
+    if (hoverTimerRef.current !== null) {
+      window.clearTimeout(hoverTimerRef.current);
+    }
+    // Pequeno atraso de intenção evita giros acidentais quando o cursor passa rápido pelos cartões
+    hoverTimerRef.current = window.setTimeout(() => {
+      setFlipped(true);
+    }, 90);
+  };
+
+  const handleMouseLeave = () => {
+    if (!isFinePointer) return;
+    if (hoverTimerRef.current !== null) {
+      window.clearTimeout(hoverTimerRef.current);
+    }
+    hoverTimerRef.current = window.setTimeout(() => {
+      setFlipped(false);
+    }, 60);
+  };
 
   return (
     <div className="perspective-1200 h-[340px] w-full">
-      <button
+      <motion.button
         type="button"
         onClick={() => setFlipped((prev) => !prev)}
-        onMouseEnter={() => setFlipped(true)}
-        onMouseLeave={() => setFlipped(false)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         aria-label={`${item.pillarTitle}. Alternar cartão para visualizar síntese.`}
-        className="preserve-3d relative h-full w-full cursor-pointer rounded-2xl text-left transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:shadow-[0_18px_40px_-20px_rgba(17,17,17,0.22)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#eb4d6d]"
-        style={{ transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
+        animate={{
+          rotateY: flipped ? 180 : 0,
+        }}
+        transition={
+          prefersReducedMotion
+            ? { duration: 0 }
+            : { duration: 0.92, ease: EDITORIAL_EASE }
+        }
+        className="preserve-3d relative h-full w-full cursor-pointer rounded-2xl text-left shadow-[0_6px_20px_-14px_rgba(17,17,17,0.12)] transition-shadow duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_20px_44px_-22px_rgba(17,17,17,0.22)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#eb4d6d]"
       >
         {/* Face Frontal: Declaração integral de valor */}
-        <div className="backface-hidden absolute inset-0 flex flex-col justify-between rounded-2xl border border-[#111111]/10 bg-[#f4efe7] p-6">
+        <div
+          style={{ transform: 'rotateY(0deg) translateZ(1px)' }}
+          className="backface-hidden absolute inset-0 flex flex-col justify-between rounded-2xl border border-[#111111]/10 bg-[#f4efe7] p-6"
+        >
           <div className="flex items-start justify-between gap-2">
             <span className="text-[12px] font-medium uppercase tracking-[0.06em] text-[#111111]/50">
               {item.pillarTitle}
             </span>
-            <RotateCw className="h-3.5 w-3.5 shrink-0 text-[#111111]/35" aria-hidden="true" />
+            <RotateCw
+              className="h-3.5 w-3.5 shrink-0 text-[#111111]/35 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              aria-hidden="true"
+            />
           </div>
 
           <p className="text-[16px] font-normal leading-[1.48] tracking-[-0.02em] text-[#111111]">
@@ -82,7 +133,7 @@ function PerspectiveCard({ item }: { item: ValuePerspectiveItem }) {
         {/* Face Traseira: Síntese escura */}
         <div
           className="backface-hidden absolute inset-0 flex flex-col items-start justify-between rounded-2xl border border-[#faf7f3]/10 bg-[#111111] p-6 text-[#faf7f3]"
-          style={{ transform: 'rotateY(180deg)' }}
+          style={{ transform: 'rotateY(180deg) translateZ(1px)' }}
         >
           <span className="text-[12px] font-medium tracking-[0.04em] text-[#faf7f3]/50">
             Perspectiva de Valor
@@ -97,7 +148,7 @@ function PerspectiveCard({ item }: { item: ValuePerspectiveItem }) {
             <RotateCw className="h-3.5 w-3.5 shrink-0 text-[#eb4d6d]" aria-hidden="true" />
           </div>
         </div>
-      </button>
+      </motion.button>
     </div>
   );
 }
@@ -105,14 +156,16 @@ function PerspectiveCard({ item }: { item: ValuePerspectiveItem }) {
 export function TestimonialsSection() {
   return (
     <section className="mx-auto w-full max-w-[1180px] px-6 py-20 md:py-28">
-      <Reveal>
-        <div className="mb-12 md:mb-14 flex flex-col gap-5 max-w-[760px]">
+      <div className="mb-12 md:mb-14 flex flex-col gap-5 max-w-[760px]">
+        <Reveal>
           <h2 className="type-section-h2 text-[#111111]">O valor de cada solução</h2>
+        </Reveal>
+        <Reveal delay={0.08}>
           <p className="text-[18px] md:text-[20px] leading-[1.45] tracking-[-0.02em] text-[#111111]/75">
             É essa perspectiva que orienta minhas decisões e a forma como participo de cada projeto.
           </p>
-        </div>
-      </Reveal>
+        </Reveal>
+      </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {VALUE_PERSPECTIVES.map((item, idx) => (

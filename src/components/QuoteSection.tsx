@@ -1,5 +1,12 @@
 import { useRef } from 'react';
-import { motion, useScroll, useTransform, useReducedMotion, type MotionValue } from 'motion/react';
+import {
+  motion,
+  useScroll,
+  useSpring,
+  useTransform,
+  useReducedMotion,
+  type MotionValue,
+} from 'motion/react';
 import { APPROACH_STEPS } from '../data/portfolioData';
 import { Reveal, HairlineRule } from './Reveal';
 
@@ -33,6 +40,12 @@ export function QuoteSection() {
     offset: ['start 0.7', 'end 0.8'],
   });
 
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 120,
+    damping: 28,
+    mass: 0.5,
+  });
+
   return (
     <section aria-label="Abordagem e Critério" className="w-full">
       {/* Bloco Sticky de Manifesto (150vh no desktop) */}
@@ -51,7 +64,7 @@ export function QuoteSection() {
                     <Word
                       key={`${word}-${index}`}
                       word={word}
-                      progress={scrollYProgress}
+                      progress={smoothProgress}
                       range={[start, end]}
                     />
                   );
@@ -81,8 +94,8 @@ export function QuoteSection() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
             {APPROACH_STEPS.map((step, index) => (
               <Reveal key={step.number} delay={index * 0.08} className="h-full">
-                <div className="group flex h-full flex-col justify-between gap-6 rounded-2xl border border-[#111111]/10 bg-[#f4efe7] p-6 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-[#111111]/25 hover:bg-[#efe8dc]">
-                  <span className="text-[14px] font-semibold tabular-nums text-[#eb4d6d] transition-transform duration-300 group-hover:translate-x-0.5">
+                <div className="group flex h-full flex-col justify-between gap-6 rounded-2xl border border-[#111111]/10 bg-[#f4efe7] p-6 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#111111]/25 hover:bg-[#efe8dc] hover:shadow-[0_14px_32px_-20px_rgba(17,17,17,0.16)]">
+                  <span className="text-[14px] font-semibold tabular-nums text-[#eb4d6d] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0.5">
                     {step.number}.
                   </span>
                   <p className="text-[16px] leading-[1.5] tracking-[-0.02em] text-[#111111]/85">

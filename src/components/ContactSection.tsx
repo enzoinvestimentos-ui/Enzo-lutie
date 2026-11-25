@@ -53,45 +53,51 @@ export function ContactSection() {
     <section id="contact" className="mx-auto w-full max-w-[1180px] px-6 py-20 md:py-[120px]">
       <div className="flex flex-col gap-10 lg:flex-row lg:items-stretch">
         {/* Coluna Esquerda: Narrativa de contato e links */}
-        <Reveal className="flex flex-1 flex-col justify-between gap-10">
+        <div className="flex flex-1 flex-col justify-between gap-10">
           <div className="flex flex-col gap-5">
-            <h2 className="type-display-lg text-[#111111]">
-              Vamos entender o que seu negócio precisa.
-            </h2>
+            <Reveal>
+              <h2 className="type-display-lg text-[#111111]">
+                Vamos entender o que seu negócio precisa.
+              </h2>
+            </Reveal>
 
-            <div className="flex max-w-[520px] flex-col gap-4 text-[17px] leading-[1.5] tracking-[-0.02em] text-[#111111]/75">
-              <p>
-                Talvez seja a maneira como seus clientes conhecem seus serviços. Um processo
-                comercial que precisa de organização. Uma operação que depende de tarefas manuais.
-                Ou uma estrutura digital que já não acompanha as necessidades do negócio.
-              </p>
-              <p>Nem sempre o caminho está claro desde o início. E tudo bem.</p>
-              <p>
-                O primeiro passo é entender o cenário, identificar o que precisa mudar e descobrir
-                quais caminhos realmente fazem sentido.
-              </p>
-              <p className="font-medium text-[#111111]">
-                Se existe algo na sua empresa que precisa ser compreendido, organizado ou
-                desenvolvido, podemos começar por uma conversa.
-              </p>
+            <Reveal delay={0.08}>
+              <div className="flex max-w-[520px] flex-col gap-4 text-[17px] leading-[1.5] tracking-[-0.02em] text-[#111111]/75">
+                <p>
+                  Talvez seja a maneira como seus clientes conhecem seus serviços. Um processo
+                  comercial que precisa de organização. Uma operação que depende de tarefas manuais.
+                  Ou uma estrutura digital que já não acompanha as necessidades do negócio.
+                </p>
+                <p>Nem sempre o caminho está claro desde o início. E tudo bem.</p>
+                <p>
+                  O primeiro passo é entender o cenário, identificar o que precisa mudar e descobrir
+                  quais caminhos realmente fazem sentido.
+                </p>
+                <p className="font-medium text-[#111111]">
+                  Se existe algo na sua empresa que precisa ser compreendido, organizado ou
+                  desenvolvido, podemos começar por uma conversa.
+                </p>
+              </div>
+            </Reveal>
+          </div>
+
+          <Reveal delay={0.14}>
+            <div className="flex items-center gap-3">
+              {socialLinks.map((social) => (
+                <a
+                  key={social.name}
+                  href={social.href}
+                  target={social.isAnchor ? undefined : '_blank'}
+                  rel={social.isAnchor ? undefined : 'noopener noreferrer'}
+                  aria-label={social.name}
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#111111]/15 bg-[#faf7f3] text-[#111111] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#111111] hover:bg-[#111111] hover:text-[#faf7f3] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#eb4d6d]"
+                >
+                  {social.icon}
+                </a>
+              ))}
             </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {socialLinks.map((social) => (
-              <a
-                key={social.name}
-                href={social.href}
-                target={social.isAnchor ? undefined : '_blank'}
-                rel={social.isAnchor ? undefined : 'noopener noreferrer'}
-                aria-label={social.name}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#111111]/15 bg-[#faf7f3] text-[#111111] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#111111] hover:bg-[#111111] hover:text-[#faf7f3] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#eb4d6d]"
-              >
-                {social.icon}
-              </a>
-            ))}
-          </div>
-        </Reveal>
+          </Reveal>
+        </div>
 
         {/* Coluna Direita: Formulário escuro */}
         <Reveal delay={0.12} className="flex-1">
@@ -176,7 +182,7 @@ export function ContactSection() {
 
                 <button
                   type="submit"
-                  className="group mt-1 inline-flex w-full items-center justify-center rounded-xl bg-[#faf7f3] py-3.5 text-[16px] font-semibold tracking-[-0.02em] text-[#111111] transition-all duration-200 hover:bg-[#eb4d6d] hover:text-[#faf7f3] active:scale-[0.99] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#eb4d6d]"
+                  className="group mt-1 inline-flex w-full items-center justify-center rounded-xl bg-[#faf7f3] py-3.5 text-[16px] font-semibold tracking-[-0.02em] text-[#111111] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[#eb4d6d] hover:text-[#faf7f3] active:scale-[0.99] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#eb4d6d]"
                 >
                   <RollingText text="Iniciar uma conversa" />
                 </button>

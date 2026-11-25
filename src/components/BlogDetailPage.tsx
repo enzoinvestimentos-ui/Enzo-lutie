@@ -16,37 +16,40 @@ export function BlogDetailPage({ slug, onBack }: BlogDetailPageProps) {
       <button
         type="button"
         onClick={onBack}
-        className="group mb-10 inline-flex items-center gap-2 text-[15px] font-medium text-[#111111]/65 transition-colors hover:text-[#111111] cursor-pointer"
+        className="group mb-10 inline-flex items-center gap-2 text-[15px] font-medium text-[#111111]/65 transition-colors duration-300 hover:text-[#111111] cursor-pointer"
       >
-        <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
+        <ArrowLeft className="h-4 w-4 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-x-1" />
         <span>Voltar para Sobre</span>
       </button>
 
       <article className="mx-auto max-w-[820px]">
-        <Reveal>
-          <header className="mb-10 flex flex-col gap-5">
+        <header className="mb-10 flex flex-col gap-5">
+          <Reveal>
             <div className="text-[14px] text-[#111111]/55">
               <span>{article.tag}</span>
             </div>
+          </Reveal>
 
+          <Reveal delay={0.05}>
             <h1 className="type-display-lg text-[#111111]">{article.title}</h1>
+          </Reveal>
 
+          <Reveal delay={0.1}>
             <p className="text-[20px] leading-[1.45] tracking-[-0.02em] text-[#111111]/75">
               {article.excerpt}
             </p>
-          </header>
-        </Reveal>
+          </Reveal>
+        </header>
 
-        <Reveal delay={0.1}>
-          <div className="mb-14 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-[#111111]/10 bg-[#efeae2]">
-            <SafeImage
-              src={article.image}
-              alt={article.title}
-              fallbackTitle={article.title}
-              className="h-full w-full object-cover"
-            />
-          </div>
-        </Reveal>
+        <div className="mb-14 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-[#111111]/10 bg-[#efeae2]">
+          <SafeImage
+            src={article.image}
+            alt={article.title}
+            fallbackTitle={article.title}
+            entranceDelay={0.12}
+            className="h-full w-full object-cover"
+          />
+        </div>
 
         <div className="flex flex-col gap-10">
           {article.sections.map((section, idx) => (
