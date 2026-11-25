@@ -16,6 +16,19 @@ export function DynamicBackground({ isHome }: DynamicBackgroundProps) {
   const prefersReducedMotion = useReducedMotion();
   const [diagThreshold, setDiagThreshold] = useState<[number, number]>([0.07, 0.16]);
   const [finePointer, setFinePointer] = useState(false);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia('(max-width: 767px)').matches
+      : false
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    const sync = () => setIsMobile(mq.matches);
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
 
   const { scrollYProgress } = useScroll();
   const smoothScroll = useSpring(scrollYProgress, {
@@ -28,6 +41,7 @@ export function DynamicBackground({ isHome }: DynamicBackgroundProps) {
   useEffect(() => {
     if (!isHome) return;
 
+    let rafId = 0;
     const measure = () => {
       const bioEl = document.getElementById('bio-section');
       const maxScroll = Math.max(
@@ -46,19 +60,23 @@ export function DynamicBackground({ isHome }: DynamicBackgroundProps) {
       setDiagThreshold([start, end]);
     };
 
+    const scheduleMeasure = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(measure);
+    };
+
     measure();
-    const raf = requestAnimationFrame(measure);
-    window.addEventListener('resize', measure, { passive: true });
+    window.addEventListener('resize', scheduleMeasure, { passive: true });
 
     let ro: ResizeObserver | null = null;
     if (typeof ResizeObserver !== 'undefined') {
-      ro = new ResizeObserver(measure);
+      ro = new ResizeObserver(scheduleMeasure);
       ro.observe(document.body);
     }
 
     return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener('resize', measure);
+      if (rafId) cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', scheduleMeasure);
       ro?.disconnect();
     };
   }, [isHome]);
@@ -135,24 +153,32 @@ export function DynamicBackground({ isHome }: DynamicBackgroundProps) {
       style={{ opacity: layerOpacity }}
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
     >
-      {/* Micro-grade arquitetônica difusa para dar materialidade sem competir com a tipografia */}
+      {/* Micro-grade arquitetônica difusa (sem maskImage pesada no mobile) */}
       <div
-        className="absolute inset-0 opacity-[0.045]"
-        style={{
-          backgroundImage:
-            'radial-gradient(rgba(241, 239, 233, 0.55) 1px, transparent 1px)',
-          backgroundSize: '32px 32px',
-          maskImage:
-            'radial-gradient(ellipse 80% 75% at 50% 50%, black 20%, transparent 90%)',
-          WebkitMaskImage:
-            'radial-gradient(ellipse 80% 75% at 50% 50%, black 20%, transparent 90%)',
-        }}
+        className="absolute inset-0 opacity-[0.035] md:opacity-[0.045]"
+        style={
+          isMobile
+            ? {
+                backgroundImage:
+                  'radial-gradient(rgba(241, 239, 233, 0.5) 1px, transparent 1px)',
+                backgroundSize: '32px 32px',
+              }
+            : {
+                backgroundImage:
+                  'radial-gradient(rgba(241, 239, 233, 0.55) 1px, transparent 1px)',
+                backgroundSize: '32px 32px',
+                maskImage:
+                  'radial-gradient(ellipse 80% 75% at 50% 50%, black 20%, transparent 90%)',
+                WebkitMaskImage:
+                  'radial-gradient(ellipse 80% 75% at 50% 50%, black 20%, transparent 90%)',
+              }
+        }
       />
 
       {/* Campo orgânico principal (verde floresta profundo controlado) */}
       <motion.div
-        style={{ x: emeraldX, y: emeraldY, scale: emeraldScale }}
-        className="absolute -left-[12vw] top-[18vh] h-[72vmax] w-[72vmax] rounded-full will-change-transform"
+        style={isMobile ? { x: emeraldX, y: emeraldY } : { x: emeraldX, y: emeraldY, scale: emeraldScale }}
+        className="absolute -left-[12vw] top-[18vh] h-[72vmax] w-[72vmax] rounded-full md:will-change-transform"
       >
         <div
           className="h-full w-full rounded-full"
@@ -165,8 +191,8 @@ export function DynamicBackground({ isHome }: DynamicBackgroundProps) {
 
       {/* Contraluz quente off-white / grafite em movimento oposto ao scroll */}
       <motion.div
-        style={{ x: warmX, y: warmY, scale: warmScale }}
-        className="absolute -right-[14vw] top-[24vh] h-[64vmax] w-[64vmax] rounded-full will-change-transform"
+        style={isMobile ? { x: warmX, y: warmY } : { x: warmX, y: warmY, scale: warmScale }}
+        className="absolute -right-[14vw] top-[24vh] h-[64vmax] w-[64vmax] rounded-full md:will-change-transform"
       >
         <div
           className="h-full w-full rounded-full"
@@ -179,8 +205,8 @@ export function DynamicBackground({ isHome }: DynamicBackgroundProps) {
 
       {/* Expansão atmosférica inferior para ancorar Projetos, Sobre e Contato */}
       <motion.div
-        style={{ scale: horizonScale, opacity: horizonOpacity }}
-        className="absolute -bottom-[28vmax] left-1/2 h-[76vmax] w-[96vmax] -translate-x-1/2 rounded-full will-change-transform"
+        style={isMobile ? { opacity: horizonOpacity } : { scale: horizonScale, opacity: horizonOpacity }}
+        className="absolute -bottom-[28vmax] left-1/2 h-[76vmax] w-[96vmax] -translate-x-1/2 rounded-full md:will-change-transform"
       >
         <div
           className="h-full w-full rounded-full"
@@ -207,18 +233,20 @@ export function DynamicBackground({ isHome }: DynamicBackgroundProps) {
         </motion.div>
       )}
 
-      {/* Linha orgânica contínua guiada pelo scroll (inspirada na fluidez entre seções) */}
+      {/* Linha orgânica contínua guiada pelo scroll (sem feGaussianBlur SVG em tempo real no mobile) */}
       <motion.svg
         style={{ y: svgDriftY }}
         viewBox="0 0 1440 1600"
         fill="none"
         preserveAspectRatio="none"
-        className="absolute -top-[8vh] left-0 h-[118vh] w-full will-change-transform"
+        className="absolute -top-[8vh] left-0 h-[118vh] w-full md:will-change-transform"
       >
         <defs>
-          <filter id="bg-ribbon-blur" x="-15%" y="-15%" width="130%" height="130%">
-            <feGaussianBlur stdDeviation="24" />
-          </filter>
+          {!isMobile && (
+            <filter id="bg-ribbon-blur" x="-15%" y="-15%" width="130%" height="130%">
+              <feGaussianBlur stdDeviation="24" />
+            </filter>
+          )}
           <linearGradient id="bg-ribbon-grad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="rgba(31, 107, 74, 0.04)" />
             <stop offset="45%" stopColor="rgba(31, 107, 74, 0.2)" />
@@ -231,9 +259,10 @@ export function DynamicBackground({ isHome }: DynamicBackgroundProps) {
         <motion.path
           d="M 1160 -40 C 1220 260, 260 440, 290 760 C 320 1080, 1210 1120, 1040 1620"
           stroke="url(#bg-ribbon-grad)"
-          strokeWidth="36"
+          strokeWidth={isMobile ? '22' : '36'}
+          strokeOpacity={isMobile ? '0.45' : '1'}
           strokeLinecap="round"
-          filter="url(#bg-ribbon-blur)"
+          filter={isMobile ? undefined : 'url(#bg-ribbon-blur)'}
           style={{ pathLength: pathProgress }}
         />
 

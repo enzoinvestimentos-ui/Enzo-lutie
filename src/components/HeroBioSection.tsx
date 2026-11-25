@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type MouseEvent } from 'react';
+import { useEffect, useRef, useState, type MouseEvent, type RefObject } from 'react';
 import {
   motion,
   useScroll,
@@ -10,7 +10,7 @@ import {
 import { ArrowButton } from './ArrowButton';
 import { RollingText } from './RollingText';
 import { SafeImage } from './SafeImage';
-import { Reveal, HairlineRule, EDITORIAL_EASE } from './Reveal';
+import { Reveal, HairlineRule, EDITORIAL_EASE, useIsCompactMotion } from './Reveal';
 import { HERO_MEDIA, WHATSAPP_CONTACT_URL } from '../data/portfolioData';
 
 interface HeroBioSectionProps {
@@ -30,14 +30,14 @@ const PORTRAIT_FLIP_SPRING = {
   mass: 0.9,
 } as const;
 
-function MobileFlipPortrait({ mode }: { mode: 'hero' | 'bio' }) {
+function MobileFlipPortrait() {
   const cardRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const [manualFlipped, setManualFlipped] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: cardRef,
-    offset: mode === 'hero' ? ['center 0.62', 'end 0.1'] : ['start 0.92', 'center 0.5'],
+    offset: ['center 0.62', 'end 0.1'],
   });
 
   const scrollRotateYRaw = useTransform(scrollYProgress, [0, 1], [0, 180]);
@@ -57,7 +57,7 @@ function MobileFlipPortrait({ mode }: { mode: 'hero' | 'bio' }) {
       initial={prefersReducedMotion ? false : { opacity: 0, y: 14, scale: 0.97 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, amount: 'some' }}
-      transition={{ duration: 0.9, ease: EDITORIAL_EASE }}
+      transition={{ duration: 0.72, ease: EDITORIAL_EASE }}
       className="perspective-1200 w-[230px] sm:w-[270px]"
     >
       <motion.button
@@ -67,14 +67,7 @@ function MobileFlipPortrait({ mode }: { mode: 'hero' | 'bio' }) {
         style={
           prefersReducedMotion
             ? {
-                rotateY:
-                  mode === 'bio'
-                    ? manualFlipped
-                      ? 0
-                      : 180
-                    : manualFlipped
-                      ? 180
-                      : 0,
+                rotateY: manualFlipped ? 180 : 0,
               }
             : { rotateY }
         }
@@ -90,6 +83,7 @@ function MobileFlipPortrait({ mode }: { mode: 'hero' | 'bio' }) {
             alt="Retrato editorial em preto e branco"
             fallbackTitle="Estratégia & Tecnologia"
             disableEntrance
+            priority
             className="h-full w-full object-cover object-center"
           />
         </div>
@@ -104,6 +98,7 @@ function MobileFlipPortrait({ mode }: { mode: 'hero' | 'bio' }) {
             alt="Retrato editorial em fundo vermelho"
             fallbackTitle="Estratégia & Tecnologia"
             disableEntrance
+            priority
             className="h-full w-full object-cover object-center"
           />
         </div>
@@ -112,26 +107,21 @@ function MobileFlipPortrait({ mode }: { mode: 'hero' | 'bio' }) {
   );
 }
 
-export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+function DesktopStickyPortrait({
+  containerRef,
+  canHoverTilt,
+}: {
+  containerRef: RefObject<HTMLDivElement | null>;
+  canHoverTilt: boolean;
+}) {
   const prefersReducedMotion = useReducedMotion();
   const [manualFlipped, setManualFlipped] = useState(false);
-  const [canHoverTilt, setCanHoverTilt] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
-    const update = () => setCanHoverTilt(mq.matches);
-    update();
-    mq.addEventListener('change', update);
-    return () => mq.removeEventListener('change', update);
-  }, []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end end'],
   });
 
-  // Em desktop, o retrato sticky desliza suavemente da coluna direita (Hero) para a esquerda (Diagnóstico/Bio) e gira 180°
   const avatarXRaw = useTransform(scrollYProgress, [0.08, 0.72], [88, -88]);
   const avatarXSpring = useSpring(avatarXRaw, PORTRAIT_SCROLL_SPRING);
   const avatarX = useTransform(avatarXSpring, (v) => `${v}%`);
@@ -154,7 +144,6 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
   const avatarScaleRaw = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.965, 1]);
   const avatarScale = useSpring(avatarScaleRaw, PORTRAIT_SCROLL_SPRING);
 
-  // Microinteração 3D controlada e suave ao mover o cursor sobre o cartão do retrato
   const tiltXRaw = useMotionValue(0);
   const tiltYRaw = useMotionValue(0);
   const tiltX = useSpring(tiltXRaw, { stiffness: 105, damping: 26, mass: 0.85 });
@@ -175,82 +164,116 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
   };
 
   return (
-    <div ref={containerRef} className="relative w-full">
-      {/* Camada Sticky 3D do Retrato (cobrindo Hero + Bio 200vh no desktop) */}
-      <div className="hidden lg:block pointer-events-none absolute inset-0 z-20 mx-auto w-full max-w-[1180px] px-6">
-        <div className="sticky top-0 flex h-screen items-center justify-center">
+    <div className="hidden lg:block pointer-events-none absolute inset-0 z-20 mx-auto w-full max-w-[1180px] px-6">
+      <div className="sticky top-0 flex h-screen items-center justify-center">
+        <motion.div
+          initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.96, y: 14 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 1.0, delay: 0.14, ease: EDITORIAL_EASE }}
+          style={
+            prefersReducedMotion
+              ? { x: '88%' }
+              : {
+                  x: avatarX,
+                  scale: avatarScale,
+                }
+          }
+          className="pointer-events-auto perspective-1200"
+        >
           <motion.div
-            initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.96, y: 14 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 1.0, delay: 0.14, ease: EDITORIAL_EASE }}
             style={
-              prefersReducedMotion
-                ? { x: '88%' }
+              prefersReducedMotion || !canHoverTilt
+                ? undefined
                 : {
-                    x: avatarX,
-                    scale: avatarScale,
+                    rotateX: tiltX,
+                    rotateY: tiltY,
+                    transformStyle: 'preserve-3d',
                   }
             }
-            className="pointer-events-auto perspective-1200"
           >
-            <motion.div
+            <motion.button
+              type="button"
+              onClick={() => setManualFlipped((f) => !f)}
+              onMouseMove={handleAvatarMouseMove}
+              onMouseLeave={handleAvatarMouseLeave}
+              aria-label="Alternar cartão do retrato"
               style={
-                prefersReducedMotion || !canHoverTilt
-                  ? undefined
+                prefersReducedMotion
+                  ? { rotateY: manualFlipped ? 180 : 0 }
                   : {
-                      rotateX: tiltX,
-                      rotateY: tiltY,
-                      transformStyle: 'preserve-3d',
+                      rotateY: avatarRotateY,
                     }
               }
+              className="preserve-3d relative block w-[320px] xl:w-[360px] aspect-[0.877] cursor-pointer rounded-2xl shadow-[0_28px_64px_-24px_rgba(0,0,0,0.85)] transition-shadow duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_34px_76px_-22px_rgba(0,0,0,0.95)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f5f5f5]"
             >
-              <motion.button
-                type="button"
-                onClick={() => setManualFlipped((f) => !f)}
-                onMouseMove={handleAvatarMouseMove}
-                onMouseLeave={handleAvatarMouseLeave}
-                aria-label="Alternar cartão do retrato"
-                style={
-                  prefersReducedMotion
-                    ? { rotateY: manualFlipped ? 180 : 0 }
-                    : {
-                        rotateY: avatarRotateY,
-                      }
-                }
-                className="preserve-3d relative block w-[320px] xl:w-[360px] aspect-[0.877] cursor-pointer rounded-2xl shadow-[0_28px_64px_-24px_rgba(0,0,0,0.85)] transition-shadow duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_34px_76px_-22px_rgba(0,0,0,0.95)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f5f5f5]"
+              {/* Frente */}
+              <div
+                style={{ transform: 'rotateY(0deg) translateZ(1px)' }}
+                className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#252525] bg-[#121212]"
               >
-                {/* Frente */}
-                <div
-                  style={{ transform: 'rotateY(0deg) translateZ(1px)' }}
-                  className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#252525] bg-[#121212]"
-                >
-                  <SafeImage
-                    src={HERO_MEDIA.frontAvatar}
-                    alt="Retrato editorial em preto e branco"
-                    fallbackTitle="Estratégia & Tecnologia"
-                    disableEntrance
-                    className="h-full w-full object-cover object-center"
-                  />
-                </div>
+                <SafeImage
+                  src={HERO_MEDIA.frontAvatar}
+                  alt="Retrato editorial em preto e branco"
+                  fallbackTitle="Estratégia & Tecnologia"
+                  disableEntrance
+                  priority
+                  className="h-full w-full object-cover object-center"
+                />
+              </div>
 
-                {/* Verso */}
-                <div
-                  style={{ transform: 'rotateY(180deg) translateZ(1px)' }}
-                  className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#252525] bg-[#121212]"
-                >
-                  <SafeImage
-                    src={HERO_MEDIA.backAvatar}
-                    alt="Retrato editorial em fundo vermelho"
-                    fallbackTitle="Estratégia & Tecnologia"
-                    disableEntrance
-                    className="h-full w-full object-cover object-center"
-                  />
-                </div>
-              </motion.button>
-            </motion.div>
+              {/* Verso */}
+              <div
+                style={{ transform: 'rotateY(180deg) translateZ(1px)' }}
+                className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#252525] bg-[#121212]"
+              >
+                <SafeImage
+                  src={HERO_MEDIA.backAvatar}
+                  alt="Retrato editorial em fundo vermelho"
+                  fallbackTitle="Estratégia & Tecnologia"
+                  disableEntrance
+                  priority
+                  className="h-full w-full object-cover object-center"
+                />
+              </div>
+            </motion.button>
           </motion.div>
-        </div>
+        </motion.div>
       </div>
+    </div>
+  );
+}
+
+export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+  const isCompactMotion = useIsCompactMotion();
+  const [h1Settled, setH1Settled] = useState(false);
+  const [canHoverTilt, setCanHoverTilt] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia('(min-width: 1024px)').matches : true
+  );
+
+  useEffect(() => {
+    const hoverMq = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const deskMq = window.matchMedia('(min-width: 1024px)');
+    const updateHover = () => setCanHoverTilt(hoverMq.matches);
+    const updateDesk = () => setIsDesktop(deskMq.matches);
+    updateHover();
+    updateDesk();
+    hoverMq.addEventListener('change', updateHover);
+    deskMq.addEventListener('change', updateDesk);
+    return () => {
+      hoverMq.removeEventListener('change', updateHover);
+      deskMq.removeEventListener('change', updateDesk);
+    };
+  }, []);
+
+  return (
+    <div ref={containerRef} className="relative w-full">
+      {/* Camada Sticky 3D do Retrato montada somente no desktop */}
+      {isDesktop && (
+        <DesktopStickyPortrait containerRef={containerRef} canHoverTilt={canHoverTilt} />
+      )}
 
       {/* SEÇÃO 1: HERO */}
       <section
@@ -272,9 +295,19 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
             </motion.div>
 
             <motion.h1
-              initial={prefersReducedMotion ? false : { opacity: 0, y: 10, filter: 'blur(2px)' }}
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              transition={{ duration: 0.48, ease: EDITORIAL_EASE }}
+              initial={
+                prefersReducedMotion
+                  ? false
+                  : {
+                      opacity: 0,
+                      y: 10,
+                      filter: isCompactMotion ? 'none' : 'blur(2px)',
+                    }
+              }
+              animate={{ opacity: 1, y: 0, filter: isCompactMotion ? 'none' : 'blur(0px)' }}
+              transition={{ duration: isCompactMotion ? 0.42 : 0.48, ease: EDITORIAL_EASE }}
+              onAnimationComplete={() => setH1Settled(true)}
+              style={h1Settled || isCompactMotion ? { filter: 'none' } : undefined}
               className="type-display-lg text-[#f2f2f2]"
             >
               Estratégia de negócios, processos e tecnologia.
@@ -311,9 +344,9 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
               </button>
             </motion.div>
 
-            {/* Retrato Mobile / Tablet com giro 3D no scroll e toque */}
+            {/* Retrato Mobile / Tablet único com giro 3D no scroll e toque */}
             <div className="mt-3 lg:hidden">
-              <MobileFlipPortrait mode="hero" />
+              <MobileFlipPortrait />
             </div>
           </div>
 
@@ -353,10 +386,6 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
 
           {/* Coluna Direita: Leitura por camadas com chunking dos diagnósticos */}
           <div className="lg:col-span-6 flex flex-col items-start gap-5 md:gap-6 max-w-[560px]">
-            {/* Retrato Mobile / Tablet entrando com giro 3D para o verso */}
-            <div className="lg:hidden">
-              <MobileFlipPortrait mode="bio" />
-            </div>
 
             <Reveal className="flex flex-col gap-3">
               <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">

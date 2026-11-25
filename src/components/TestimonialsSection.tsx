@@ -8,7 +8,7 @@ import {
   useTransform,
 } from 'motion/react';
 import { VALUE_PERSPECTIVES, type ValuePerspectiveItem } from '../data/portfolioData';
-import { Reveal } from './Reveal';
+import { Reveal, useIsCompactMotion } from './Reveal';
 
 function PerspectiveMark({ id }: { id: ValuePerspectiveItem['iconId'] }) {
   switch (id) {
@@ -71,7 +71,9 @@ const CARD_FLIP_EASE = [0.37, 0, 0.63, 1] as const;
 function PerspectiveCard({ item }: { item: ValuePerspectiveItem }) {
   const [flipped, setFlipped] = useState(false);
   const [isFinePointer, setIsFinePointer] = useState(false);
+  const [isFlipping, setIsFlipping] = useState(false);
   const prefersReducedMotion = useReducedMotion();
+  const isCompactMotion = useIsCompactMotion();
   const hoverTimerRef = useRef<number | null>(null);
   const animControlsRef = useRef<ReturnType<typeof animate> | null>(null);
 
@@ -91,10 +93,11 @@ function PerspectiveCard({ item }: { item: ValuePerspectiveItem }) {
   });
 
   // Blur óptico sutil proporcional à rotação; nítido (none) quando em repouso
+  const maxBlurPx = isCompactMotion ? 1.25 : 2.1;
   const motionBlur = useTransform(rotateY, (deg) => {
     if (prefersReducedMotion) return 'none';
     const arc = Math.sin((deg / 180) * Math.PI);
-    const px = Math.pow(Math.max(0, arc), 1.35) * 2.1;
+    const px = Math.pow(Math.max(0, arc), 1.35) * maxBlurPx;
     return px < 0.06 ? 'none' : `blur(${px.toFixed(2)}px)`;
   });
 
@@ -127,16 +130,20 @@ function PerspectiveCard({ item }: { item: ValuePerspectiveItem }) {
       return;
     }
 
-    const duration = Math.max(0.65, distanceRatio * 1.45);
+    const baseDuration = isCompactMotion ? 1.3 : 1.45;
+    const duration = Math.max(0.6, distanceRatio * baseDuration);
+    setIsFlipping(true);
     animControlsRef.current = animate(rotateY, target, {
       duration,
       ease: CARD_FLIP_EASE,
+      onComplete: () => setIsFlipping(false),
+      onStop: () => setIsFlipping(false),
     });
 
     return () => {
       animControlsRef.current?.stop();
     };
-  }, [flipped, prefersReducedMotion, rotateY]);
+  }, [flipped, prefersReducedMotion, isCompactMotion, rotateY]);
 
   const handleMouseEnter = () => {
     if (!isFinePointer) return;
@@ -174,7 +181,7 @@ function PerspectiveCard({ item }: { item: ValuePerspectiveItem }) {
           y: cardLiftY,
           scale: cardScale,
         }}
-        className="preserve-3d relative h-full w-full cursor-pointer rounded-2xl text-left shadow-[0_14px_34px_-18px_rgba(0,0,0,0.65)] transition-shadow duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_24px_54px_-22px_rgba(0,0,0,0.9)] will-change-transform focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f2f2f2]"
+        className={`preserve-3d relative h-full w-full cursor-pointer rounded-2xl text-left shadow-[0_14px_34px_-18px_rgba(0,0,0,0.65)] transition-shadow duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_24px_54px_-22px_rgba(0,0,0,0.9)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f2f2f2]${isFlipping ? ' will-change-transform' : ''}`}
       >
         {/* Face Frontal: Escura #121212 */}
         <div

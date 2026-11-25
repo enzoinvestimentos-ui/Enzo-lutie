@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { motion, useScroll, useSpring, useReducedMotion } from 'motion/react';
 
 export const EDITORIAL_EASE = [0.22, 1, 0.36, 1] as const;
@@ -8,6 +8,24 @@ export const EDITORIAL_SPRING = {
   damping: 26,
   mass: 0.75,
 } as const;
+
+export function useIsCompactMotion() {
+  const [compact, setCompact] = useState(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia('(max-width: 767px), (hover: none) and (pointer: coarse)').matches
+      : false
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px), (hover: none) and (pointer: coarse)');
+    const sync = () => setCompact(mq.matches);
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
+
+  return compact;
+}
 
 interface RevealProps {
   children: ReactNode;
@@ -31,32 +49,37 @@ export function Reveal({
   className = '',
 }: RevealProps) {
   const prefersReducedMotion = useReducedMotion();
+  const isCompact = useIsCompactMotion();
   const [settled, setSettled] = useState(false);
 
   if (prefersReducedMotion) {
     return <div className={className}>{children}</div>;
   }
 
+  const effectiveBlur = isCompact ? 0 : blur;
+  const effectiveY = isCompact ? Math.min(y, 12) : y;
+  const effectiveDuration = isCompact ? Math.min(duration, 0.56) : duration;
+
   return (
     <motion.div
       initial={{
         opacity: initialOpacity,
-        y,
-        filter: blur > 0 ? `blur(${blur}px)` : 'none',
+        y: effectiveY,
+        filter: effectiveBlur > 0 ? `blur(${effectiveBlur}px)` : 'none',
       }}
       whileInView={{
         opacity: 1,
         y: 0,
-        filter: blur > 0 ? 'blur(0px)' : 'none',
+        filter: effectiveBlur > 0 ? 'blur(0px)' : 'none',
       }}
       viewport={{ once: true, amount }}
       transition={{
-        duration,
-        delay: Math.min(delay, 0.24),
+        duration: effectiveDuration,
+        delay: isCompact ? Math.min(delay, 0.12) : Math.min(delay, 0.24),
         ease: EDITORIAL_EASE,
       }}
       onAnimationComplete={() => setSettled(true)}
-      style={settled ? { filter: 'none' } : undefined}
+      style={settled || effectiveBlur === 0 ? { filter: 'none' } : undefined}
       className={className}
     >
       {children}

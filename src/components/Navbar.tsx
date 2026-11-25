@@ -27,7 +27,8 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
 
   useEffect(() => {
     const onScroll = () => {
-      setScrolled(window.scrollY > 24);
+      const next = window.scrollY > 24;
+      setScrolled((prev) => (prev === next ? prev : next));
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -69,10 +70,10 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
     <header className="fixed top-0 left-0 right-0 z-40 flex flex-col items-center px-4 pt-3 pb-2 pointer-events-none">
       <div
         ref={containerRef}
-        className={`pointer-events-auto w-full max-w-[1180px] rounded-2xl border backdrop-blur-md px-5 py-3 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`pointer-events-auto w-full max-w-[1180px] rounded-2xl border md:backdrop-blur-md px-5 py-3 transition-[background-color,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           scrolled
-            ? 'border-[#2c2c2c] bg-[#0b0b0b]/92 shadow-[0_14px_38px_-18px_rgba(0,0,0,0.85)]'
-            : 'border-[#252525] bg-[#0b0b0b]/78'
+            ? 'border-[#2c2c2c] bg-[#0b0b0b]/94 md:bg-[#0b0b0b]/92 shadow-[0_14px_38px_-18px_rgba(0,0,0,0.85)]'
+            : 'border-[#252525] bg-[#0b0b0b]/90 md:bg-[#0b0b0b]/78'
         }`}
       >
         <div className="flex items-center justify-between gap-8">
@@ -162,10 +163,10 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
         <AnimatePresence>
           {menuOpen && (
             <motion.nav
-              initial={{ opacity: 0, y: -8, filter: 'blur(4px)' }}
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, y: -6, filter: 'blur(3px)' }}
-              transition={{ duration: 0.34, ease: EDITORIAL_EASE }}
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.28, ease: EDITORIAL_EASE }}
               aria-label="Navegação móvel"
               className="md:hidden mt-3 border-t border-[#252525] pt-3 pb-2 flex flex-col gap-1"
             >

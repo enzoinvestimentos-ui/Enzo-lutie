@@ -25,7 +25,7 @@ export function ArticleCard({
         e.preventDefault();
         onSelect(article.slug);
       }}
-      className="card-interactive group relative flex min-h-[460px] flex-col justify-end overflow-hidden rounded-2xl border border-[#252525] bg-[#121212] p-6 text-left transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#e2dfd7] hover:bg-[#f1efe9] hover:shadow-[0_26px_54px_-24px_rgba(0,0,0,0.85)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f2f2f2]"
+      className="card-interactive group relative flex min-h-[460px] flex-col justify-end overflow-hidden rounded-2xl border border-[#252525] bg-[#121212] p-6 text-left transition-[transform,border-color,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#e2dfd7] hover:bg-[#f1efe9] hover:shadow-[0_26px_54px_-24px_rgba(0,0,0,0.85)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f2f2f2]"
     >
       <div className="absolute inset-0">
         <SafeImage
@@ -41,7 +41,7 @@ export function ArticleCard({
 
       <span
         aria-hidden="true"
-        className="absolute top-5 right-5 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#111111] text-[#f1efe9] opacity-0 translate-y-2 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100 group-hover:translate-y-0"
+        className="absolute top-5 right-5 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#111111] text-[#f1efe9] opacity-0 translate-y-2 transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100 group-hover:translate-y-0"
       >
         <ArrowUpRight className="h-4 w-4" strokeWidth={2} />
       </span>
@@ -101,7 +101,7 @@ export function ThoughtsSection({ onSelectArticle, onViewAllArticles }: Thoughts
 
         {/* Card de síntese: grafite em repouso -> off-white quente #F1EFE9 no hover */}
         <Reveal delay={0.12} className="md:col-span-2 lg:col-span-1">
-          <div className="card-interactive group/card flex h-full min-h-[380px] md:min-h-[460px] flex-col justify-between gap-6 rounded-2xl border border-[#252525] bg-[#151515] p-6 text-[#f2f2f2] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#e2dfd7] hover:bg-[#f1efe9] hover:shadow-[0_26px_54px_-24px_rgba(0,0,0,0.85)]">
+          <div className="card-interactive group/card flex h-full min-h-[380px] md:min-h-[460px] flex-col justify-between gap-6 rounded-2xl border border-[#252525] bg-[#151515] p-6 text-[#f2f2f2] transition-[transform,border-color,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#e2dfd7] hover:bg-[#f1efe9] hover:shadow-[0_26px_54px_-24px_rgba(0,0,0,0.85)]">
             <div className="card-hover-content flex flex-1 flex-col justify-between gap-6">
               <div className="text-[13px] font-medium text-[#8e8e8e] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:text-[#52524e]">
                 <span>Visão de Negócio</span>

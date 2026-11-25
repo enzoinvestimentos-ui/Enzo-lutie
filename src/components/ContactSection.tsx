@@ -141,7 +141,7 @@ export function ContactSection() {
             onMouseLeave={() => setIsHovered(false)}
             onFocus={() => setIsFocusedWithin(true)}
             onBlur={handleCardBlur}
-            className={`rounded-2xl border p-6 sm:p-7 md:p-9 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            className={`rounded-2xl border p-6 sm:p-7 md:p-9 transition-[border-color,background-color,color,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
               isEngaged
                 ? 'border-[#e2dfd7] bg-[#f1efe9] text-[#111111] shadow-[0_28px_60px_-24px_rgba(0,0,0,0.85)]'
                 : 'border-[#252525] bg-[#121212] text-[#f2f2f2]'

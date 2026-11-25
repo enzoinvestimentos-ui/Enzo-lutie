@@ -47,7 +47,7 @@ export function ServicesSection() {
                       {index < service.capabilities.length - 1 && (
                         <span
                           aria-hidden="true"
-                          className="inline-block h-1 w-1 rounded-full bg-[#f2f2f2]/30 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-125 group-hover:bg-[#111111]"
+                          className="inline-block h-1 w-1 rounded-full bg-[#f2f2f2]/30 transition-[transform,background-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-125 group-hover:bg-[#111111]"
                         />
                       )}
                     </span>

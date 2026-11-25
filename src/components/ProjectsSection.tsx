@@ -39,7 +39,7 @@ export function ProjectCard({
         {/* Indicador circular de ação no hover */}
         <span
           aria-hidden="true"
-          className="absolute top-3.5 right-3.5 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#111111] text-[#f1efe9] opacity-0 translate-y-2 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100 group-hover:translate-y-0"
+          className="absolute top-3.5 right-3.5 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#111111] text-[#f1efe9] opacity-0 translate-y-2 transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100 group-hover:translate-y-0"
         >
           <ArrowUpRight className="h-4 w-4" strokeWidth={2} />
         </span>

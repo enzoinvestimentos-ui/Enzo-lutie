@@ -6,7 +6,10 @@ import {
   useAnimationFrame,
   useMotionValue,
   useReducedMotion,
+  useScroll,
+  useSpring,
   useTransform,
+  type MotionValue,
 } from 'motion/react';
 import { Play, X } from 'lucide-react';
 import {
@@ -14,7 +17,7 @@ import {
   SOCIAL_PROOF_VIDEO,
   type VideoTestimonialItem,
 } from '../data/socialProofData';
-import { Reveal, EDITORIAL_EASE } from './Reveal';
+import { Reveal, EDITORIAL_EASE, useIsCompactMotion } from './Reveal';
 
 function getEmbedUrl(url: string): string | null {
   const trimmed = url.trim();
@@ -158,7 +161,7 @@ const TOP_DESKTOP_VEIL_CFG: WaveCurveConfig = {
 const TOP_MOBILE_CFG: WaveCurveConfig = {
   width: 600,
   padX: 36,
-  points: 14,
+  points: 12,
   baseline: (u) =>
     TOP_BLEED_PX +
     32 -
@@ -217,6 +220,16 @@ const BOTTOM_VEIL_CFG: WaveCurveConfig = {
   phaseOffset: 3.4,
 };
 
+const BOTTOM_MOBILE_CFG: WaveCurveConfig = {
+  ...BOTTOM_CFG,
+  points: 12,
+};
+
+const BOTTOM_MOBILE_VEIL_CFG: WaveCurveConfig = {
+  ...BOTTOM_VEIL_CFG,
+  points: 12,
+};
+
 function VideoSlot({
   item,
   onOpenModal,
@@ -243,6 +256,8 @@ function VideoSlot({
         <img
           src={item.posterUrl}
           alt={`${item.authorName} — ${item.label}`}
+          loading="lazy"
+          decoding="async"
           referrerPolicy="no-referrer"
           onError={() => setPosterFailed(true)}
           className="absolute inset-0 h-full w-full object-cover opacity-80 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02]"
@@ -317,15 +332,232 @@ function VideoSlot({
   );
 }
 
+function TopDesktopWave({
+  waveTime,
+  topScrollBlur,
+  prefersReducedMotion,
+}: {
+  waveTime: MotionValue<number>;
+  topScrollBlur: MotionValue<string>;
+  prefersReducedMotion: boolean | null;
+}) {
+  const mainD = useTransform(waveTime, (t) => buildClosedTopWave(t, TOP_DESKTOP_CFG, 0));
+  const shadowD = useTransform(waveTime, (t) =>
+    pointsToSmoothStroke(sampleWavePoints(t, TOP_DESKTOP_CFG))
+  );
+  const veilD = useTransform(waveTime, (t) =>
+    buildClosedTopWave(t, TOP_DESKTOP_VEIL_CFG, TOP_BLEED_PX)
+  );
+
+  return (
+    <motion.div
+      style={prefersReducedMotion ? undefined : { filter: topScrollBlur }}
+      className="absolute inset-x-0 top-0 h-[402px] overflow-visible"
+    >
+      <svg
+        viewBox="0 0 1440 402"
+        preserveAspectRatio="none"
+        className="h-full w-full overflow-visible"
+      >
+        <defs>
+          <linearGradient id="top-emerald-fade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#080808" stopOpacity="0" />
+            <stop offset="6%" stopColor="#0a1f16" stopOpacity="0.04" />
+            <stop offset="12%" stopColor="#0e2f21" stopOpacity="0.14" />
+            <stop offset="19%" stopColor="#13422e" stopOpacity="0.32" />
+            <stop offset="26%" stopColor="#18533a" stopOpacity="0.55" />
+            <stop offset="33%" stopColor="#1c6143" stopOpacity="0.78" />
+            <stop offset="39%" stopColor="#1e6747" stopOpacity="0.93" />
+            <stop offset="44%" stopColor="#1f6b4a" stopOpacity="0.99" />
+            <stop offset="46%" stopColor="#1f6b4a" stopOpacity="1" />
+            <stop offset="100%" stopColor="#1f6b4a" stopOpacity="1" />
+          </linearGradient>
+          <filter id="wave-seam-top" x="-10%" y="-30%" width="120%" height="160%">
+            <feGaussianBlur stdDeviation="9" />
+          </filter>
+          <linearGradient id="wave-sunlight-rim" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="rgba(212, 175, 118, 0.08)" />
+            <stop offset="45%" stopColor="rgba(212, 175, 118, 0.34)" />
+            <stop offset="80%" stopColor="rgba(72, 160, 120, 0.22)" />
+            <stop offset="100%" stopColor="rgba(212, 175, 118, 0.1)" />
+          </linearGradient>
+        </defs>
+
+        <motion.path d={veilD} fill="rgba(31, 107, 74, 0.16)" />
+        <motion.path
+          d={shadowD}
+          fill="none"
+          stroke="url(#wave-sunlight-rim)"
+          strokeWidth="26"
+          filter="url(#wave-seam-top)"
+        />
+        <motion.path
+          d={shadowD}
+          fill="none"
+          stroke="rgba(10, 32, 22, 0.22)"
+          strokeWidth="14"
+          filter="url(#wave-seam-top)"
+        />
+        <motion.path d={mainD} fill="url(#top-emerald-fade)" />
+      </svg>
+    </motion.div>
+  );
+}
+
+function TopMobileWave({ waveTime }: { waveTime: MotionValue<number> }) {
+  const mainD = useTransform(waveTime, (t) => buildClosedTopWave(t, TOP_MOBILE_CFG, 0));
+  const shadowD = useTransform(waveTime, (t) =>
+    pointsToSmoothStroke(sampleWavePoints(t, TOP_MOBILE_CFG))
+  );
+  const veilD = useTransform(waveTime, (t) =>
+    buildClosedTopWave(t, TOP_MOBILE_VEIL_CFG, TOP_BLEED_PX)
+  );
+
+  return (
+    <div className="absolute inset-x-0 top-0 h-[268px] overflow-visible">
+      <svg
+        viewBox="0 0 600 268"
+        preserveAspectRatio="none"
+        className="h-full w-full overflow-visible"
+      >
+        <defs>
+          <linearGradient id="top-mobile-emerald-fade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#080808" stopOpacity="0" />
+            <stop offset="9%" stopColor="#0a1f16" stopOpacity="0.04" />
+            <stop offset="18%" stopColor="#0e2f21" stopOpacity="0.14" />
+            <stop offset="28%" stopColor="#13422e" stopOpacity="0.32" />
+            <stop offset="38%" stopColor="#18533a" stopOpacity="0.54" />
+            <stop offset="48%" stopColor="#1c6143" stopOpacity="0.76" />
+            <stop offset="57%" stopColor="#1e6747" stopOpacity="0.92" />
+            <stop offset="64%" stopColor="#1f6b4a" stopOpacity="0.98" />
+            <stop offset="70%" stopColor="#1f6b4a" stopOpacity="1" />
+            <stop offset="100%" stopColor="#1f6b4a" stopOpacity="1" />
+          </linearGradient>
+        </defs>
+        <motion.path d={veilD} fill="rgba(31, 107, 74, 0.16)" />
+        {/* Traços suaves em camadas sem feGaussianBlur para 60fps no WebKit mobile */}
+        <motion.path d={shadowD} fill="none" stroke="rgba(202, 162, 102, 0.08)" strokeWidth="18" />
+        <motion.path d={shadowD} fill="none" stroke="rgba(202, 162, 102, 0.14)" strokeWidth="9" />
+        <motion.path d={shadowD} fill="none" stroke="rgba(10, 32, 22, 0.12)" strokeWidth="7" />
+        <motion.path d={mainD} fill="url(#top-mobile-emerald-fade)" />
+      </svg>
+    </div>
+  );
+}
+
+function BottomWave({
+  waveTime,
+  bottomScrollY,
+  bottomScrollBlur,
+  isMobile,
+  prefersReducedMotion,
+}: {
+  waveTime: MotionValue<number>;
+  bottomScrollY: MotionValue<number>;
+  bottomScrollBlur: MotionValue<string>;
+  isMobile: boolean;
+  prefersReducedMotion: boolean | null;
+}) {
+  const mainD = useTransform(waveTime, (t) =>
+    buildClosedBottomWave(t, isMobile ? BOTTOM_MOBILE_CFG : BOTTOM_CFG, 540)
+  );
+  const shadowD = useTransform(waveTime, (t) =>
+    pointsToSmoothStroke(sampleWavePoints(t, isMobile ? BOTTOM_MOBILE_CFG : BOTTOM_CFG))
+  );
+  const veilD = useTransform(waveTime, (t) =>
+    buildClosedBottomWave(t, isMobile ? BOTTOM_MOBILE_VEIL_CFG : BOTTOM_VEIL_CFG, 228)
+  );
+
+  return (
+    <motion.div
+      style={
+        prefersReducedMotion
+          ? undefined
+          : isMobile
+            ? { y: bottomScrollY }
+            : { y: bottomScrollY, filter: bottomScrollBlur }
+      }
+      className="absolute inset-x-0 bottom-0 h-[540px] overflow-visible md:will-change-transform"
+    >
+      <svg
+        viewBox="0 0 1440 540"
+        preserveAspectRatio="none"
+        className="h-full w-full overflow-visible"
+      >
+        <defs>
+          <linearGradient id="bottom-emerald-fade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#1f6b4a" stopOpacity="1" />
+            <stop offset="43%" stopColor="#1f6b4a" stopOpacity="1" />
+            <stop offset="49%" stopColor="#1c6244" stopOpacity="0.95" />
+            <stop offset="56%" stopColor="#175239" stopOpacity="0.82" />
+            <stop offset="63%" stopColor="#13422e" stopOpacity="0.64" />
+            <stop offset="70%" stopColor="#0f3424" stopOpacity="0.44" />
+            <stop offset="77%" stopColor="#0c261b" stopOpacity="0.25" />
+            <stop offset="84%" stopColor="#091912" stopOpacity="0.1" />
+            <stop offset="88%" stopColor="#080e0b" stopOpacity="0.03" />
+            <stop offset="90%" stopColor="#080808" stopOpacity="0" />
+            <stop offset="100%" stopColor="#080808" stopOpacity="0" />
+          </linearGradient>
+          {!isMobile && (
+            <filter id="wave-seam-bottom" x="-10%" y="-30%" width="120%" height="160%">
+              <feGaussianBlur stdDeviation="9" />
+            </filter>
+          )}
+        </defs>
+
+        <motion.path d={veilD} fill="rgba(31, 107, 74, 0.16)" />
+        {isMobile ? (
+          <>
+            <motion.path d={shadowD} fill="none" stroke="rgba(202, 162, 102, 0.09)" strokeWidth="26" />
+            <motion.path d={shadowD} fill="none" stroke="rgba(202, 162, 102, 0.16)" strokeWidth="12" />
+            <motion.path d={shadowD} fill="none" stroke="rgba(10, 32, 22, 0.12)" strokeWidth="10" />
+          </>
+        ) : (
+          <>
+            <motion.path
+              d={shadowD}
+              fill="none"
+              stroke="rgba(202, 162, 102, 0.26)"
+              strokeWidth="24"
+              filter="url(#wave-seam-bottom)"
+            />
+            <motion.path
+              d={shadowD}
+              fill="none"
+              stroke="rgba(10, 32, 22, 0.2)"
+              strokeWidth="14"
+              filter="url(#wave-seam-bottom)"
+            />
+          </>
+        )}
+        <motion.path d={mainD} fill="url(#bottom-emerald-fade)" />
+      </svg>
+    </motion.div>
+  );
+}
+
 export function SocialProofSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = useReducedMotion();
+  const isCompactMotion = useIsCompactMotion();
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia('(max-width: 767px)').matches : false
+  );
   const [isInView, setIsInView] = useState(false);
   const [activeVideo, setActiveVideo] = useState<VideoTestimonialItem | null>(null);
 
   // Relógio contínuo compartilhado: quando visível, move ondas, luz, cenário e tipografia no mesmo fluxo
   const waveTime = useMotionValue(0);
   const accumulatedTimeRef = useRef(0);
+  const mobileStepAccumRef = useRef(0);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    const sync = () => setIsMobile(mq.matches);
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -347,33 +579,42 @@ export function SocialProofSection() {
     // Limita delta em abas reativadas para evitar saltos
     const safeDelta = Math.min(delta, 50) * 0.001;
     accumulatedTimeRef.current += safeDelta;
+    if (isMobile) {
+      mobileStepAccumRef.current += delta;
+      // ~30fps em telas móveis preserva fluidez orgânica reduzindo pela metade os repaints SVG
+      if (mobileStepAccumRef.current < 32) return;
+      mobileStepAccumRef.current = 0;
+    }
     waveTime.set(accumulatedTimeRef.current);
   });
 
-  // 1. Caminhos SVG dinâmicos propagando horizontalmente como ondas macias de mar calmo
-  const topDesktopMainD = useTransform(waveTime, (t) => buildClosedTopWave(t, TOP_DESKTOP_CFG, 0));
-  const topDesktopShadowD = useTransform(waveTime, (t) =>
-    pointsToSmoothStroke(sampleWavePoints(t, TOP_DESKTOP_CFG))
-  );
-  const topDesktopVeilD = useTransform(waveTime, (t) =>
-    buildClosedTopWave(t, TOP_DESKTOP_VEIL_CFG, TOP_BLEED_PX)
-  );
+  // 2. Transição orgânica guiada pela rolagem: blur no desktop e dissolução leve por opacidade/Y no mobile
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start end', 'end start'],
+  });
+  const smoothScroll = useSpring(scrollYProgress, {
+    stiffness: 65,
+    damping: 26,
+    mass: 0.9,
+  });
 
-  const topMobileMainD = useTransform(waveTime, (t) => buildClosedTopWave(t, TOP_MOBILE_CFG, 0));
-  const topMobileShadowD = useTransform(waveTime, (t) =>
-    pointsToSmoothStroke(sampleWavePoints(t, TOP_MOBILE_CFG))
-  );
-  const topMobileVeilD = useTransform(waveTime, (t) =>
-    buildClosedTopWave(t, TOP_MOBILE_VEIL_CFG, TOP_BLEED_PX)
-  );
+  const topScrollBlur = useTransform(smoothScroll, (p) => {
+    if (prefersReducedMotion || isMobile) return 'none';
+    const t = Math.max(0, Math.min(1, (0.34 - p) / 0.24));
+    const px = t * t * 5;
+    return px < 0.08 ? 'none' : `blur(${px.toFixed(2)}px)`;
+  });
 
-  const bottomMainD = useTransform(waveTime, (t) => buildClosedBottomWave(t, BOTTOM_CFG, 420));
-  const bottomShadowD = useTransform(waveTime, (t) =>
-    pointsToSmoothStroke(sampleWavePoints(t, BOTTOM_CFG))
-  );
-  const bottomVeilD = useTransform(waveTime, (t) =>
-    buildClosedBottomWave(t, BOTTOM_VEIL_CFG, 202)
-  );
+  const bottomScrollBlur = useTransform(smoothScroll, (p) => {
+    if (prefersReducedMotion || isMobile) return 'none';
+    const t = Math.max(0, Math.min(1, (p - 0.56) / 0.3));
+    const px = t * t * 11;
+    return px < 0.08 ? 'none' : `blur(${px.toFixed(2)}px)`;
+  });
+
+  const bottomScrollY = useTransform(smoothScroll, [0.45, 0.95], [0, 16]);
+  const bottomMistOpacity = useTransform(smoothScroll, [0.4, 0.72, 0.95], [0.35, 0.85, 0.15]);
 
   // 3. O cenário de fundo reage quando a onda avança e recua (camadas em velocidades distintas)
   const backdropSurgeX = useTransform(waveTime, (t) => Math.sin(t * 0.56) * 26 + Math.cos(t * 0.31) * 10);
@@ -431,18 +672,20 @@ export function SocialProofSection() {
       {/* Background orgânico: divisão fluida entre verde (#1F6B4A) e off-white (#F1EFE9) com transição contínua */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 -top-48 -bottom-56 z-0 overflow-hidden"
+        className="pointer-events-none absolute inset-x-0 -top-48 -bottom-80 z-0 overflow-hidden"
       >
         {/* Miolo contínuo em off-white quente (#F1EFE9) exatamente atrás do conteúdo */}
-        <div className="absolute inset-x-0 top-48 bottom-56 bg-[#f1efe9]">
+        <div className="absolute inset-x-0 top-48 bottom-80 bg-[#f1efe9]">
           {/* Camada 1 do cenário reativo: campo luminoso quente deslocado pelo movimento da onda */}
           <motion.div
             style={
               prefersReducedMotion
                 ? undefined
-                : { x: backdropSurgeX, y: backdropSurgeY, scale: backdropSurgeScale }
+                : isMobile
+                  ? { x: backdropSurgeX, y: backdropSurgeY }
+                  : { x: backdropSurgeX, y: backdropSurgeY, scale: backdropSurgeScale }
             }
-            className="absolute -inset-x-[10%] -inset-y-[8%] will-change-transform"
+            className="absolute -inset-x-[10%] -inset-y-[8%] md:will-change-transform"
           >
             <div
               className="h-full w-full"
@@ -458,9 +701,11 @@ export function SocialProofSection() {
             style={
               prefersReducedMotion
                 ? undefined
-                : { x: secondaryDepthX, y: secondaryDepthY, scale: secondaryDepthScale }
+                : isMobile
+                  ? { x: secondaryDepthX, y: secondaryDepthY }
+                  : { x: secondaryDepthX, y: secondaryDepthY, scale: secondaryDepthScale }
             }
-            className="absolute -inset-x-[12%] -inset-y-[10%] will-change-transform"
+            className="absolute -inset-x-[12%] -inset-y-[10%] md:will-change-transform"
           >
             <div
               className="h-full w-full"
@@ -478,7 +723,7 @@ export function SocialProofSection() {
                 ? { opacity: 0.55 }
                 : { x: contrastAuraX, y: contrastAuraY, opacity: contrastAuraOpacity }
             }
-            className="absolute -top-12 left-[14%] h-[300px] w-[58%] rounded-full blur-[68px] will-change-transform"
+            className="absolute -top-12 left-[14%] h-[300px] w-[58%] rounded-full md:blur-[68px] md:will-change-transform"
           >
             <div
               className="h-full w-full rounded-full"
@@ -496,7 +741,7 @@ export function SocialProofSection() {
                 ? { opacity: 0.45 }
                 : { x: lowerAuraX, y: lowerAuraY, opacity: lowerAuraOpacity }
             }
-            className="absolute -bottom-10 right-[12%] h-[280px] w-[56%] rounded-full blur-[64px] will-change-transform"
+            className="absolute -bottom-10 right-[12%] h-[280px] w-[56%] rounded-full md:blur-[64px] md:will-change-transform"
           >
             <div
               className="h-full w-full rounded-full"
@@ -508,154 +753,39 @@ export function SocialProofSection() {
           </motion.div>
         </div>
 
-        {/* Onda superior desktop unificada ao degradê: transparente -> verde (#1F6B4A) -> curva orgânica sem emendas */}
-        <div className="hidden md:block absolute inset-x-0 top-0 h-[402px] overflow-visible">
-          <svg
-            viewBox="0 0 1440 402"
-            preserveAspectRatio="none"
-            className="h-full w-full overflow-visible"
-          >
-            <defs>
-              <linearGradient id="top-emerald-fade" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#1f6b4a" stopOpacity="0" />
-                <stop offset="5%" stopColor="#1f6b4a" stopOpacity="0.03" />
-                <stop offset="10%" stopColor="#1f6b4a" stopOpacity="0.11" />
-                <stop offset="15%" stopColor="#1f6b4a" stopOpacity="0.24" />
-                <stop offset="20%" stopColor="#1f6b4a" stopOpacity="0.4" />
-                <stop offset="25%" stopColor="#1f6b4a" stopOpacity="0.57" />
-                <stop offset="30%" stopColor="#1f6b4a" stopOpacity="0.73" />
-                <stop offset="35%" stopColor="#1f6b4a" stopOpacity="0.87" />
-                <stop offset="40%" stopColor="#1f6b4a" stopOpacity="0.96" />
-                <stop offset="43%" stopColor="#1f6b4a" stopOpacity="0.99" />
-                <stop offset="46%" stopColor="#1f6b4a" stopOpacity="1" />
-                <stop offset="100%" stopColor="#1f6b4a" stopOpacity="1" />
-              </linearGradient>
-              <filter id="wave-seam-top" x="-10%" y="-30%" width="120%" height="160%">
-                <feGaussianBlur stdDeviation="9" />
-              </filter>
-              <linearGradient id="wave-sunlight-rim" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="rgba(212, 175, 118, 0.08)" />
-                <stop offset="45%" stopColor="rgba(212, 175, 118, 0.34)" />
-                <stop offset="80%" stopColor="rgba(72, 160, 120, 0.22)" />
-                <stop offset="100%" stopColor="rgba(212, 175, 118, 0.1)" />
-              </linearGradient>
-            </defs>
+        {/* Onda superior condicional por viewport: monta apenas desktop ou mobile */}
+        {isMobile ? (
+          <TopMobileWave waveTime={waveTime} />
+        ) : (
+          <TopDesktopWave
+            waveTime={waveTime}
+            topScrollBlur={topScrollBlur}
+            prefersReducedMotion={prefersReducedMotion}
+          />
+        )}
 
-            {/* Camada secundária translúcida assíncrona sobre o off-white */}
-            <motion.path d={topDesktopVeilD} fill="rgba(31, 107, 74, 0.16)" />
+        {/* Onda inferior unificada ao degradê com dissolução prolongada */}
+        <BottomWave
+          waveTime={waveTime}
+          bottomScrollY={bottomScrollY}
+          bottomScrollBlur={bottomScrollBlur}
+          isMobile={isMobile}
+          prefersReducedMotion={prefersReducedMotion}
+        />
 
-            {/* Rastro luminoso suave de contraste acompanhando a crista da onda */}
-            <motion.path
-              d={topDesktopShadowD}
-              fill="none"
-              stroke="url(#wave-sunlight-rim)"
-              strokeWidth="26"
-              filter="url(#wave-seam-top)"
-            />
-
-            {/* Sombra orgânica na borda entre o verde e o off-white */}
-            <motion.path
-              d={topDesktopShadowD}
-              fill="none"
-              stroke="rgba(10, 32, 22, 0.22)"
-              strokeWidth="14"
-              filter="url(#wave-seam-top)"
-            />
-
-            {/* Massa única verde (#1F6B4A) com degradê contínuo desde o fundo escuro */}
-            <motion.path d={topDesktopMainD} fill="url(#top-emerald-fade)" />
-          </svg>
-        </div>
-
-        {/* Onda superior mobile unificada ao degradê */}
-        <div className="md:hidden absolute inset-x-0 top-0 h-[268px] overflow-visible">
-          <svg
-            viewBox="0 0 600 268"
-            preserveAspectRatio="none"
-            className="h-full w-full overflow-visible"
-          >
-            <defs>
-              <linearGradient id="top-mobile-emerald-fade" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#1f6b4a" stopOpacity="0" />
-                <stop offset="8%" stopColor="#1f6b4a" stopOpacity="0.03" />
-                <stop offset="16%" stopColor="#1f6b4a" stopOpacity="0.12" />
-                <stop offset="24%" stopColor="#1f6b4a" stopOpacity="0.26" />
-                <stop offset="32%" stopColor="#1f6b4a" stopOpacity="0.43" />
-                <stop offset="40%" stopColor="#1f6b4a" stopOpacity="0.61" />
-                <stop offset="48%" stopColor="#1f6b4a" stopOpacity="0.77" />
-                <stop offset="56%" stopColor="#1f6b4a" stopOpacity="0.91" />
-                <stop offset="63%" stopColor="#1f6b4a" stopOpacity="0.98" />
-                <stop offset="70%" stopColor="#1f6b4a" stopOpacity="1" />
-                <stop offset="100%" stopColor="#1f6b4a" stopOpacity="1" />
-              </linearGradient>
-              <filter id="wave-seam-mobile" x="-10%" y="-30%" width="120%" height="160%">
-                <feGaussianBlur stdDeviation="5" />
-              </filter>
-            </defs>
-            <motion.path d={topMobileVeilD} fill="rgba(31, 107, 74, 0.16)" />
-            <motion.path
-              d={topMobileShadowD}
-              fill="none"
-              stroke="rgba(202, 162, 102, 0.22)"
-              strokeWidth="12"
-              filter="url(#wave-seam-mobile)"
-            />
-            <motion.path
-              d={topMobileShadowD}
-              fill="none"
-              stroke="rgba(10, 32, 22, 0.2)"
-              strokeWidth="8"
-              filter="url(#wave-seam-mobile)"
-            />
-            <motion.path d={topMobileMainD} fill="url(#top-mobile-emerald-fade)" />
-          </svg>
-        </div>
-
-        {/* Onda inferior unificada ao degradê: curva orgânica -> verde (#1F6B4A) -> dissolução perfeita no escuro */}
-        <div className="absolute inset-x-0 bottom-0 h-[420px] overflow-visible">
-          <svg
-            viewBox="0 0 1440 420"
-            preserveAspectRatio="none"
-            className="h-full w-full overflow-visible"
-          >
-            <defs>
-              <linearGradient id="bottom-emerald-fade" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#1f6b4a" stopOpacity="1" />
-                <stop offset="47.5%" stopColor="#1f6b4a" stopOpacity="1" />
-                <stop offset="52%" stopColor="#1f6b4a" stopOpacity="0.98" />
-                <stop offset="57%" stopColor="#1f6b4a" stopOpacity="0.92" />
-                <stop offset="63%" stopColor="#1f6b4a" stopOpacity="0.8" />
-                <stop offset="69%" stopColor="#1f6b4a" stopOpacity="0.64" />
-                <stop offset="74%" stopColor="#1f6b4a" stopOpacity="0.49" />
-                <stop offset="80%" stopColor="#1f6b4a" stopOpacity="0.32" />
-                <stop offset="86%" stopColor="#1f6b4a" stopOpacity="0.17" />
-                <stop offset="91%" stopColor="#1f6b4a" stopOpacity="0.07" />
-                <stop offset="96%" stopColor="#1f6b4a" stopOpacity="0.015" />
-                <stop offset="100%" stopColor="#1f6b4a" stopOpacity="0" />
-              </linearGradient>
-              <filter id="wave-seam-bottom" x="-10%" y="-30%" width="120%" height="160%">
-                <feGaussianBlur stdDeviation="9" />
-              </filter>
-            </defs>
-
-            <motion.path d={bottomVeilD} fill="rgba(31, 107, 74, 0.16)" />
-            <motion.path
-              d={bottomShadowD}
-              fill="none"
-              stroke="rgba(202, 162, 102, 0.26)"
-              strokeWidth="24"
-              filter="url(#wave-seam-bottom)"
-            />
-            <motion.path
-              d={bottomShadowD}
-              fill="none"
-              stroke="rgba(10, 32, 22, 0.2)"
-              strokeWidth="14"
-              filter="url(#wave-seam-bottom)"
-            />
-            <motion.path d={bottomMainD} fill="url(#bottom-emerald-fade)" />
-          </svg>
-        </div>
+        {/* Névoa difusa de transição inferior acompanhando a rolagem para dissolução contínua */}
+        <motion.div
+          style={prefersReducedMotion ? { opacity: 0.45 } : { opacity: bottomMistOpacity }}
+          className="absolute inset-x-0 bottom-12 h-[220px] md:blur-[46px]"
+        >
+          <div
+            className="h-full w-full"
+            style={{
+              background:
+                'radial-gradient(ellipse 75% 58% at 50% 42%, rgba(31, 107, 74, 0.34) 0%, rgba(16, 56, 39, 0.18) 46%, rgba(8, 8, 8, 0) 78%)',
+            }}
+          />
+        </motion.div>
       </div>
 
       {/* Conteúdo editorial flutuando com leveza sobre as ondas */}
@@ -667,9 +797,11 @@ export function SocialProofSection() {
                 style={
                   prefersReducedMotion
                     ? undefined
-                    : { x: kickerFloatX, y: kickerFloatY, rotate: kickerFloatRot }
+                    : isCompactMotion
+                      ? { y: kickerFloatY }
+                      : { x: kickerFloatX, y: kickerFloatY, rotate: kickerFloatRot }
                 }
-                className="inline-block origin-left will-change-transform"
+                className="inline-block origin-left md:will-change-transform"
               >
                 <span className="text-[13px] font-medium tracking-[0.02em] text-[#52524e]">
                   {SOCIAL_PROOF_HEADER.kicker}
@@ -682,9 +814,11 @@ export function SocialProofSection() {
                 style={
                   prefersReducedMotion
                     ? undefined
-                    : { x: titleFloatX, y: titleFloatY, rotate: titleFloatRot }
+                    : isCompactMotion
+                      ? { y: titleFloatY }
+                      : { x: titleFloatX, y: titleFloatY, rotate: titleFloatRot }
                 }
-                className="origin-left will-change-transform"
+                className="origin-left md:will-change-transform"
               >
                 <h2 id="social-proof-heading" className="type-section-h2 text-[#111111]">
                   {SOCIAL_PROOF_HEADER.title}
@@ -697,9 +831,11 @@ export function SocialProofSection() {
                 style={
                   prefersReducedMotion
                     ? undefined
-                    : { x: subFloatX, y: subFloatY, rotate: subFloatRot }
+                    : isCompactMotion
+                      ? { y: subFloatY }
+                      : { x: subFloatX, y: subFloatY, rotate: subFloatRot }
                 }
-                className="origin-left will-change-transform"
+                className="origin-left md:will-change-transform"
               >
                 <p className="text-[17px] md:text-[19px] leading-[1.5] tracking-[-0.015em] text-[#3f3f3c]">
                   {SOCIAL_PROOF_HEADER.subtitle}
@@ -714,9 +850,11 @@ export function SocialProofSection() {
               style={
                 prefersReducedMotion
                   ? undefined
-                  : { y: videoCardFloatY, rotate: videoCardFloatRot }
+                  : isCompactMotion
+                    ? { y: videoCardFloatY }
+                    : { y: videoCardFloatY, rotate: videoCardFloatRot }
               }
-              className="will-change-transform"
+              className="md:will-change-transform"
             >
               <VideoSlot item={SOCIAL_PROOF_VIDEO} onOpenModal={setActiveVideo} />
             </motion.div>
@@ -743,7 +881,7 @@ export function SocialProofSection() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.28, ease: EDITORIAL_EASE }}
-                  className="fixed inset-0 bg-[#080808]/92 backdrop-blur-md"
+                  className="fixed inset-0 bg-[#080808]/95 md:bg-[#080808]/92 md:backdrop-blur-md"
                 />
 
                 <div className="relative z-10 flex min-h-full items-center justify-center p-4 md:p-8">
