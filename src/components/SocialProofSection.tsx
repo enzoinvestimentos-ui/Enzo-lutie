@@ -8,12 +8,10 @@ import {
   useReducedMotion,
   useTransform,
 } from 'motion/react';
-import { Play, MessageSquareQuote, Image as ImageIcon, X, Maximize2 } from 'lucide-react';
+import { Play, X } from 'lucide-react';
 import {
   SOCIAL_PROOF_HEADER,
-  SOCIAL_PROOF_PRINT,
   SOCIAL_PROOF_VIDEO,
-  type ConversationPrintItem,
   type VideoTestimonialItem,
 } from '../data/socialProofData';
 import { Reveal, EDITORIAL_EASE } from './Reveal';
@@ -239,7 +237,7 @@ function VideoSlot({
   };
 
   return (
-    <div className="group relative mx-auto flex aspect-[9/16] w-full max-w-[380px] flex-col justify-between overflow-hidden rounded-2xl border border-[#252525] bg-[#121212] shadow-[0_24px_54px_-24px_rgba(17,17,17,0.35)] transition-[border-color,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#383838] hover:shadow-[0_28px_60px_-22px_rgba(17,17,17,0.45)] lg:max-w-none">
+    <div className="group relative mx-auto flex aspect-[9/16] w-full max-w-[360px] flex-col justify-between overflow-hidden rounded-2xl border border-[#252525] bg-[#121212] shadow-[0_24px_54px_-24px_rgba(17,17,17,0.35)] transition-[border-color,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#383838] hover:shadow-[0_28px_60px_-22px_rgba(17,17,17,0.45)] lg:ml-auto lg:mr-0">
       {/* Fundo do vídeo: poster real ou textura escura editorial sutil */}
       {hasVideo && item.posterUrl && !posterFailed ? (
         <img
@@ -319,102 +317,11 @@ function VideoSlot({
   );
 }
 
-function PrintSlot({
-  item,
-  onInspect,
-  className = '',
-}: {
-  item: ConversationPrintItem;
-  onInspect: (item: ConversationPrintItem) => void;
-  className?: string;
-}) {
-  const hasImage = Boolean(item.imageUrl.trim());
-  const [expandedNote, setExpandedNote] = useState(false);
-
-  return (
-    <div
-      className={`group flex flex-col justify-between overflow-hidden rounded-2xl border border-[#252525] bg-[#121212] p-5 md:p-7 shadow-[0_24px_54px_-24px_rgba(17,17,17,0.35)] transition-[border-color,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#3a3a3a] hover:shadow-[0_28px_60px_-22px_rgba(17,17,17,0.45)] ${className}`}
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-2 text-[12px] font-medium text-[#8e8e8e]">
-          <MessageSquareQuote className="h-3.5 w-3.5 text-[#a1a1a1]" aria-hidden="true" />
-          <span>{item.label}</span>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => (hasImage ? onInspect(item) : setExpandedNote((prev) => !prev))}
-          aria-label={hasImage ? `Ampliar ${item.label}` : `Detalhes de ${item.label}`}
-          className="btn-interactive inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#2a2a2a] bg-[#181818] text-[#d4d4d4] cursor-pointer"
-        >
-          {hasImage ? (
-            <Maximize2 className="h-3.5 w-3.5" aria-hidden="true" />
-          ) : (
-            <ImageIcon className="h-3.5 w-3.5" aria-hidden="true" />
-          )}
-        </button>
-      </div>
-
-      {/* Área do Print Real ou Composição Visual Placeholder */}
-      <div className="my-6 flex-1 flex flex-col justify-center">
-        {hasImage ? (
-          <button
-            type="button"
-            onClick={() => onInspect(item)}
-            className="relative w-full overflow-hidden rounded-xl border border-[#252525] bg-[#0b0b0b] text-left cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f2f2f2]"
-          >
-            <img
-              src={item.imageUrl}
-              alt={`${item.label} — ${item.authorLabel}`}
-              referrerPolicy="no-referrer"
-              className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02]"
-            />
-          </button>
-        ) : (
-          <div className="flex flex-col gap-3.5 rounded-xl border border-dashed border-[#2b2b2b] bg-[#0c0c0c]/90 p-5 md:p-6">
-            <div className="flex items-center justify-between text-[11px] font-medium text-[#737373]">
-              <span>{item.channel}</span>
-              <span>Espaço para print</span>
-            </div>
-
-            <div className="flex flex-col gap-2.5">
-              {item.placeholderLines.map((line, idx) => (
-                <div
-                  key={idx}
-                  className={`rounded-xl border border-[#222222] px-4 py-3 text-[14px] leading-[1.5] ${
-                    idx === 0
-                      ? 'max-w-[90%] bg-[#161616] text-[#c7c7c7]'
-                      : 'ml-auto max-w-[88%] bg-[#111111] text-[#8e8e8e]'
-                  }`}
-                >
-                  {line}
-                </div>
-              ))}
-            </div>
-
-            {expandedNote && (
-              <p className="text-[12px] leading-[1.45] text-[#8e8e8e] pt-1">
-                Insira o caminho da captura em <span className="text-[#d4d4d4]">src/data/socialProofData.ts</span> para exibir o print real com ampliação.
-              </p>
-            )}
-          </div>
-        )}
-      </div>
-
-      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#222222] pt-4 text-[13px]">
-        <span className="font-medium text-[#d4d4d4]">{item.authorLabel}</span>
-        <span className="text-[#8e8e8e]">{item.context}</span>
-      </div>
-    </div>
-  );
-}
-
 export function SocialProofSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const [isInView, setIsInView] = useState(false);
   const [activeVideo, setActiveVideo] = useState<VideoTestimonialItem | null>(null);
-  const [activePrint, setActivePrint] = useState<ConversationPrintItem | null>(null);
 
   // Relógio contínuo compartilhado: quando visível, move ondas, luz, cenário e tipografia no mesmo fluxo
   const waveTime = useMotionValue(0);
@@ -499,24 +406,20 @@ export function SocialProofSection() {
   const subFloatX = useTransform(waveTime, (t) => Math.cos(t * 0.43 - 0.85) * 1.9);
   const subFloatRot = useTransform(waveTime, (t) => Math.sin(t * 0.51 - 0.3) * 0.22);
 
-  // Cards com inércia mais pesada (como embarcações maiores sobre a água calma)
+  // Card com inércia mais pesada (como embarcação sobre a água calma)
   const videoCardFloatY = useTransform(waveTime, (t) => Math.sin(t * 0.54 - 0.6) * 2.6);
   const videoCardFloatRot = useTransform(waveTime, (t) => Math.sin(t * 0.41 + 0.5) * 0.18);
 
-  const printCardFloatY = useTransform(waveTime, (t) => Math.sin(t * 0.54 - 1.3) * 2.4);
-  const printCardFloatRot = useTransform(waveTime, (t) => Math.cos(t * 0.39 + 0.9) * 0.16);
-
   useEffect(() => {
-    if (!activeVideo && !activePrint) return;
+    if (!activeVideo) return;
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setActiveVideo(null);
-        setActivePrint(null);
       }
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [activeVideo, activePrint]);
+  }, [activeVideo]);
 
   return (
     <section
@@ -757,100 +660,80 @@ export function SocialProofSection() {
 
       {/* Conteúdo editorial flutuando com leveza sobre as ondas */}
       <div className="relative z-10 mx-auto w-full max-w-[1180px] px-6 py-14 md:py-24">
-        <div className="mb-10 md:mb-14 flex flex-col gap-3.5 max-w-[700px]">
-          <Reveal y={14} blur={4} duration={0.78}>
-            <motion.div
-              style={
-                prefersReducedMotion
-                  ? undefined
-                  : { x: kickerFloatX, y: kickerFloatY, rotate: kickerFloatRot }
-              }
-              className="inline-block origin-left will-change-transform"
-            >
-              <span className="text-[13px] font-medium tracking-[0.02em] text-[#52524e]">
-                {SOCIAL_PROOF_HEADER.kicker}
-              </span>
-            </motion.div>
-          </Reveal>
+        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-12">
+          <div className="flex flex-col gap-3.5 max-w-[600px] lg:col-span-7">
+            <Reveal y={14} blur={4} duration={0.78}>
+              <motion.div
+                style={
+                  prefersReducedMotion
+                    ? undefined
+                    : { x: kickerFloatX, y: kickerFloatY, rotate: kickerFloatRot }
+                }
+                className="inline-block origin-left will-change-transform"
+              >
+                <span className="text-[13px] font-medium tracking-[0.02em] text-[#52524e]">
+                  {SOCIAL_PROOF_HEADER.kicker}
+                </span>
+              </motion.div>
+            </Reveal>
 
-          <Reveal delay={0.05} y={14} blur={4} duration={0.78}>
-            <motion.div
-              style={
-                prefersReducedMotion
-                  ? undefined
-                  : { x: titleFloatX, y: titleFloatY, rotate: titleFloatRot }
-              }
-              className="origin-left will-change-transform"
-            >
-              <h2 id="social-proof-heading" className="type-section-h2 text-[#111111]">
-                {SOCIAL_PROOF_HEADER.title}
-              </h2>
-            </motion.div>
-          </Reveal>
+            <Reveal delay={0.05} y={14} blur={4} duration={0.78}>
+              <motion.div
+                style={
+                  prefersReducedMotion
+                    ? undefined
+                    : { x: titleFloatX, y: titleFloatY, rotate: titleFloatRot }
+                }
+                className="origin-left will-change-transform"
+              >
+                <h2 id="social-proof-heading" className="type-section-h2 text-[#111111]">
+                  {SOCIAL_PROOF_HEADER.title}
+                </h2>
+              </motion.div>
+            </Reveal>
 
-          <Reveal delay={0.1} y={14} blur={4} duration={0.78}>
-            <motion.div
-              style={
-                prefersReducedMotion
-                  ? undefined
-                  : { x: subFloatX, y: subFloatY, rotate: subFloatRot }
-              }
-              className="origin-left will-change-transform"
-            >
-              <p className="text-[17px] md:text-[19px] leading-[1.5] tracking-[-0.015em] text-[#3f3f3c]">
-                {SOCIAL_PROOF_HEADER.subtitle}
-              </p>
-            </motion.div>
-          </Reveal>
-        </div>
+            <Reveal delay={0.1} y={14} blur={4} duration={0.78}>
+              <motion.div
+                style={
+                  prefersReducedMotion
+                    ? undefined
+                    : { x: subFloatX, y: subFloatY, rotate: subFloatRot }
+                }
+                className="origin-left will-change-transform"
+              >
+                <p className="text-[17px] md:text-[19px] leading-[1.5] tracking-[-0.015em] text-[#3f3f3c]">
+                  {SOCIAL_PROOF_HEADER.subtitle}
+                </p>
+              </motion.div>
+            </Reveal>
+          </div>
 
-        {/* Vídeo 9:16 e print acompanhando a superfície fluida com balanço suave e discreto */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-stretch lg:gap-7">
-          <Reveal y={14} blur={4} duration={0.78} className="lg:col-span-4">
+          {/* Vídeo 9:16 acompanhando a superfície fluida com balanço suave e discreto */}
+          <Reveal y={14} blur={4} duration={0.78} className="lg:col-span-5">
             <motion.div
               style={
                 prefersReducedMotion
                   ? undefined
                   : { y: videoCardFloatY, rotate: videoCardFloatRot }
               }
-              className="h-full will-change-transform"
+              className="will-change-transform"
             >
               <VideoSlot item={SOCIAL_PROOF_VIDEO} onOpenModal={setActiveVideo} />
-            </motion.div>
-          </Reveal>
-
-          <Reveal delay={0.06} y={14} blur={4} duration={0.78} className="lg:col-span-8 flex">
-            <motion.div
-              style={
-                prefersReducedMotion
-                  ? undefined
-                  : { y: printCardFloatY, rotate: printCardFloatRot }
-              }
-              className="flex w-full will-change-transform"
-            >
-              <PrintSlot
-                item={SOCIAL_PROOF_PRINT}
-                onInspect={setActivePrint}
-                className="w-full"
-              />
             </motion.div>
           </Reveal>
         </div>
       </div>
 
-      {/* Modal de reprodução/ampliação isolado em portal no body para evitar conflito com filter/transform ancestrais */}
+      {/* Modal de reprodução isolado em portal no body para evitar conflito com filter/transform ancestrais */}
       {typeof document !== 'undefined' &&
         createPortal(
           <AnimatePresence>
-            {(activeVideo || activePrint) && (
+            {activeVideo && (
               <div
                 role="dialog"
                 aria-modal="true"
-                aria-label={activeVideo ? activeVideo.label : activePrint?.label}
-                onClick={() => {
-                  setActiveVideo(null);
-                  setActivePrint(null);
-                }}
+                aria-label={activeVideo.label}
+                onClick={() => setActiveVideo(null)}
                 className="fixed inset-0 z-[90] overflow-y-auto"
               >
                 {/* Backdrop isolado como camada irmã para não aplicar backdrop-filter sobre o iframe */}
@@ -865,42 +748,25 @@ export function SocialProofSection() {
 
                 <div className="relative z-10 flex min-h-full items-center justify-center p-4 md:p-8">
                   <motion.div
-                    initial={
-                      prefersReducedMotion
-                        ? false
-                        : activeVideo
-                          ? { opacity: 0 }
-                          : { opacity: 0, scale: 0.97, y: 10 }
-                    }
-                    animate={activeVideo ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
-                    exit={
-                      prefersReducedMotion
-                        ? undefined
-                        : activeVideo
-                          ? { opacity: 0 }
-                          : { opacity: 0, scale: 0.97, y: 8 }
-                    }
+                    initial={prefersReducedMotion ? false : { opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={prefersReducedMotion ? undefined : { opacity: 0 }}
                     transition={{ duration: 0.3, ease: EDITORIAL_EASE }}
                     onClick={(e) => e.stopPropagation()}
-                    className={`relative w-full rounded-2xl border border-[#252525] bg-[#121212] p-4 md:p-6 shadow-[0_32px_90px_-24px_rgba(0,0,0,0.95)] ${
-                      activeVideo ? 'max-w-[440px]' : 'max-w-[920px] overflow-hidden'
-                    }`}
+                    className="relative w-full max-w-[440px] rounded-2xl border border-[#252525] bg-[#121212] p-4 md:p-6 shadow-[0_32px_90px_-24px_rgba(0,0,0,0.95)]"
                   >
                     <div className="mb-4 flex items-center justify-between gap-4">
                       <div className="flex flex-col">
                         <span className="text-[12px] font-medium text-[#8e8e8e]">
-                          {activeVideo ? activeVideo.label : activePrint?.label}
+                          {activeVideo.label}
                         </span>
                         <span className="text-[15px] font-semibold text-[#f2f2f2]">
-                          {activeVideo ? activeVideo.authorName : activePrint?.authorLabel}
+                          {activeVideo.authorName}
                         </span>
                       </div>
                       <button
                         type="button"
-                        onClick={() => {
-                          setActiveVideo(null);
-                          setActivePrint(null);
-                        }}
+                        onClick={() => setActiveVideo(null)}
                         aria-label="Fechar visualização"
                         className="btn-interactive inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#2a2a2a] bg-[#181818] text-[#f2f2f2] cursor-pointer"
                       >
@@ -908,7 +774,7 @@ export function SocialProofSection() {
                       </button>
                     </div>
 
-                    {activeVideo && (() => {
+                    {(() => {
                       const embedSrc = getEmbedUrl(activeVideo.videoUrl);
                       return (
                         <div className="mx-auto aspect-[9/16] w-full max-w-[min(360px,calc(74vh*9/16))] overflow-hidden rounded-xl border border-[#252525] bg-[#080808]">
@@ -934,17 +800,6 @@ export function SocialProofSection() {
                         </div>
                       );
                     })()}
-
-                    {activePrint && (
-                      <div className="flex max-h-[75vh] w-full items-center justify-center overflow-hidden rounded-xl border border-[#252525] bg-[#080808]">
-                        <img
-                          src={activePrint.imageUrl}
-                          alt={`${activePrint.label} — ${activePrint.authorLabel}`}
-                          referrerPolicy="no-referrer"
-                          className="max-h-[75vh] w-auto object-contain"
-                        />
-                      </div>
-                    )}
                   </motion.div>
                 </div>
               </div>
