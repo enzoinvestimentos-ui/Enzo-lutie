@@ -78,12 +78,12 @@ function MobileFlipPortrait({ mode }: { mode: 'hero' | 'bio' }) {
               }
             : { rotateY }
         }
-        className="preserve-3d relative block w-full aspect-[0.877] cursor-pointer rounded-2xl shadow-[0_18px_40px_-20px_rgba(17,17,17,0.25)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#eb4d6d]"
+        className="preserve-3d relative block w-full aspect-[0.877] cursor-pointer rounded-2xl shadow-[0_24px_54px_-22px_rgba(0,0,0,0.85)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f5f5f5]"
       >
         {/* Frente */}
         <div
           style={{ transform: 'rotateY(0deg) translateZ(1px)' }}
-          className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#111111]/10 bg-[#111111]"
+          className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#252525] bg-[#121212]"
         >
           <SafeImage
             src={HERO_MEDIA.frontAvatar}
@@ -97,7 +97,7 @@ function MobileFlipPortrait({ mode }: { mode: 'hero' | 'bio' }) {
         {/* Verso */}
         <div
           style={{ transform: 'rotateY(180deg) translateZ(1px)' }}
-          className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#111111]/10 bg-[#111111]"
+          className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#252525] bg-[#121212]"
         >
           <SafeImage
             src={HERO_MEDIA.backAvatar}
@@ -217,12 +217,12 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
                         rotateY: avatarRotateY,
                       }
                 }
-                className="preserve-3d relative block w-[320px] xl:w-[360px] aspect-[0.877] cursor-pointer rounded-2xl shadow-[0_20px_50px_-24px_rgba(17,17,17,0.22)] transition-shadow duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_28px_60px_-22px_rgba(17,17,17,0.28)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#eb4d6d]"
+                className="preserve-3d relative block w-[320px] xl:w-[360px] aspect-[0.877] cursor-pointer rounded-2xl shadow-[0_28px_64px_-24px_rgba(0,0,0,0.85)] transition-shadow duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_34px_76px_-22px_rgba(0,0,0,0.95)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f5f5f5]"
               >
                 {/* Frente */}
                 <div
                   style={{ transform: 'rotateY(0deg) translateZ(1px)' }}
-                  className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#111111]/10 bg-[#111111]"
+                  className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#252525] bg-[#121212]"
                 >
                   <SafeImage
                     src={HERO_MEDIA.frontAvatar}
@@ -236,7 +236,7 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
                 {/* Verso */}
                 <div
                   style={{ transform: 'rotateY(180deg) translateZ(1px)' }}
-                  className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#111111]/10 bg-[#111111]"
+                  className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#252525] bg-[#121212]"
                 >
                   <SafeImage
                     src={HERO_MEDIA.backAvatar}
@@ -266,7 +266,7 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
               transition={{ duration: 0.75, ease: EDITORIAL_EASE }}
               className="flex items-center"
             >
-              <span className="text-[13px] font-medium tracking-[0.04em] text-[#111111]/60 uppercase">
+              <span className="text-[13px] font-medium tracking-[0.04em] text-[#a1a1a1] uppercase">
                 Negócios primeiro · Tecnologia com propósito
               </span>
             </motion.div>
@@ -275,7 +275,7 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
               initial={prefersReducedMotion ? false : { opacity: 0, y: 16, filter: 'blur(5px)' }}
               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
               transition={{ duration: 0.9, delay: 0.08, ease: EDITORIAL_EASE }}
-              className="type-display-lg text-[#111111]"
+              className="type-display-lg text-[#f5f5f5]"
             >
               Estratégia de negócios, processos e tecnologia.
             </motion.h1>
@@ -284,7 +284,7 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
               initial={prefersReducedMotion ? false : { opacity: 0, y: 14, filter: 'blur(4px)' }}
               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
               transition={{ duration: 0.85, delay: 0.16, ease: EDITORIAL_EASE }}
-              className="flex max-w-[600px] flex-col gap-4 text-[17px] md:text-[18px] leading-[1.5] tracking-[-0.02em] text-[#111111]/85"
+              className="flex max-w-[600px] flex-col gap-4 text-[17px] md:text-[18px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]"
             >
               <p>
                 Ajudo empresas a identificar oportunidades, superar gargalos e transformar
@@ -295,7 +295,7 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
                 Meu trabalho começa entendendo como a empresa funciona, onde estão os desafios e o
                 que pode ser feito para melhorar seus resultados.
               </p>
-              <p className="font-medium text-[#111111]">
+              <p className="font-medium text-[#f5f5f5]">
                 A tecnologia entra como parte da solução, não como ponto de partida.
               </p>
             </motion.div>
@@ -306,11 +306,11 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
               transition={{ duration: 0.8, delay: 0.24, ease: EDITORIAL_EASE }}
               className="flex flex-wrap items-center gap-4 pt-2"
             >
-              <ArrowButton label="Vamos conversar" onClick={onGetStarted} variant="dark" />
+              <ArrowButton label="Vamos conversar" onClick={onGetStarted} variant="primary" />
               <button
                 type="button"
                 onClick={onExploreProjects}
-                className="group inline-flex items-center justify-center rounded-full border border-[#111111]/20 bg-[#faf7f3] px-6 py-3.5 text-[15px] font-medium tracking-[-0.02em] text-[#111111] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#111111] hover:bg-[#f4efe7] active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#eb4d6d]"
+                className="group inline-flex items-center justify-center rounded-full border border-[#2a2a2a] bg-transparent px-6 py-3.5 text-[15px] font-medium tracking-[-0.02em] text-[#f5f5f5] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#f5f5f5]/55 hover:bg-[#141414] active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f5f5f5]"
               >
                 <RollingText text="Conhecer projetos" />
               </button>
@@ -333,10 +333,10 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
             initial={prefersReducedMotion ? false : { opacity: 0, y: 10, filter: 'blur(3px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             transition={{ duration: 0.75, delay: 0.34, ease: EDITORIAL_EASE }}
-            className="flex flex-wrap items-center justify-between gap-4 pt-5 text-[13px] md:text-[14px] font-medium tracking-[0.04em] text-[#111111]"
+            className="flex flex-wrap items-center justify-between gap-4 pt-5 text-[13px] md:text-[14px] font-medium tracking-[0.04em] text-[#d4d4d4]"
           >
             <span>ESTRATÉGIA · PROCESSOS · TECNOLOGIA</span>
-            <div className="flex items-center gap-5 tabular-nums text-[#111111]/80">
+            <div className="flex items-center gap-5 tabular-nums text-[#8e8e8e]">
               <span>©2026</span>
               <span>/LUMO · KRIOS CREATIVE</span>
             </div>
@@ -361,12 +361,12 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
             </div>
 
             <Reveal>
-              <h2 className="text-[36px] sm:text-[42px] md:text-[48px] font-semibold leading-[1.05] tracking-[-0.02em] text-[#111111]">
+              <h2 className="text-[36px] sm:text-[42px] md:text-[48px] font-semibold leading-[1.06] tracking-[-0.02em] text-[#f5f5f5]">
                 O problema, muitas vezes, está antes da tecnologia.
               </h2>
             </Reveal>
 
-            <div className="flex flex-col gap-4 text-[17px] md:text-[18px] font-normal leading-[1.5] tracking-[-0.02em] text-[#111111]/85">
+            <div className="flex flex-col gap-4 text-[17px] md:text-[18px] font-normal leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]">
               <Reveal delay={0.06}>
                 <p>
                   É comum encontrar empresas que investem em sites, ferramentas, sistemas e
@@ -388,7 +388,7 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
                 </p>
               </Reveal>
               <Reveal delay={0.24}>
-                <p>
+                <p className="text-[#d4d4d4]">
                   É a partir dessa visão que identifico oportunidades e direciono soluções que
                   realmente contribuem para a evolução da empresa.
                 </p>
@@ -396,7 +396,7 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
             </div>
 
             <Reveal delay={0.28} className="pt-2">
-              <ArrowButton label="Vamos conversar" onClick={onGetStarted} variant="dark" />
+              <ArrowButton label="Vamos conversar" onClick={onGetStarted} variant="primary" />
             </Reveal>
           </div>
         </div>

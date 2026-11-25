@@ -25,7 +25,7 @@ export function ArticleCard({
         e.preventDefault();
         onSelect(article.slug);
       }}
-      className="group relative flex min-h-[460px] flex-col justify-end overflow-hidden rounded-2xl bg-[#111111] p-6 text-left transition-shadow duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_22px_46px_-24px_rgba(17,17,17,0.3)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#eb4d6d]"
+      className="card-interactive group relative flex min-h-[460px] flex-col justify-end overflow-hidden rounded-2xl border border-[#252525] bg-[#121212] p-6 text-left transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#e2dfd7] hover:bg-[#f1efe9] hover:shadow-[0_26px_54px_-24px_rgba(0,0,0,0.85)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f2f2f2]"
     >
       <div className="absolute inset-0">
         <SafeImage
@@ -33,28 +33,29 @@ export function ArticleCard({
           alt={article.title}
           fallbackTitle={article.title}
           entranceDelay={index * 0.06}
-          className="h-full w-full object-cover opacity-80 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+          className="h-full w-full object-cover opacity-90 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/95 via-[#111111]/60 to-[#111111]/25 transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-90" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#080808]/95 via-[#080808]/60 to-[#080808]/20 opacity-100 transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-0" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#f1efe9] via-[#f1efe9]/90 to-[#f1efe9]/25 opacity-0 transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100" />
       </div>
 
       <span
         aria-hidden="true"
-        className="absolute top-5 right-5 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#faf7f3]/20 bg-[#111111]/60 text-[#faf7f3] backdrop-blur-sm opacity-0 translate-y-2 blur-[3px] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100 group-hover:translate-y-0 group-hover:blur-0"
+        className="absolute top-5 right-5 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#111111] text-[#f1efe9] opacity-0 translate-y-2 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100 group-hover:translate-y-0"
       >
         <ArrowUpRight className="h-4 w-4" strokeWidth={2} />
       </span>
 
-      <div className="relative z-10 flex flex-col gap-3 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-0.5">
-        <div className="text-[13px] font-normal text-[#faf7f3]/70">
+      <div className="card-hover-content relative z-10 flex flex-col gap-3 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-0.5">
+        <div className="text-[13px] font-normal text-[#a1a1a1] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:text-[#52524e]">
           <span>{article.tag}</span>
         </div>
 
-        <h3 className="text-[22px] md:text-[24px] font-semibold leading-[1.2] tracking-[-0.02em] text-[#faf7f3] transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:text-[#eb4d6d]">
+        <h3 className="text-[22px] md:text-[24px] font-semibold leading-[1.2] tracking-[-0.02em] text-[#f2f2f2] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:text-[#111111]">
           {article.title}
         </h3>
 
-        <p className="text-[15px] leading-[1.5] tracking-[-0.02em] text-[#faf7f3]/80">
+        <p className="text-[15px] leading-[1.5] tracking-[-0.015em] text-[#d4d4d4] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:text-[#2a2a28]">
           {article.excerpt}
         </p>
       </div>
@@ -69,10 +70,10 @@ export function ThoughtsSection({ onSelectArticle, onViewAllArticles }: Thoughts
     <section className="mx-auto w-full max-w-[1180px] px-6 py-20 md:py-28">
       <div className="mb-12 md:mb-14 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-end">
         <Reveal className="lg:col-span-5">
-          <h2 className="type-section-h2 text-[#111111]">Sobre e Parcerias</h2>
+          <h2 className="type-section-h2 text-[#f2f2f2]">Sobre e Parcerias</h2>
         </Reveal>
 
-        <div className="lg:col-span-7 flex flex-col gap-4 text-[17px] md:text-[18px] leading-[1.5] tracking-[-0.02em] text-[#111111]/85">
+        <div className="lg:col-span-7 flex flex-col gap-4 text-[17px] md:text-[18px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]">
           <Reveal delay={0.08}>
             <p>
               Sou profissional da área de negócios e tecnologia, com atuação no desenvolvimento
@@ -96,27 +97,34 @@ export function ThoughtsSection({ onSelectArticle, onViewAllArticles }: Thoughts
           </Reveal>
         ))}
 
-        {/* Card escuro de síntese preservando o formato All Posts Card */}
+        {/* Card de síntese: grafite em repouso -> off-white quente #F1EFE9 no hover */}
         <Reveal delay={0.16} className="md:col-span-2 lg:col-span-1">
-          <div className="flex h-full min-h-[460px] flex-col justify-between gap-6 rounded-2xl bg-[#111111] p-6 text-[#faf7f3] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[#161616] hover:shadow-[0_22px_46px_-24px_rgba(17,17,17,0.3)]">
-            <div className="text-[13px] text-[#faf7f3]/55">
-              <span>Visão de Negócio</span>
-            </div>
+          <div className="card-interactive group/card flex h-full min-h-[460px] flex-col justify-between gap-6 rounded-2xl border border-[#252525] bg-[#151515] p-6 text-[#f2f2f2] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#e2dfd7] hover:bg-[#f1efe9] hover:shadow-[0_26px_54px_-24px_rgba(0,0,0,0.85)]">
+            <div className="card-hover-content flex flex-1 flex-col justify-between gap-6">
+              <div className="text-[13px] text-[#8e8e8e] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:text-[#52524e]">
+                <span>Visão de Negócio</span>
+              </div>
 
-            <div className="my-auto flex flex-col gap-4">
-              <p className="text-[18px] md:text-[19px] font-medium leading-[1.4] tracking-[-0.02em] text-[#faf7f3]">
-                Tenho interesse especial em entender como as empresas funcionam: como conquistam
-                clientes, organizam suas operações, tomam decisões e encontram oportunidades de
-                crescimento.
-              </p>
-              <p className="text-[15px] leading-[1.5] tracking-[-0.02em] text-[#faf7f3]/75">
-                Acredito que boas soluções não dependem apenas de conhecimento técnico. Dependem,
-                principalmente, da capacidade de compreender o contexto e fazer as escolhas certas.
-              </p>
+              <div className="my-auto flex flex-col gap-4">
+                <p className="text-[18px] md:text-[19px] font-medium leading-[1.45] tracking-[-0.02em] text-[#f2f2f2] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:text-[#111111]">
+                  Tenho interesse especial em entender como as empresas funcionam: como conquistam
+                  clientes, organizam suas operações, tomam decisões e encontram oportunidades de
+                  crescimento.
+                </p>
+                <p className="text-[15px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:text-[#3a3a38]">
+                  Acredito que boas soluções não dependem apenas de conhecimento técnico. Dependem,
+                  principalmente, da capacidade de compreender o contexto e fazer as escolhas certas.
+                </p>
+              </div>
             </div>
 
             <div>
-              <ArrowButton label="Conhecer visão completa" onClick={onViewAllArticles} variant="light" />
+              <ArrowButton
+                label="Conhecer visão completa"
+                onClick={onViewAllArticles}
+                variant="primary"
+                adaptToCardHover
+              />
             </div>
           </div>
         </Reveal>

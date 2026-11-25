@@ -71,7 +71,7 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="min-h-screen bg-[#faf7f3] text-[#111111]">
+      <div className="min-h-screen bg-[#080808] text-[#f2f2f2]">
         <ScrollProgressBar />
         <Navbar route={route} onNavigate={navigate} />
 

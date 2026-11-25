@@ -27,7 +27,7 @@ export function WorkDetailPage({ slug, onBack, onSelectProject }: WorkDetailPage
       <button
         type="button"
         onClick={onBack}
-        className="group mb-10 inline-flex items-center gap-2 text-[15px] font-medium text-[#111111]/65 transition-colors duration-300 hover:text-[#111111] cursor-pointer"
+        className="group mb-10 inline-flex items-center gap-2 text-[15px] font-medium text-[#a1a1a1] transition-colors duration-300 hover:text-[#f5f5f5] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f5f5f5]"
       >
         <ArrowLeft className="h-4 w-4 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-x-1" />
         <span>Todos os projetos</span>
@@ -35,35 +35,35 @@ export function WorkDetailPage({ slug, onBack, onSelectProject }: WorkDetailPage
 
       <div className="mb-12 flex flex-col gap-8">
         <Reveal>
-          <h1 className="type-display-lg text-[#111111]">{project.title}</h1>
+          <h1 className="type-display-lg text-[#f5f5f5]">{project.title}</h1>
         </Reveal>
 
         <HairlineRule />
         <Reveal delay={0.06}>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 py-2 text-[15px] text-[#111111]/75">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 py-2 text-[15px] text-[#a1a1a1]">
             <div>
-              <span className="mr-2 text-[#111111]/45">Frente</span>
-              <span className="font-medium text-[#111111]">{project.category}</span>
+              <span className="mr-2 text-[#8e8e8e]">Frente</span>
+              <span className="font-medium text-[#f5f5f5]">{project.category}</span>
             </div>
-            <span aria-hidden="true" className="text-[#111111]/25">
+            <span aria-hidden="true" className="text-[#404040]">
               /
             </span>
             <div>
-              <span className="mr-2 text-[#111111]/45">Escopo</span>
-              <span className="font-medium text-[#111111]">{project.scope}</span>
+              <span className="mr-2 text-[#8e8e8e]">Escopo</span>
+              <span className="font-medium text-[#f5f5f5]">{project.scope}</span>
             </div>
           </div>
         </Reveal>
         <HairlineRule />
 
         <Reveal delay={0.1}>
-          <p className="max-w-[780px] text-[20px] md:text-[22px] font-normal leading-[1.45] tracking-[-0.02em] text-[#111111]/85">
+          <p className="max-w-[780px] text-[20px] md:text-[22px] font-normal leading-[1.5] tracking-[-0.015em] text-[#d4d4d4]">
             {project.summary}
           </p>
         </Reveal>
       </div>
 
-      <div className="mb-16 aspect-[16/10] w-full overflow-hidden rounded-2xl border border-[#111111]/10 bg-[#efeae2]">
+      <div className="mb-16 aspect-[16/10] w-full overflow-hidden rounded-2xl border border-[#252525] bg-[#121212]">
         <SafeImage
           src={project.image}
           alt={project.title}
@@ -77,11 +77,11 @@ export function WorkDetailPage({ slug, onBack, onSelectProject }: WorkDetailPage
       <div className="mx-auto flex max-w-[760px] flex-col gap-10 pb-20">
         {structuredBlocks.map((block, idx) => (
           <Reveal key={block.heading} delay={idx * 0.06}>
-            <section className="flex flex-col gap-3 border-b border-[#111111]/10 pb-8 last:border-b-0">
-              <h2 className="text-[26px] md:text-[30px] font-semibold tracking-[-0.02em] text-[#111111]">
+            <section className="flex flex-col gap-3 border-b border-[#252525] pb-8 last:border-b-0">
+              <h2 className="text-[26px] md:text-[30px] font-semibold tracking-[-0.02em] text-[#f5f5f5]">
                 {block.heading}
               </h2>
-              <p className="text-[17px] leading-[1.6] tracking-[-0.01em] text-[#111111]/80">
+              <p className="text-[17px] leading-[1.65] tracking-[-0.01em] text-[#a1a1a1]">
                 {block.text}
               </p>
             </section>
@@ -92,7 +92,7 @@ export function WorkDetailPage({ slug, onBack, onSelectProject }: WorkDetailPage
       <HairlineRule />
       <div className="pt-16">
         <Reveal>
-          <h2 className="type-card-h3 mb-8 text-[#111111]">Outros Projetos</h2>
+          <h2 className="type-card-h3 mb-8 text-[#f5f5f5]">Outros Projetos</h2>
         </Reveal>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {related.map((item, idx) => (

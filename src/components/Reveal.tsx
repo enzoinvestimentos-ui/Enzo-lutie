@@ -59,7 +59,7 @@ export function HairlineRule({
   const prefersReducedMotion = useReducedMotion();
 
   if (prefersReducedMotion) {
-    return <div className={`h-px w-full bg-[#111111]/10 ${className}`} aria-hidden="true" />;
+    return <div className={`h-px w-full bg-[#252525] ${className}`} aria-hidden="true" />;
   }
 
   return (
@@ -69,7 +69,7 @@ export function HairlineRule({
       viewport={{ once: true, amount: 'some' }}
       transition={{ duration: 0.85, delay, ease: EDITORIAL_EASE }}
       style={{ transformOrigin: 'left center' }}
-      className={`h-px w-full bg-[#111111]/10 ${className}`}
+      className={`h-px w-full bg-[#252525] ${className}`}
       aria-hidden="true"
     />
   );
@@ -90,7 +90,7 @@ export function ScrollProgressBar() {
     <motion.div
       aria-hidden="true"
       style={{ scaleX, transformOrigin: 'left center' }}
-      className="fixed top-0 left-0 right-0 z-50 h-[2px] bg-[#eb4d6d] pointer-events-none"
+      className="fixed top-0 left-0 right-0 z-50 h-[2px] bg-[#f2f2f2]/80 pointer-events-none"
     />
   );
 }

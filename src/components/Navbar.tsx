@@ -70,8 +70,8 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
         ref={containerRef}
         className={`pointer-events-auto w-full max-w-[1180px] rounded-2xl border backdrop-blur-md px-5 py-3 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           scrolled
-            ? 'border-[#111111]/15 bg-[#faf7f3]/92 shadow-[0_10px_30px_-18px_rgba(17,17,17,0.22)]'
-            : 'border-[#111111]/10 bg-[#faf7f3]/82'
+            ? 'border-[#2c2c2c] bg-[#0b0b0b]/92 shadow-[0_14px_38px_-18px_rgba(0,0,0,0.85)]'
+            : 'border-[#252525] bg-[#0b0b0b]/78'
         }`}
       >
         <div className="flex items-center justify-between gap-8">
@@ -82,7 +82,7 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
               e.preventDefault();
               handleNav('/', '#hero-section');
             }}
-            className="group text-[18px] font-bold tracking-[-0.03em] text-[#111111] whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#eb4d6d]"
+            className="group text-[18px] font-bold tracking-[-0.03em] text-[#f5f5f5] whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f5f5f5]"
           >
             <RollingText text="Enzo Lutiê" />
           </a>
@@ -90,7 +90,7 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
           {/* Zona 2: Links de navegação em linha única */}
           <nav
             aria-label="Navegação principal"
-            className="hidden md:flex items-center gap-7 text-[15px] font-medium tracking-[-0.02em] text-[#111111]/80"
+            className="hidden md:flex items-center gap-7 text-[15px] font-medium tracking-[-0.02em] text-[#a1a1a1]"
           >
             {navItems.map((item) => {
               const isActive =
@@ -102,8 +102,8 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
                   key={item.label}
                   type="button"
                   onClick={() => handleNav(item.path, item.hash)}
-                  className={`group relative cursor-pointer whitespace-nowrap shrink-0 transition-colors hover:text-[#111111] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#eb4d6d] ${
-                    isActive ? 'text-[#eb4d6d]' : ''
+                  className={`group relative cursor-pointer whitespace-nowrap shrink-0 transition-colors hover:text-[#f5f5f5] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f5f5f5] ${
+                    isActive ? 'text-[#f5f5f5]' : ''
                   }`}
                 >
                   <RollingText text={item.label} />
@@ -112,7 +112,7 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
                       layoutId="nav-active-indicator"
                       transition={{ duration: 0.45, ease: EDITORIAL_EASE }}
                       aria-hidden="true"
-                      className="absolute -bottom-1 left-0 right-0 h-[1.5px] bg-[#eb4d6d]"
+                      className="absolute -bottom-1 left-0 right-0 h-[1.5px] bg-[#f5f5f5]"
                     />
                   )}
                 </button>
@@ -125,7 +125,7 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
             <button
               type="button"
               onClick={() => handleNav('/', '#contact')}
-              className="group hidden md:inline-flex items-center justify-center rounded-full bg-[#111111] px-4 py-2 text-[14px] font-medium tracking-[-0.02em] text-[#faf7f3] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[#eb4d6d] active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#eb4d6d]"
+              className="group hidden md:inline-flex items-center justify-center rounded-full bg-[#f5f5f5] px-4 py-2 text-[14px] font-medium tracking-[-0.02em] text-[#080808] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[#ffffff] active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f5f5f5]"
             >
               <RollingText text="Vamos conversar" />
             </button>
@@ -135,20 +135,20 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
               onClick={() => setMenuOpen((prev) => !prev)}
               aria-expanded={menuOpen}
               aria-label={menuOpen ? 'Fechar menu de navegação' : 'Abrir menu de navegação'}
-              className="md:hidden inline-flex h-10 w-10 flex-col items-center justify-center gap-[5px] rounded-xl border border-[#111111]/10 bg-[#faf7f3] transition-colors duration-300 hover:border-[#111111]/30 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#eb4d6d]"
+              className="md:hidden inline-flex h-10 w-10 flex-col items-center justify-center gap-[5px] rounded-xl border border-[#252525] bg-[#121212] transition-colors duration-300 hover:border-[#3a3a3a] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f5f5f5]"
             >
               <span
-                className={`h-[1.5px] w-5 bg-[#111111] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                className={`h-[1.5px] w-5 bg-[#f5f5f5] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                   menuOpen ? 'translate-y-[6.5px] rotate-45' : ''
                 }`}
               />
               <span
-                className={`h-[1.5px] w-5 bg-[#111111] transition-opacity duration-300 ${
+                className={`h-[1.5px] w-5 bg-[#f5f5f5] transition-opacity duration-300 ${
                   menuOpen ? 'opacity-0' : 'opacity-100'
                 }`}
               />
               <span
-                className={`h-[1.5px] w-5 bg-[#111111] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                className={`h-[1.5px] w-5 bg-[#f5f5f5] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                   menuOpen ? '-translate-y-[6.5px] -rotate-45' : ''
                 }`}
               />
@@ -165,7 +165,7 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
               exit={{ opacity: 0, y: -6, filter: 'blur(3px)' }}
               transition={{ duration: 0.34, ease: EDITORIAL_EASE }}
               aria-label="Navegação móvel"
-              className="md:hidden mt-3 border-t border-[#111111]/10 pt-3 pb-2 flex flex-col gap-1"
+              className="md:hidden mt-3 border-t border-[#252525] pt-3 pb-2 flex flex-col gap-1"
             >
               {navItems.map((item, idx) => (
                 <motion.button
@@ -175,7 +175,7 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.32, delay: idx * 0.04, ease: EDITORIAL_EASE }}
                   onClick={() => handleNav(item.path, item.hash)}
-                  className="w-full text-left py-2.5 px-2 text-[17px] font-medium tracking-[-0.02em] text-[#111111] hover:text-[#eb4d6d] transition-colors duration-300 cursor-pointer"
+                  className="w-full text-left py-2.5 px-2 text-[17px] font-medium tracking-[-0.02em] text-[#e5e5e5] hover:text-[#ffffff] transition-colors duration-300 cursor-pointer"
                 >
                   {item.label}
                 </motion.button>
@@ -183,7 +183,7 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
               <button
                 type="button"
                 onClick={() => handleNav('/', '#contact')}
-                className="mt-2 w-full rounded-full bg-[#111111] py-3 text-center text-[15px] font-medium text-[#faf7f3] hover:bg-[#eb4d6d] transition-colors duration-300 cursor-pointer"
+                className="mt-2 w-full rounded-full bg-[#f5f5f5] py-3 text-center text-[15px] font-medium text-[#080808] hover:bg-[#ffffff] transition-colors duration-300 cursor-pointer"
               >
                 Vamos conversar
               </button>

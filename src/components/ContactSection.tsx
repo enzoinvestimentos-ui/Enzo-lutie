@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FocusEvent, type FormEvent } from 'react';
 import { Check, Mail } from 'lucide-react';
 import { Reveal } from './Reveal';
 import { RollingText } from './RollingText';
@@ -9,6 +9,25 @@ export function ContactSection() {
   const [project, setProject] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
+  const [isHovered, setIsHovered] = useState(false);
+  const [isFocusedWithin, setIsFocusedWithin] = useState(false);
+  const [isFinePointer, setIsFinePointer] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const update = () => setIsFinePointer(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
+  const isEngaged = (isFinePointer && isHovered) || isFocusedWithin;
+
+  const handleCardBlur = (e: FocusEvent<HTMLDivElement>) => {
+    if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+      setIsFocusedWithin(false);
+    }
+  };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -56,13 +75,13 @@ export function ContactSection() {
         <div className="flex flex-1 flex-col justify-between gap-10">
           <div className="flex flex-col gap-5">
             <Reveal>
-              <h2 className="type-display-lg text-[#111111]">
+              <h2 className="type-display-lg text-[#f2f2f2]">
                 Vamos entender o que seu negócio precisa.
               </h2>
             </Reveal>
 
             <Reveal delay={0.08}>
-              <div className="flex max-w-[520px] flex-col gap-4 text-[17px] leading-[1.5] tracking-[-0.02em] text-[#111111]/75">
+              <div className="flex max-w-[520px] flex-col gap-4 text-[17px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]">
                 <p>
                   Talvez seja a maneira como seus clientes conhecem seus serviços. Um processo
                   comercial que precisa de organização. Uma operação que depende de tarefas manuais.
@@ -73,7 +92,7 @@ export function ContactSection() {
                   O primeiro passo é entender o cenário, identificar o que precisa mudar e descobrir
                   quais caminhos realmente fazem sentido.
                 </p>
-                <p className="font-medium text-[#111111]">
+                <p className="font-medium text-[#f2f2f2]">
                   Se existe algo na sua empresa que precisa ser compreendido, organizado ou
                   desenvolvido, podemos começar por uma conversa.
                 </p>
@@ -90,7 +109,7 @@ export function ContactSection() {
                   target={social.isAnchor ? undefined : '_blank'}
                   rel={social.isAnchor ? undefined : 'noopener noreferrer'}
                   aria-label={social.name}
-                  className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#111111]/15 bg-[#faf7f3] text-[#111111] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#111111] hover:bg-[#111111] hover:text-[#faf7f3] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#eb4d6d]"
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#2a2a2a] bg-[#111111] text-[#f2f2f2] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#f1efe9] hover:bg-[#f1efe9] hover:text-[#111111] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f2f2f2]"
                 >
                   {social.icon}
                 </a>
@@ -99,18 +118,42 @@ export function ContactSection() {
           </Reveal>
         </div>
 
-        {/* Coluna Direita: Formulário escuro */}
+        {/* Coluna Direita: Formulário editorial (escuro em repouso -> off-white quente #F1EFE9 no hover/foco) */}
         <Reveal delay={0.12} className="flex-1">
-          <div className="rounded-2xl bg-[#111111] p-7 md:p-9 text-[#faf7f3]">
+          <div
+            onMouseEnter={() => {
+              if (isFinePointer) setIsHovered(true);
+            }}
+            onMouseLeave={() => setIsHovered(false)}
+            onFocus={() => setIsFocusedWithin(true)}
+            onBlur={handleCardBlur}
+            className={`rounded-2xl border p-7 md:p-9 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              isEngaged
+                ? 'border-[#e2dfd7] bg-[#f1efe9] text-[#111111] shadow-[0_28px_60px_-24px_rgba(0,0,0,0.85)]'
+                : 'border-[#252525] bg-[#121212] text-[#f2f2f2]'
+            }`}
+          >
             {submitted ? (
               <div className="flex min-h-[380px] flex-col items-start justify-center gap-4">
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#eb4d6d] text-[#faf7f3]">
+                <span
+                  className={`inline-flex h-11 w-11 items-center justify-center rounded-full transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    isEngaged ? 'bg-[#111111] text-[#f1efe9]' : 'bg-[#f2f2f2] text-[#080808]'
+                  }`}
+                >
                   <Check className="h-5 w-5" />
                 </span>
-                <h3 className="text-[28px] font-semibold tracking-[-0.02em]">
+                <h3
+                  className={`text-[28px] font-semibold tracking-[-0.02em] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    isEngaged ? 'text-[#111111]' : 'text-[#f2f2f2]'
+                  }`}
+                >
                   Conversa iniciada.
                 </h3>
-                <p className="max-w-[400px] text-[16px] leading-[1.55] text-[#faf7f3]/75">
+                <p
+                  className={`max-w-[400px] text-[16px] leading-[1.55] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    isEngaged ? 'text-[#3f3f3c]' : 'text-[#a1a1a1]'
+                  }`}
+                >
                   Obrigado, {name}. Suas informações foram registradas para entendermos o cenário e
                   os próximos passos da sua empresa.
                 </p>
@@ -122,7 +165,11 @@ export function ContactSection() {
                     setEmail('');
                     setProject('');
                   }}
-                  className="mt-2 rounded-full border border-[#faf7f3]/25 px-5 py-2.5 text-[14px] font-medium text-[#faf7f3] transition-colors hover:bg-[#faf7f3] hover:text-[#111111] cursor-pointer"
+                  className={`mt-2 cursor-pointer rounded-full border px-5 py-2.5 text-[14px] font-medium transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    isEngaged
+                      ? 'border-[#c7c2b7] text-[#111111] hover:border-[#111111] hover:bg-[#111111] hover:text-[#f1efe9]'
+                      : 'border-[#2a2a2a] text-[#f2f2f2] hover:border-[#f1efe9] hover:bg-[#f1efe9] hover:text-[#111111]'
+                  }`}
                 >
                   Enviar nova mensagem
                 </button>
@@ -130,7 +177,12 @@ export function ContactSection() {
             ) : (
               <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="contact-name" className="text-[14px] font-medium text-[#faf7f3]/70">
+                  <label
+                    htmlFor="contact-name"
+                    className={`text-[14px] font-medium transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                      isEngaged ? 'text-[#3f3f3c]' : 'text-[#a1a1a1]'
+                    }`}
+                  >
                     Nome
                   </label>
                   <input
@@ -140,12 +192,21 @@ export function ContactSection() {
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Seu nome"
                     required
-                    className="w-full rounded-xl border border-[#faf7f3]/20 bg-transparent px-4 py-3.5 text-[16px] text-[#faf7f3] placeholder:text-[#faf7f3]/35 transition-colors duration-200 focus:border-[#faf7f3] focus:outline-none"
+                    className={`w-full rounded-xl border px-4 py-3.5 text-[16px] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] focus:outline-none ${
+                      isEngaged
+                        ? 'border-[#d0ccc2] bg-[#faf9f5] text-[#111111] placeholder:text-[#6e6e6a] focus:border-[#111111]'
+                        : 'border-[#262626] bg-[#0b0b0b] text-[#f2f2f2] placeholder:text-[#6e6e6e] focus:border-[#f2f2f2]'
+                    }`}
                   />
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="contact-email" className="text-[14px] font-medium text-[#faf7f3]/70">
+                  <label
+                    htmlFor="contact-email"
+                    className={`text-[14px] font-medium transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                      isEngaged ? 'text-[#3f3f3c]' : 'text-[#a1a1a1]'
+                    }`}
+                  >
                     E-mail
                   </label>
                   <input
@@ -155,12 +216,21 @@ export function ContactSection() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="voce@empresa.com.br"
                     required
-                    className="w-full rounded-xl border border-[#faf7f3]/20 bg-transparent px-4 py-3.5 text-[16px] text-[#faf7f3] placeholder:text-[#faf7f3]/35 transition-colors duration-200 focus:border-[#faf7f3] focus:outline-none"
+                    className={`w-full rounded-xl border px-4 py-3.5 text-[16px] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] focus:outline-none ${
+                      isEngaged
+                        ? 'border-[#d0ccc2] bg-[#faf9f5] text-[#111111] placeholder:text-[#6e6e6a] focus:border-[#111111]'
+                        : 'border-[#262626] bg-[#0b0b0b] text-[#f2f2f2] placeholder:text-[#6e6e6e] focus:border-[#f2f2f2]'
+                    }`}
                   />
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="contact-project" className="text-[14px] font-medium text-[#faf7f3]/70">
+                  <label
+                    htmlFor="contact-project"
+                    className={`text-[14px] font-medium transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                      isEngaged ? 'text-[#3f3f3c]' : 'text-[#a1a1a1]'
+                    }`}
+                  >
                     Cenário ou projeto
                   </label>
                   <textarea
@@ -170,19 +240,32 @@ export function ContactSection() {
                     onChange={(e) => setProject(e.target.value)}
                     placeholder="Conte sobre o momento da empresa, desafios ou o que precisa ser estruturado..."
                     required
-                    className="w-full resize-none rounded-xl border border-[#faf7f3]/20 bg-transparent px-4 py-3.5 text-[16px] text-[#faf7f3] placeholder:text-[#faf7f3]/35 transition-colors duration-200 focus:border-[#faf7f3] focus:outline-none"
+                    className={`w-full resize-none rounded-xl border px-4 py-3.5 text-[16px] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] focus:outline-none ${
+                      isEngaged
+                        ? 'border-[#d0ccc2] bg-[#faf9f5] text-[#111111] placeholder:text-[#6e6e6a] focus:border-[#111111]'
+                        : 'border-[#262626] bg-[#0b0b0b] text-[#f2f2f2] placeholder:text-[#6e6e6e] focus:border-[#f2f2f2]'
+                    }`}
                   />
                 </div>
 
                 {error && (
-                  <p role="alert" className="text-[14px] font-medium text-[#eb4d6d]">
+                  <p
+                    role="alert"
+                    className={`text-[14px] font-medium transition-colors duration-300 ${
+                      isEngaged ? 'text-[#991b1b]' : 'text-[#fca5a5]'
+                    }`}
+                  >
                     {error}
                   </p>
                 )}
 
                 <button
                   type="submit"
-                  className="group mt-1 inline-flex w-full items-center justify-center rounded-xl bg-[#faf7f3] py-3.5 text-[16px] font-semibold tracking-[-0.02em] text-[#111111] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[#eb4d6d] hover:text-[#faf7f3] active:scale-[0.99] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#eb4d6d]"
+                  className={`group mt-1 inline-flex w-full cursor-pointer items-center justify-center rounded-xl py-3.5 text-[16px] font-semibold tracking-[-0.02em] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-2 ${
+                    isEngaged
+                      ? 'bg-[#111111] text-[#f1efe9] hover:bg-[#222222] focus-visible:outline-[#111111]'
+                      : 'bg-[#f2f2f2] text-[#080808] hover:bg-[#ffffff] focus-visible:outline-[#f2f2f2]'
+                  }`}
                 >
                   <RollingText text="Iniciar uma conversa" />
                 </button>

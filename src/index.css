@@ -2,28 +2,31 @@
 
 @theme {
   --font-sans: "Archivo", ui-sans-serif, system-ui, sans-serif;
-  --color-canvas: #faf7f3;
-  --color-ink: #111111;
-  --color-accent: #eb4d6d;
+  --color-canvas: #080808;
+  --color-surface: #121212;
+  --color-surface-elevated: #151515;
+  --color-surface-hover: #f1efe9;
+  --color-ink: #f2f2f2;
+  --color-ink-muted: #a1a1a1;
+  --color-border-subtle: #252525;
 }
 
 @layer base {
   :root {
-    --token-canvas: #faf7f3;
-    --token-ink: #111111;
-    --token-ink-muted: rgba(17, 17, 17, 0.55);
-    --token-border: rgba(17, 17, 17, 0.1);
-    --token-light-90: rgba(250, 247, 243, 0.9);
-    --token-light-50: rgba(250, 247, 243, 0.5);
-    --token-light-30: rgba(250, 247, 243, 0.3);
-    --token-light-10: rgba(250, 247, 243, 0.1);
-    --token-accent: #eb4d6d;
+    --token-canvas: #080808;
+    --token-surface: #121212;
+    --token-surface-elevated: #151515;
+    --token-surface-hover: #f1efe9;
+    --token-ink: #f2f2f2;
+    --token-ink-muted: #a1a1a1;
+    --token-border: #252525;
+    color-scheme: dark;
   }
 
   html {
     font-family: "Archivo", ui-sans-serif, system-ui, sans-serif;
-    background-color: #faf7f3;
-    color: #111111;
+    background-color: #080808;
+    color: #f2f2f2;
     scroll-behavior: smooth;
   }
 
@@ -122,6 +125,28 @@
   -webkit-backface-visibility: hidden;
 }
 
+/* Subtle transient micro-blur during dark -> off-white card transitions */
+@keyframes card-hover-soften {
+  0% {
+    filter: blur(0px);
+    opacity: 1;
+  }
+  35% {
+    filter: blur(1px);
+    opacity: 0.94;
+  }
+  100% {
+    filter: blur(0px);
+    opacity: 1;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card-interactive:hover .card-hover-content {
+    animation: card-hover-soften 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -132,5 +157,8 @@
   .group:hover .rolling-char-track,
   .rolling-link:hover .rolling-char-track {
     transform: none;
+  }
+  .card-interactive:hover .card-hover-content {
+    animation: none;
   }
 }

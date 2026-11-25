@@ -54,7 +54,7 @@ export function QuoteSection() {
         className="relative mx-auto w-full max-w-[1180px] px-6 py-24 lg:h-[150vh] lg:py-0"
       >
         <div className="flex flex-col items-start justify-center gap-8 lg:sticky lg:top-0 lg:h-screen">
-          <p className="type-manifesto max-w-[840px] text-[#111111]">
+          <p className="type-manifesto max-w-[840px] text-[#f5f5f5]">
             {prefersReducedMotion
               ? QUOTE_TEXT
               : words.map((word, index) => {
@@ -72,7 +72,7 @@ export function QuoteSection() {
           </p>
 
           <Reveal delay={0.1}>
-            <p className="max-w-[740px] text-[18px] md:text-[20px] leading-[1.5] tracking-[-0.02em] text-[#111111]/75">
+            <p className="max-w-[740px] text-[18px] md:text-[20px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]">
               Cada empresa possui uma realidade, uma estrutura e um momento diferentes. Por isso,
               antes de definir o que precisa ser feito, procuro compreender o contexto e identificar
               onde uma mudança pode gerar valor.
@@ -86,7 +86,7 @@ export function QuoteSection() {
         <HairlineRule />
         <div className="pt-14">
           <Reveal>
-            <h3 className="text-[26px] md:text-[32px] font-medium tracking-[-0.02em] text-[#111111] mb-8">
+            <h3 className="text-[26px] md:text-[32px] font-medium tracking-[-0.02em] text-[#f5f5f5] mb-8">
               Minha abordagem passa por quatro etapas:
             </h3>
           </Reveal>
@@ -94,13 +94,15 @@ export function QuoteSection() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
             {APPROACH_STEPS.map((step, index) => (
               <Reveal key={step.number} delay={index * 0.08} className="h-full">
-                <div className="group flex h-full flex-col justify-between gap-6 rounded-2xl border border-[#111111]/10 bg-[#f4efe7] p-6 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#111111]/25 hover:bg-[#efe8dc] hover:shadow-[0_14px_32px_-20px_rgba(17,17,17,0.16)]">
-                  <span className="text-[14px] font-semibold tabular-nums text-[#eb4d6d] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0.5">
-                    {step.number}.
-                  </span>
-                  <p className="text-[16px] leading-[1.5] tracking-[-0.02em] text-[#111111]/85">
-                    {step.description}
-                  </p>
+                <div className="card-interactive group flex h-full flex-col justify-between gap-6 rounded-2xl border border-[#252525] bg-[#121212] p-6 transition-[background-color,border-color,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#e2dfd7] hover:bg-[#f1efe9]">
+                  <div className="card-hover-content flex h-full flex-col justify-between gap-6">
+                    <span className="text-[14px] font-semibold tabular-nums text-[#f2f2f2]/80 transition-[color,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0.5 group-hover:text-[#111111]">
+                      {step.number}.
+                    </span>
+                    <p className="text-[16px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:text-[#262626]">
+                      {step.description}
+                    </p>
+                  </div>
                 </div>
               </Reveal>
             ))}

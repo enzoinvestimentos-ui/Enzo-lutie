@@ -21,24 +21,24 @@ export function Footer({ onNavigate }: FooterProps) {
         <div className="grid grid-cols-1 gap-10 md:grid-cols-12">
           {/* Assinatura e posicionamento à esquerda */}
           <Reveal className="md:col-span-5 flex flex-col gap-3">
-            <p className="max-w-[340px] text-[22px] md:text-[26px] font-medium leading-[1.2] tracking-[-0.02em] text-[#111111]">
+            <p className="max-w-[340px] text-[22px] md:text-[26px] font-medium leading-[1.2] tracking-[-0.02em] text-[#f5f5f5]">
               Negócios primeiro. Tecnologia com propósito.
             </p>
-            <p className="text-[16px] tracking-[-0.02em] text-[#111111]/65">
+            <p className="text-[16px] tracking-[-0.015em] text-[#a1a1a1]">
               Estratégia, processos e soluções digitais.
             </p>
           </Reveal>
 
           {/* Links Rápidos */}
           <Reveal delay={0.08} className="md:col-span-4 flex flex-col gap-4">
-            <span className="text-[14px] font-medium text-[#111111]/50">/Navegação</span>
+            <span className="text-[14px] font-medium text-[#8e8e8e]">/Navegação</span>
             <ul className="flex flex-col gap-2.5">
               {quickLinks.map((link) => (
                 <li key={link.label}>
                   <button
                     type="button"
                     onClick={() => onNavigate(link.path, link.hash)}
-                    className="group text-[16px] font-normal tracking-[-0.02em] text-[#111111] hover:text-[#eb4d6d] transition-colors cursor-pointer"
+                    className="group text-[16px] font-normal tracking-[-0.015em] text-[#d4d4d4] hover:text-[#ffffff] transition-colors cursor-pointer"
                   >
                     <RollingText text={link.label} />
                   </button>
@@ -49,34 +49,34 @@ export function Footer({ onNavigate }: FooterProps) {
 
           {/* Canais */}
           <Reveal delay={0.14} className="md:col-span-3 flex flex-col gap-4">
-            <span className="text-[14px] font-medium text-[#111111]/50">/Canais</span>
-            <div className="flex flex-wrap items-center gap-2 text-[16px] font-medium tracking-[-0.02em] text-[#111111]">
+            <span className="text-[14px] font-medium text-[#8e8e8e]">/Canais</span>
+            <div className="flex flex-wrap items-center gap-2 text-[16px] font-medium tracking-[-0.015em] text-[#d4d4d4]">
               <a
                 href="https://www.linkedin.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group transition-colors hover:text-[#eb4d6d]"
+                className="group transition-colors hover:text-[#ffffff]"
               >
                 <RollingText text="LinkedIn" />
               </a>
-              <span aria-hidden="true" className="text-[#111111]/35">
+              <span aria-hidden="true" className="text-[#525252]">
                 ·
               </span>
               <a
                 href="https://www.instagram.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group transition-colors hover:text-[#eb4d6d]"
+                className="group transition-colors hover:text-[#ffffff]"
               >
                 <RollingText text="Instagram" />
               </a>
-              <span aria-hidden="true" className="text-[#111111]/35">
+              <span aria-hidden="true" className="text-[#525252]">
                 ·
               </span>
               <button
                 type="button"
                 onClick={() => onNavigate('/', '#contact')}
-                className="group transition-colors hover:text-[#eb4d6d] cursor-pointer"
+                className="group transition-colors hover:text-[#ffffff] cursor-pointer"
               >
                 <RollingText text="E-mail" />
               </button>
@@ -89,11 +89,11 @@ export function Footer({ onNavigate }: FooterProps) {
       <HairlineRule />
       <div className="pt-8 flex flex-col gap-5">
         <Reveal y={18} blur={6} duration={0.95}>
-          <div className="type-display-xl select-none tracking-[-0.03em] text-[#111111]">
+          <div className="type-display-xl select-none tracking-[-0.03em] text-[#f5f5f5]">
             ESTRATÉGIA
           </div>
         </Reveal>
-        <div className="flex flex-wrap items-center justify-between gap-4 text-[13px] text-[#111111]/55">
+        <div className="flex flex-wrap items-center justify-between gap-4 text-[13px] text-[#8e8e8e]">
           <span>© 2026 — Todos os direitos reservados.</span>
           <span>Estratégia, processos e soluções digitais.</span>
         </div>

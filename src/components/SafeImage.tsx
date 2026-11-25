@@ -26,7 +26,7 @@ export function SafeImage({
   if (failed || !src) {
     return (
       <div
-        className={`flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-[#e9e4dc] via-[#dfd8cd] to-[#d5cdc0] p-6 text-center text-[#111111]/70 ${className}`}
+        className={`flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-[#161616] via-[#121212] to-[#0d0d0d] p-6 text-center text-[#a1a1a1] ${className}`}
         role="img"
         aria-label={alt}
       >
