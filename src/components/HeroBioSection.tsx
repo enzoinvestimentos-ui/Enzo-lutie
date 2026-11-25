@@ -11,10 +11,10 @@ import { ArrowButton } from './ArrowButton';
 import { RollingText } from './RollingText';
 import { SafeImage } from './SafeImage';
 import { Reveal, HairlineRule, EDITORIAL_EASE } from './Reveal';
-import { HERO_MEDIA } from '../data/portfolioData';
+import { HERO_MEDIA, WHATSAPP_CONTACT_URL } from '../data/portfolioData';
 
 interface HeroBioSectionProps {
-  onGetStarted: () => void;
+  onGetStarted?: () => void;
   onExploreProjects: () => void;
 }
 
@@ -112,7 +112,7 @@ function MobileFlipPortrait({ mode }: { mode: 'hero' | 'bio' }) {
   );
 }
 
-export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSectionProps) {
+export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const [manualFlipped, setManualFlipped] = useState(false);
@@ -301,7 +301,7 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
               transition={{ duration: 0.48, delay: 0.12, ease: EDITORIAL_EASE }}
               className="flex flex-wrap items-center gap-3.5 pt-1 md:gap-4 md:pt-2"
             >
-              <ArrowButton label="Vamos conversar" onClick={onGetStarted} variant="primary" />
+              <ArrowButton label="Vamos conversar" href={WHATSAPP_CONTACT_URL} variant="primary" />
               <button
                 type="button"
                 onClick={onExploreProjects}
@@ -416,7 +416,7 @@ export function HeroBioSection({ onGetStarted, onExploreProjects }: HeroBioSecti
             </Reveal>
 
             <Reveal delay={0.16} className="pt-1">
-              <ArrowButton label="Vamos conversar" onClick={onGetStarted} variant="primary" />
+              <ArrowButton label="Vamos conversar" href={WHATSAPP_CONTACT_URL} variant="primary" />
             </Reveal>
           </div>
         </div>

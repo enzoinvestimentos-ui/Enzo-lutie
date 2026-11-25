@@ -61,6 +61,9 @@ export const HERO_MEDIA = {
   backAvatar: '/foto-verso.jpg.PNG',
 };
 
+export const WHATSAPP_CONTACT_URL =
+  'https://api.whatsapp.com/send?phone=5551984049837&text=Fala%20Luti%C3%AA%2C%20tudo%20bem%3F%20';
+
 export const APPROACH_STEPS: ApproachStep[] = [
   {
     number: '01',

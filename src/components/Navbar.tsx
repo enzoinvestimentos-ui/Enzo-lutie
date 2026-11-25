@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { RollingText } from './RollingText';
 import { EDITORIAL_EASE } from './Reveal';
+import { WHATSAPP_CONTACT_URL } from '../data/portfolioData';
 
 export type RoutePath =
   | { page: 'home' }
@@ -122,13 +123,14 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
 
           {/* Zona 3: Ação principal + Menu hambúrguer */}
           <div className="flex items-center gap-3 shrink-0">
-            <button
-              type="button"
-              onClick={() => handleNav('/', '#contact')}
+            <a
+              href={WHATSAPP_CONTACT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="group hidden md:inline-flex items-center justify-center rounded-full bg-[#f5f5f5] px-4 py-2 text-[14px] font-medium tracking-[-0.02em] text-[#080808] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[#ffffff] active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f5f5f5]"
             >
               <RollingText text="Vamos conversar" />
-            </button>
+            </a>
 
             <button
               type="button"
@@ -180,13 +182,15 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
                   {item.label}
                 </motion.button>
               ))}
-              <button
-                type="button"
-                onClick={() => handleNav('/', '#contact')}
+              <a
+                href={WHATSAPP_CONTACT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMenuOpen(false)}
                 className="mt-2 w-full rounded-full bg-[#f5f5f5] py-3 text-center text-[15px] font-medium text-[#080808] hover:bg-[#ffffff] transition-colors duration-300 cursor-pointer"
               >
                 Vamos conversar
-              </button>
+              </a>
             </motion.nav>
           )}
         </AnimatePresence>
