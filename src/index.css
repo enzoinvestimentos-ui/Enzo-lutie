@@ -163,3 +163,36 @@
     animation: none;
   }
 }
+
+/* Unified button hover interaction -> sophisticated forest green (#1F6B4A) */
+.btn-interactive {
+  transition-property: background-color, border-color, color, box-shadow, transform;
+  transition-duration: 350ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn-interactive:focus-visible {
+  outline: 2px solid #29855d;
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-interactive:hover {
+    background-color: #1f6b4a;
+    border-color: #1f6b4a;
+    color: #ffffff;
+    box-shadow: 0 10px 24px -10px rgba(31, 107, 74, 0.45);
+  }
+
+  .btn-interactive:hover .btn-interactive-badge {
+    background-color: #ffffff;
+    color: #1f6b4a;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-interactive {
+    transition-duration: 150ms;
+  }
+}
+

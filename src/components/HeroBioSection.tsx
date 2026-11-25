@@ -305,7 +305,7 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
               <button
                 type="button"
                 onClick={onExploreProjects}
-                className="group inline-flex items-center justify-center rounded-full border border-[#2a2a2a] bg-transparent px-6 py-3.5 text-[15px] font-medium tracking-[-0.02em] text-[#f2f2f2] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#f1efe9]/55 hover:bg-[#141414] active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f2f2f2]"
+                className="btn-interactive group inline-flex items-center justify-center rounded-full border border-[#2a2a2a] bg-transparent px-6 py-3.5 text-[15px] font-medium tracking-[-0.02em] text-[#f2f2f2] active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer"
               >
                 <RollingText text="Conhecer projetos" />
               </button>

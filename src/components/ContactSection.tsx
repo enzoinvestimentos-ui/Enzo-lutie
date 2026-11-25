@@ -123,7 +123,7 @@ export function ContactSection() {
                   target={social.isAnchor ? undefined : '_blank'}
                   rel={social.isAnchor ? undefined : 'noopener noreferrer'}
                   aria-label={social.name}
-                  className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#2a2a2a] bg-[#111111] text-[#f2f2f2] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#f1efe9] hover:bg-[#f1efe9] hover:text-[#111111] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f2f2f2]"
+                  className="btn-interactive inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#2a2a2a] bg-[#111111] text-[#f2f2f2]"
                 >
                   {social.icon}
                 </a>
@@ -179,10 +179,10 @@ export function ContactSection() {
                     setEmail('');
                     setProject('');
                   }}
-                  className={`mt-2 cursor-pointer rounded-full border px-5 py-2.5 text-[14px] font-medium transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                  className={`btn-interactive mt-2 cursor-pointer rounded-full border px-5 py-2.5 text-[14px] font-medium ${
                     isEngaged
-                      ? 'border-[#c7c2b7] text-[#111111] hover:border-[#111111] hover:bg-[#111111] hover:text-[#f1efe9]'
-                      : 'border-[#2a2a2a] text-[#f2f2f2] hover:border-[#f1efe9] hover:bg-[#f1efe9] hover:text-[#111111]'
+                      ? 'border-[#c7c2b7] text-[#111111]'
+                      : 'border-[#2a2a2a] text-[#f2f2f2]'
                   }`}
                 >
                   Enviar nova mensagem
@@ -292,10 +292,10 @@ export function ContactSection() {
 
                 <button
                   type="submit"
-                  className={`group mt-1 inline-flex w-full cursor-pointer items-center justify-center rounded-xl py-3.5 text-[16px] font-semibold tracking-[-0.02em] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-2 ${
+                  className={`btn-interactive group mt-1 inline-flex w-full cursor-pointer items-center justify-center rounded-xl py-3.5 text-[16px] font-semibold tracking-[-0.02em] active:scale-[0.99] ${
                     isEngaged
-                      ? 'bg-[#111111] text-[#f1efe9] hover:bg-[#222222] focus-visible:outline-[#111111]'
-                      : 'bg-[#f2f2f2] text-[#080808] hover:bg-[#ffffff] focus-visible:outline-[#f2f2f2]'
+                      ? 'bg-[#111111] text-[#f1efe9]'
+                      : 'bg-[#f2f2f2] text-[#080808]'
                   }`}
                 >
                   <RollingText text="Iniciar uma conversa" />

@@ -127,7 +127,7 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
               href={WHATSAPP_CONTACT_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="group hidden md:inline-flex items-center justify-center rounded-full bg-[#f5f5f5] px-4 py-2 text-[14px] font-medium tracking-[-0.02em] text-[#080808] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[#ffffff] active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f5f5f5]"
+              className="btn-interactive group hidden md:inline-flex items-center justify-center rounded-full bg-[#f5f5f5] px-4 py-2 text-[14px] font-medium tracking-[-0.02em] text-[#080808] active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer"
             >
               <RollingText text="Vamos conversar" />
             </a>
@@ -137,7 +137,7 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
               onClick={() => setMenuOpen((prev) => !prev)}
               aria-expanded={menuOpen}
               aria-label={menuOpen ? 'Fechar menu de navegação' : 'Abrir menu de navegação'}
-              className="md:hidden inline-flex h-10 w-10 flex-col items-center justify-center gap-[5px] rounded-xl border border-[#252525] bg-[#121212] transition-colors duration-300 hover:border-[#3a3a3a] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f5f5f5]"
+              className="btn-interactive md:hidden inline-flex h-10 w-10 flex-col items-center justify-center gap-[5px] rounded-xl border border-[#252525] bg-[#121212] cursor-pointer"
             >
               <span
                 className={`h-[1.5px] w-5 bg-[#f5f5f5] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
@@ -187,7 +187,7 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setMenuOpen(false)}
-                className="mt-2 w-full rounded-full bg-[#f5f5f5] py-3 text-center text-[15px] font-medium text-[#080808] hover:bg-[#ffffff] transition-colors duration-300 cursor-pointer"
+                className="btn-interactive mt-2 w-full rounded-full bg-[#f5f5f5] py-3 text-center text-[15px] font-medium text-[#080808] cursor-pointer"
               >
                 Vamos conversar
               </a>

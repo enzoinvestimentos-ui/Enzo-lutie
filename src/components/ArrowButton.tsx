@@ -25,10 +25,10 @@ export function ArrowButton({
   const isSecondary = variant === 'secondary';
 
   const baseClasses = isSecondary
-    ? 'border border-[#2a2a2a] bg-transparent text-[#f2f2f2] hover:border-[#f1efe9]/50 hover:bg-[#141414]'
+    ? 'border border-[#2a2a2a] bg-transparent text-[#f2f2f2]'
     : adaptToCardHover
-      ? 'bg-[#f2f2f2] text-[#080808] hover:bg-[#ffffff] group-hover/card:bg-[#111111] group-hover/card:text-[#f1efe9]'
-      : 'bg-[#f2f2f2] text-[#080808] hover:bg-[#ffffff]';
+      ? 'bg-[#f2f2f2] text-[#080808] group-hover/card:bg-[#111111] group-hover/card:text-[#f1efe9]'
+      : 'bg-[#f2f2f2] text-[#080808]';
 
   const circleClasses = isSecondary
     ? 'bg-[#f2f2f2] text-[#080808]'
@@ -40,7 +40,7 @@ export function ArrowButton({
     <>
       <RollingText text={label} className="text-[15px] font-medium tracking-[-0.02em]" />
       <span
-        className={`relative inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 ${circleClasses}`}
+        className={`btn-interactive-badge relative inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full transition-colors duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] ${circleClasses}`}
         aria-hidden="true"
       >
         <ArrowUpRight
@@ -55,7 +55,7 @@ export function ArrowButton({
     </>
   );
 
-  const sharedClasses = `group inline-flex items-center justify-between gap-4 rounded-full py-2 pl-5 pr-2 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f2f2f2] ${baseClasses} ${
+  const sharedClasses = `btn-interactive group inline-flex items-center justify-between gap-4 rounded-full py-2 pl-5 pr-2 active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer ${baseClasses} ${
     fullWidth ? 'w-full' : ''
   } ${className}`;
 

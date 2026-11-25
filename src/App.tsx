@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import { Navbar, type RoutePath } from './components/Navbar';
 import { ScrollProgressBar, EDITORIAL_EASE } from './components/Reveal';
+import { IntroSequence } from './components/IntroSequence';
+import { DynamicBackground } from './components/DynamicBackground';
 import { HeroBioSection } from './components/HeroBioSection';
 import { QuoteSection } from './components/QuoteSection';
 import { ServicesSection } from './components/ServicesSection';
@@ -37,6 +39,11 @@ function getRouteKey(route: RoutePath): string {
 
 export default function App() {
   const [route, setRoute] = useState<RoutePath>(() => parseRoute(window.location.pathname));
+  const [introComplete, setIntroComplete] = useState(false);
+
+  const handleIntroComplete = useCallback(() => {
+    setIntroComplete(true);
+  }, []);
 
   useEffect(() => {
     const onPopState = () => {
@@ -71,62 +78,67 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="min-h-screen bg-[#080808] text-[#f2f2f2]">
+      <div className="relative min-h-screen bg-[#080808] text-[#f2f2f2]">
+        {!introComplete && <IntroSequence onComplete={handleIntroComplete} />}
+        <DynamicBackground isHome={route.page === 'home'} />
+
         <ScrollProgressBar />
         <Navbar route={route} onNavigate={navigate} />
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={getRouteKey(route)}
-            initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
-            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, y: -6, filter: 'blur(3px)' }}
-            transition={{ duration: 0.42, ease: EDITORIAL_EASE }}
-          >
-            {route.page === 'home' && (
-              <main>
-                <HeroBioSection
-                  onGetStarted={() => navigate('/', '#contact')}
-                  onExploreProjects={() => navigate('/', '#work-section')}
-                />
-                <QuoteSection />
-                <ServicesSection />
-                <ProjectsSection
+        <div className="relative z-10">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={getRouteKey(route)}
+              initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, y: -6, filter: 'blur(3px)' }}
+              transition={{ duration: 0.42, ease: EDITORIAL_EASE }}
+            >
+              {route.page === 'home' && (
+                <main>
+                  <HeroBioSection
+                    onGetStarted={() => navigate('/', '#contact')}
+                    onExploreProjects={() => navigate('/', '#work-section')}
+                  />
+                  <QuoteSection />
+                  <ServicesSection />
+                  <ProjectsSection
+                    onSelectProject={(slug) => navigate(`/work/${slug}`)}
+                    onViewAllWork={() => navigate('/work')}
+                  />
+                  <TestimonialsSection />
+                  <ThoughtsSection
+                    onSelectArticle={(slug) => navigate(`/blog/${slug}`)}
+                    onViewAllArticles={() => navigate('/blog')}
+                  />
+                  <ContactSection />
+                </main>
+              )}
+
+              {route.page === 'work' && (
+                <WorkPage onSelectProject={(slug) => navigate(`/work/${slug}`)} />
+              )}
+
+              {route.page === 'work-detail' && (
+                <WorkDetailPage
+                  slug={route.slug}
+                  onBack={() => navigate('/work')}
                   onSelectProject={(slug) => navigate(`/work/${slug}`)}
-                  onViewAllWork={() => navigate('/work')}
                 />
-                <TestimonialsSection />
-                <ThoughtsSection
-                  onSelectArticle={(slug) => navigate(`/blog/${slug}`)}
-                  onViewAllArticles={() => navigate('/blog')}
-                />
-                <ContactSection />
-              </main>
-            )}
+              )}
 
-            {route.page === 'work' && (
-              <WorkPage onSelectProject={(slug) => navigate(`/work/${slug}`)} />
-            )}
+              {route.page === 'blog' && (
+                <BlogPage onSelectArticle={(slug) => navigate(`/blog/${slug}`)} />
+              )}
 
-            {route.page === 'work-detail' && (
-              <WorkDetailPage
-                slug={route.slug}
-                onBack={() => navigate('/work')}
-                onSelectProject={(slug) => navigate(`/work/${slug}`)}
-              />
-            )}
+              {route.page === 'blog-detail' && (
+                <BlogDetailPage slug={route.slug} onBack={() => navigate('/blog')} />
+              )}
+            </motion.div>
+          </AnimatePresence>
 
-            {route.page === 'blog' && (
-              <BlogPage onSelectArticle={(slug) => navigate(`/blog/${slug}`)} />
-            )}
-
-            {route.page === 'blog-detail' && (
-              <BlogDetailPage slug={route.slug} onBack={() => navigate('/blog')} />
-            )}
-          </motion.div>
-        </AnimatePresence>
-
-        <Footer onNavigate={navigate} />
+          <Footer onNavigate={navigate} />
+        </div>
       </div>
     </MotionConfig>
   );
