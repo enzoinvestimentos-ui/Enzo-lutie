@@ -145,9 +145,57 @@
   }
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .card-interactive:hover .card-hover-content {
-    animation: card-hover-soften 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+@layer components {
+  @media (hover: hover) and (pointer: fine) {
+    .card-interactive {
+      position: relative;
+    }
+
+    .card-interactive::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      opacity: var(--spotlight-opacity, 0);
+      transition: opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+      background: radial-gradient(
+        420px circle at var(--mx, 50%) var(--my, 50%),
+        rgba(158, 27, 30, 0.1),
+        rgba(241, 239, 233, 0.04) 38%,
+        transparent 72%
+      );
+      z-index: 2;
+    }
+
+    .card-interactive:hover {
+      box-shadow: 0 28px 60px -24px rgba(0, 0, 0, 0.88);
+    }
+
+    .card-interactive:hover .card-hover-content {
+      animation: card-hover-soften 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .desktop-spotlight-surface {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .desktop-spotlight-surface::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      opacity: var(--spotlight-opacity, 0);
+      transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      background: radial-gradient(
+        280px circle at var(--mx, 50%) var(--my, 50%),
+        rgba(158, 27, 30, 0.13),
+        rgba(241, 239, 233, 0.03) 45%,
+        transparent 75%
+      );
+    }
   }
 }
 

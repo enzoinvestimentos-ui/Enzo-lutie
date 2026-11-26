@@ -10,6 +10,7 @@ import {
 import { APPROACH_STEPS, type ApproachStep } from '../data/portfolioData';
 import { Reveal, HairlineRule, useIsCompactMotion } from './Reveal';
 import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
+import { handleSpotlightLeave, handleSpotlightMove } from '../utils/cursorSpotlight';
 
 const QUOTE_TEXT =
   'Não acredito em aplicar ferramentas ou metodologias simplesmente porque estão em alta.';
@@ -40,12 +41,20 @@ function ApproachStepCard({ step, index }: { step: ApproachStep; index: number }
   return (
     <div
       ref={ref}
+      onMouseMove={handleSpotlightMove}
+      onMouseLeave={handleSpotlightLeave}
       className="card-interactive group flex h-full flex-col justify-between gap-5 rounded-2xl border border-[#252525] bg-[#121212] p-6 transition-[background-color,border-color,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#e2dfd7] hover:bg-[#f1efe9]"
     >
-      <div className="card-hover-content flex h-full flex-col justify-between gap-5">
-        <span className="card-step-num text-[13px] font-semibold tabular-nums text-[#8e8e8e] transition-[color,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0.5 group-hover:text-[#52524e]">
-          {step.number}.
-        </span>
+      <div className="card-hover-content relative z-10 flex h-full flex-col justify-between gap-5">
+        <div className="flex flex-col gap-2">
+          <span className="card-step-num text-[13px] font-semibold tabular-nums text-[#8e8e8e] transition-[color,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0.5 group-hover:text-[#9e1b1e]">
+            {step.number}.
+          </span>
+          <span
+            aria-hidden="true"
+            className="hidden md:block h-px w-5 bg-[#2a2a2a] transition-[width,background-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:w-10 group-hover:bg-[#9e1b1e]"
+          />
+        </div>
 
         <div className="flex flex-col gap-2.5">
           <h4 className="card-ink-title text-[19px] font-semibold leading-[1.25] tracking-[-0.02em] text-[#f2f2f2] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:text-[#111111]">
@@ -77,10 +86,12 @@ export function QuoteSection() {
     mass: 0.5,
   });
 
+  const manifestoAuraOpacity = useTransform(smoothProgress, [0, 0.5, 1], [0.35, 0.85, 0.5]);
+
   return (
     <section
       aria-label="Abordagem e Critério"
-      className="w-full max-md:bg-[#0d0c0c] max-md:border-y max-md:border-[#1e1d1d]"
+      className="relative w-full max-md:bg-[#0d0c0c] max-md:border-y max-md:border-[#1e1d1d] md:bg-[#0c0b0b] md:border-y md:border-[#1c1b1b]"
     >
       {/* Bloco Sticky de Manifesto (115vh no desktop para leitura fluida; pausa editorial no mobile) */}
       <div
@@ -95,6 +106,19 @@ export function QuoteSection() {
               'radial-gradient(ellipse 80% 60% at 15% 45%, rgba(158, 27, 30, 0.1) 0%, rgba(13, 12, 12, 0) 72%)',
           }}
         />
+        <motion.div
+          aria-hidden="true"
+          style={prefersReducedMotion ? { opacity: 0.5 } : { opacity: manifestoAuraOpacity }}
+          className="pointer-events-none hidden md:block absolute -inset-x-24 inset-y-0"
+        >
+          <div
+            className="h-full w-full"
+            style={{
+              background:
+                'radial-gradient(ellipse 68% 58% at 22% 48%, rgba(158, 27, 30, 0.105) 0%, rgba(12, 11, 11, 0) 72%)',
+            }}
+          />
+        </motion.div>
         <div className="relative flex flex-col items-start justify-center gap-6 md:gap-7 lg:sticky lg:top-0 lg:h-screen">
           <Reveal>
             <div className="flex items-center gap-2">
@@ -122,8 +146,20 @@ export function QuoteSection() {
                 })}
           </p>
 
+          {!prefersReducedMotion && (
+            <div
+              aria-hidden="true"
+              className="hidden lg:block h-px w-48 overflow-hidden bg-[#222222]"
+            >
+              <motion.div
+                style={{ scaleX: smoothProgress, transformOrigin: 'left center' }}
+                className="h-full w-full bg-[#9e1b1e]"
+              />
+            </div>
+          )}
+
           <Reveal delay={0.08}>
-            <p className="max-w-[700px] text-[17px] md:text-[20px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1] max-md:border-l-2 max-md:border-[#2a2a2a] max-md:pl-3.5">
+            <p className="max-w-[700px] text-[17px] md:text-[20px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1] max-md:border-l-2 max-md:border-[#2a2a2a] max-md:pl-3.5 md:border-t md:border-[#222222] md:pt-4">
               Cada empresa possui uma realidade, estrutura e momento próprios. Antes de definir o
               que fazer, compreendo o contexto para identificar onde uma mudança gera valor real.
             </p>

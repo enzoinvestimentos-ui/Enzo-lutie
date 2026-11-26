@@ -1,15 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import { RotateCw } from 'lucide-react';
 import {
   animate,
   motion,
   useMotionValue,
   useReducedMotion,
+  useSpring,
   useTransform,
 } from 'motion/react';
 import { VALUE_PERSPECTIVES, type ValuePerspectiveItem } from '../data/portfolioData';
 import { Reveal, useIsCompactMotion } from './Reveal';
 import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
+import { handleSpotlightLeave, handleSpotlightMove } from '../utils/cursorSpotlight';
 
 function PerspectiveMark({ id }: { id: ValuePerspectiveItem['iconId'] }) {
   switch (id) {
@@ -85,6 +87,10 @@ function PerspectiveCard({ item, index }: { item: ValuePerspectiveItem; index: n
   });
 
   const rotateY = useMotionValue(0);
+  const tiltXRaw = useMotionValue(0);
+  const tiltYRaw = useMotionValue(0);
+  const tiltX = useSpring(tiltXRaw, { stiffness: 120, damping: 24, mass: 0.7 });
+  const tiltY = useSpring(tiltYRaw, { stiffness: 120, damping: 24, mass: 0.7 });
 
   // Profundidade orgânica: elevação e leve aproximação espacial durante o giro
   const cardLiftY = useTransform(rotateY, (deg) => {
@@ -183,7 +189,20 @@ function PerspectiveCard({ item, index }: { item: ValuePerspectiveItem; index: n
     }, 105);
   };
 
-  const handleMouseLeave = () => {
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    handleSpotlightMove(e);
+    if (!isFinePointer || prefersReducedMotion) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width - 0.5;
+    const py = (e.clientY - rect.top) / rect.height - 0.5;
+    tiltXRaw.set(-py * 5.2);
+    tiltYRaw.set(px * 5.2);
+  };
+
+  const handleMouseLeave = (e: MouseEvent<HTMLDivElement>) => {
+    handleSpotlightLeave(e);
+    tiltXRaw.set(0);
+    tiltYRaw.set(0);
     if (!isFinePointer) return;
     if (hoverTimerRef.current !== null) {
       window.clearTimeout(hoverTimerRef.current);
@@ -197,38 +216,50 @@ function PerspectiveCard({ item, index }: { item: ValuePerspectiveItem; index: n
     <div
       ref={cardObserveRef}
       onMouseEnter={handleMouseEnter}
+      onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="perspective-1200 h-[340px] w-full"
+      className="group/card perspective-1200 h-[340px] w-full"
     >
-      <motion.button
-        type="button"
-        onClick={() => {
-          hasInteractedRef.current = true;
-          setFlipped((prev) => !prev);
-        }}
-        aria-label={`${item.pillarTitle}. Alternar cartão para visualizar síntese.`}
-        style={{
-          rotateY,
-          y: cardLiftY,
-          scale: cardScale,
-        }}
-        className={`preserve-3d relative h-full w-full cursor-pointer rounded-2xl text-left shadow-[0_14px_34px_-18px_rgba(0,0,0,0.65)] transition-shadow duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_24px_54px_-22px_rgba(0,0,0,0.9)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f2f2f2]${isFlipping ? ' will-change-transform' : ''}`}
+      <motion.div
+        style={
+          isFinePointer && !prefersReducedMotion
+            ? { rotateX: tiltX, rotateY: tiltY, transformStyle: 'preserve-3d' }
+            : undefined
+        }
+        className="h-full w-full"
       >
-        {/* Face Frontal: Escura #121212 */}
-        <div
-          style={{ transform: 'rotateY(0deg) translateZ(1px)' }}
-          className="backface-hidden absolute inset-0 rounded-2xl border border-[#252525] bg-[#121212] p-6 text-[#f2f2f2]"
+        <motion.button
+          type="button"
+          onClick={() => {
+            hasInteractedRef.current = true;
+            setFlipped((prev) => !prev);
+          }}
+          aria-label={`${item.pillarTitle}. Alternar cartão para visualizar síntese.`}
+          style={{
+            rotateY,
+            y: cardLiftY,
+            scale: cardScale,
+          }}
+          className={`preserve-3d relative h-full w-full cursor-pointer rounded-2xl text-left shadow-[0_14px_34px_-18px_rgba(0,0,0,0.65)] transition-shadow duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_26px_58px_-22px_rgba(158,27,30,0.28)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f2f2f2]${isFlipping ? ' will-change-transform' : ''}`}
         >
-          <motion.div
-            style={{ filter: motionBlur }}
-            className="flex h-full flex-col justify-between"
+          {/* Face Frontal: Escura #121212 */}
+          <div
+            style={{ transform: 'rotateY(0deg) translateZ(1px)' }}
+            className="desktop-spotlight-surface backface-hidden absolute inset-0 rounded-2xl border border-[#252525] bg-[#121212] p-6 text-[#f2f2f2] transition-colors duration-500 group-hover/card:border-[#3b2223]"
           >
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-[12px] font-medium tracking-[0.02em] text-[#8e8e8e]">
-                Perspectiva de valor
-              </span>
-              <RotateCw className="h-3.5 w-3.5 shrink-0 text-[#a1a1a1]/60" aria-hidden="true" />
-            </div>
+            <motion.div
+              style={{ filter: motionBlur }}
+              className="relative z-10 flex h-full flex-col justify-between"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[12px] font-medium tracking-[0.02em] text-[#8e8e8e]">
+                  Perspectiva de valor
+                </span>
+                <RotateCw
+                  className="h-3.5 w-3.5 shrink-0 text-[#a1a1a1]/60 transition-colors duration-300 group-hover/card:text-[#9e1b1e]"
+                  aria-hidden="true"
+                />
+              </div>
 
             <div className="flex flex-col gap-2.5">
               <h3 className="text-[19px] font-semibold leading-[1.25] tracking-[-0.02em] text-[#f2f2f2]">
@@ -268,44 +299,47 @@ function PerspectiveCard({ item, index }: { item: ValuePerspectiveItem; index: n
             </div>
           </motion.div>
         </div>
-      </motion.button>
+        </motion.button>
+      </motion.div>
     </div>
   );
 }
 
 export function TestimonialsSection() {
   return (
-    <section className="mx-auto w-full max-w-[1180px] px-6 py-14 md:py-24 max-md:border-t max-md:border-[#1c1c1c]">
-      <div className="mb-8 md:mb-12 flex flex-col gap-3.5 max-w-[740px]">
-        <Reveal>
-          <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
-            Critério de decisão
-          </span>
-        </Reveal>
-        <Reveal delay={0.05}>
-          <h2 className="type-section-h2 text-[#f2f2f2]">O valor de cada solução</h2>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <p className="text-[17px] md:text-[19px] leading-[1.5] tracking-[-0.015em] text-[#a1a1a1]">
-            É essa perspectiva que orienta minhas decisões e a forma como participo de cada projeto.
-          </p>
-        </Reveal>
-        <p className="sm:hidden text-[12px] font-medium tracking-[0.02em] text-[#9e1b1e]">
-          Toque para virar · Deslize →
-        </p>
-      </div>
-
-      <div className="no-scrollbar flex overflow-x-auto snap-x snap-mandatory gap-3.5 -mx-6 px-6 pb-2 sm:mx-0 sm:px-0 sm:pb-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible xl:grid-cols-4">
-        {VALUE_PERSPECTIVES.map((item, idx) => (
-          <Reveal
-            key={item.id}
-            delay={idx * 0.06}
-            blur={0}
-            className="w-[78vw] max-w-[300px] shrink-0 snap-center sm:w-auto sm:max-w-none"
-          >
-            <PerspectiveCard item={item} index={idx} />
+    <section className="relative w-full max-md:border-t max-md:border-[#1c1c1c] md:border-t md:border-[#1c1c1c] md:bg-[radial-gradient(ellipse_60%_46%_at_50%_6%,rgba(158,27,30,0.075)_0%,rgba(8,8,8,0)_74%)]">
+      <div className="mx-auto w-full max-w-[1180px] px-6 py-14 md:py-24">
+        <div className="mb-8 md:mb-12 flex flex-col gap-3.5 max-w-[740px]">
+          <Reveal>
+            <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
+              Critério de decisão
+            </span>
           </Reveal>
-        ))}
+          <Reveal delay={0.05}>
+            <h2 className="type-section-h2 text-[#f2f2f2]">O valor de cada solução</h2>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <p className="text-[17px] md:text-[19px] leading-[1.5] tracking-[-0.015em] text-[#a1a1a1]">
+              É essa perspectiva que orienta minhas decisões e a forma como participo de cada projeto.
+            </p>
+          </Reveal>
+          <p className="sm:hidden text-[12px] font-medium tracking-[0.02em] text-[#9e1b1e]">
+            Toque para virar · Deslize →
+          </p>
+        </div>
+
+        <div className="no-scrollbar flex overflow-x-auto snap-x snap-mandatory gap-3.5 -mx-6 px-6 pb-2 sm:mx-0 sm:px-0 sm:pb-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible xl:grid-cols-4">
+          {VALUE_PERSPECTIVES.map((item, idx) => (
+            <Reveal
+              key={item.id}
+              delay={idx * 0.06}
+              blur={0}
+              className="w-[78vw] max-w-[300px] shrink-0 snap-center sm:w-auto sm:max-w-none"
+            >
+              <PerspectiveCard item={item} index={idx} />
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );

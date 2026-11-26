@@ -13,6 +13,7 @@ import { SafeImage } from './SafeImage';
 import { Reveal, HairlineRule, EDITORIAL_EASE, useIsCompactMotion } from './Reveal';
 import { HERO_MEDIA, WHATSAPP_CONTACT_URL } from '../data/portfolioData';
 import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
+import { handleSpotlightLeave, handleSpotlightMove } from '../utils/cursorSpotlight';
 
 interface HeroBioSectionProps {
   onGetStarted?: () => void;
@@ -132,20 +133,26 @@ function MobileDiagnosticRow({
   return (
     <div
       ref={ref}
-      className="mobile-diagnostic-row py-3.5 transition-[background-color,border-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] max-md:rounded-xl max-md:border max-md:border-[#222222] max-md:bg-[#101010] max-md:px-4 max-md:py-3.5"
+      onMouseMove={handleSpotlightMove}
+      onMouseLeave={handleSpotlightLeave}
+      className="mobile-diagnostic-row desktop-spotlight-surface group/diag py-3.5 transition-[background-color,border-color,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] max-md:rounded-xl max-md:border max-md:border-[#222222] max-md:bg-[#101010] max-md:px-4 max-md:py-3.5 md:-mx-4 md:rounded-xl md:border md:border-transparent md:px-4 md:py-4 md:hover:-translate-y-0.5 md:hover:border-[#362021] md:hover:bg-[#141111]/90"
     >
-      <Reveal delay={delay} className="flex flex-col sm:flex-row sm:items-baseline gap-1.5 sm:gap-3">
-        <div className="flex items-center gap-2 sm:w-[116px] sm:shrink-0">
+      <Reveal delay={delay} className="relative z-10 flex flex-col sm:flex-row sm:items-baseline gap-1.5 sm:gap-3">
+        <div className="flex items-center gap-2 sm:w-[138px] sm:shrink-0">
           <span
             aria-hidden="true"
             className="mobile-diagnostic-dot inline-block h-1.5 w-1.5 rounded-full bg-[#4a4a4a] transition-[background-color,box-shadow] duration-500 md:hidden"
           />
-          <span className="text-[11px] font-semibold tabular-nums text-[#787878] md:hidden">
+          <span className="text-[11px] font-semibold tabular-nums text-[#787878] md:text-[#5c5c5c] md:transition-colors md:duration-300 md:group-hover/diag:text-[#9e1b1e]">
             {indexLabel}
           </span>
-          <span className="text-[14px] font-semibold text-[#f2f2f2]">{title}</span>
+          <span className="text-[14px] font-semibold text-[#f2f2f2] md:transition-transform md:duration-300 md:group-hover/diag:translate-x-0.5">
+            {title}
+          </span>
         </div>
-        <span className="text-[15px] leading-[1.5] text-[#a1a1a1]">{description}</span>
+        <span className="text-[15px] leading-[1.5] text-[#a1a1a1] md:transition-colors md:duration-300 md:group-hover/diag:text-[#d4d4d4]">
+          {description}
+        </span>
       </Reveal>
     </div>
   );
@@ -187,6 +194,7 @@ function DesktopStickyPortrait({
 
   const avatarScaleRaw = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.965, 1]);
   const avatarScale = useSpring(avatarScaleRaw, PORTRAIT_SCROLL_SPRING);
+  const crimsonAuraOpacity = useTransform(scrollYProgress, [0.16, 0.68], [0.22, 0.88]);
 
   const tiltXRaw = useMotionValue(0);
   const tiltYRaw = useMotionValue(0);
@@ -198,8 +206,8 @@ function DesktopStickyPortrait({
     const rect = e.currentTarget.getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width - 0.5;
     const py = (e.clientY - rect.top) / rect.height - 0.5;
-    tiltXRaw.set(-py * 4.2);
-    tiltYRaw.set(px * 4.2);
+    tiltXRaw.set(-py * 4.5);
+    tiltYRaw.set(px * 4.5);
   };
 
   const handleAvatarMouseLeave = () => {
@@ -222,8 +230,23 @@ function DesktopStickyPortrait({
                   scale: avatarScale,
                 }
           }
-          className="pointer-events-auto perspective-1200"
+          className="group/portrait pointer-events-auto relative perspective-1200"
         >
+          {/* Aura carmim progressiva que acompanha o giro para o verso vermelho */}
+          <motion.div
+            aria-hidden="true"
+            style={prefersReducedMotion ? { opacity: 0.35 } : { opacity: crimsonAuraOpacity }}
+            className="pointer-events-none absolute -inset-12 -z-10 rounded-full"
+          >
+            <div
+              className="h-full w-full rounded-full"
+              style={{
+                background:
+                  'radial-gradient(circle at center, rgba(158, 27, 30, 0.24) 0%, rgba(158, 27, 30, 0.06) 44%, rgba(8, 8, 8, 0) 74%)',
+              }}
+            />
+          </motion.div>
+
           <motion.div
             style={
               prefersReducedMotion || !canHoverTilt
@@ -248,12 +271,12 @@ function DesktopStickyPortrait({
                       rotateY: avatarRotateY,
                     }
               }
-              className="preserve-3d relative block w-[320px] xl:w-[360px] aspect-[0.877] cursor-pointer rounded-2xl shadow-[0_28px_64px_-24px_rgba(0,0,0,0.85)] transition-shadow duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_34px_76px_-22px_rgba(0,0,0,0.95)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f5f5f5]"
+              className="preserve-3d relative block w-[320px] xl:w-[360px] aspect-[0.877] cursor-pointer rounded-2xl shadow-[0_28px_64px_-24px_rgba(0,0,0,0.85)] transition-shadow duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_36px_80px_-20px_rgba(158,27,30,0.28)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f5f5f5]"
             >
               {/* Frente */}
               <div
                 style={{ transform: 'rotateY(0deg) translateZ(1px)' }}
-                className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#252525] bg-[#121212]"
+                className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#252525] bg-[#121212] transition-colors duration-500 group-hover/portrait:border-[#383838]"
               >
                 <SafeImage
                   src={HERO_MEDIA.frontAvatar}
@@ -268,7 +291,7 @@ function DesktopStickyPortrait({
               {/* Verso */}
               <div
                 style={{ transform: 'rotateY(180deg) translateZ(1px)' }}
-                className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#252525] bg-[#121212]"
+                className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl border border-[#252525] bg-[#121212] transition-colors duration-500 group-hover/portrait:border-[#5b2224]"
               >
                 <SafeImage
                   src={HERO_MEDIA.backAvatar}
@@ -281,6 +304,10 @@ function DesktopStickyPortrait({
               </div>
             </motion.button>
           </motion.div>
+
+          <p className="pointer-events-none mt-3 text-center text-[11px] font-medium tracking-[0.06em] text-[#8e8e8e] opacity-0 translate-y-1 transition-[opacity,transform] duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/portrait:opacity-100 group-hover/portrait:translate-y-0">
+            Clique para girar
+          </p>
         </motion.div>
       </div>
     </div>
@@ -372,7 +399,7 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
                 Ajudo empresas a identificar oportunidades, superar gargalos e conectar estratégia
                 comercial, operação e soluções digitais para melhorar resultados.
               </p>
-              <p className="font-medium text-[#f2f2f2] max-md:border-l-2 max-md:border-[#9e1b1e] max-md:pl-3.5">
+              <p className="font-medium text-[#f2f2f2] max-md:border-l-2 max-md:border-[#9e1b1e] max-md:pl-3.5 md:border-t md:border-[#222222] md:pt-3.5">
                 A tecnologia entra como parte da solução, não como ponto de partida.
               </p>
             </motion.div>
@@ -436,69 +463,70 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
       {/* SEÇÃO 2: DIAGNÓSTICO / ANTES DA TECNOLOGIA */}
       <section
         id="bio-section"
-        className="relative z-10 mx-auto flex w-full max-w-[1180px] items-center px-6 py-14 md:py-20 lg:min-h-screen lg:py-24 max-md:border-t max-md:border-[#1a1a1a] max-md:bg-[radial-gradient(ellipse_90%_55%_at_50%_0%,rgba(158,27,30,0.085)_0%,rgba(8,8,8,0)_100%)]"
+        className="relative z-10 w-full max-md:border-t max-md:border-[#1a1a1a] max-md:bg-[radial-gradient(ellipse_90%_55%_at_50%_0%,rgba(158,27,30,0.085)_0%,rgba(8,8,8,0)_100%)] md:border-t md:border-[#1a1a1a]/90 md:bg-[radial-gradient(ellipse_55%_55%_at_76%_24%,rgba(158,27,30,0.09)_0%,rgba(8,8,8,0)_74%)]"
       >
-        <div className="grid w-full grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-12">
-          {/* Espaçador Esquerdo ocupado visualmente pelo Retrato Sticky no Desktop */}
-          <div className="hidden lg:block lg:col-span-6" aria-hidden="true" />
+        <div className="mx-auto flex w-full max-w-[1180px] items-center px-6 py-14 md:py-20 lg:min-h-screen lg:py-24">
+          <div className="grid w-full grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-12">
+            {/* Espaçador Esquerdo ocupado visualmente pelo Retrato Sticky no Desktop */}
+            <div className="hidden lg:block lg:col-span-6" aria-hidden="true" />
 
-          {/* Coluna Direita: Leitura por camadas com chunking dos diagnósticos */}
-          <div className="lg:col-span-6 flex flex-col items-start gap-5 md:gap-6 max-w-[560px]">
+            {/* Coluna Direita: Leitura por camadas com chunking dos diagnósticos */}
+            <div className="lg:col-span-6 flex flex-col items-start gap-5 md:gap-6 max-w-[560px]">
+              <Reveal className="flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#9e1b1e] md:hidden" />
+                  <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
+                    Diagnóstico
+                  </span>
+                </div>
+                <h2 className="text-[30px] sm:text-[38px] md:text-[46px] font-semibold leading-[1.08] tracking-[-0.025em] text-[#f2f2f2] text-balance">
+                  O problema, muitas vezes, está antes da tecnologia.
+                </h2>
+              </Reveal>
 
-            <Reveal className="flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#9e1b1e] md:hidden" />
-                <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
-                  Diagnóstico
-                </span>
+              <Reveal delay={0.05}>
+                <p className="text-[16px] md:text-[18px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]">
+                  É comum empresas investirem em sites, sistemas e automações sem resolver o que
+                  motivou o investimento:
+                </p>
+              </Reveal>
+
+              {/* Chunking visual dos 3 contrastes centrais com revelação progressiva no scroll */}
+              <div className="w-full flex flex-col max-md:gap-2.5 md:gap-1.5">
+                <MobileDiagnosticRow
+                  indexLabel="01"
+                  title="Novo CRM"
+                  description="Não organiza, por si só, um processo comercial desestruturado."
+                  delay={0.06}
+                  delayMs={40}
+                />
+                <MobileDiagnosticRow
+                  indexLabel="02"
+                  title="Novo site"
+                  description="Não resolve uma comunicação que não deixa claro o valor da empresa."
+                  delay={0.12}
+                  delayMs={120}
+                />
+                <MobileDiagnosticRow
+                  indexLabel="03"
+                  title="Automação"
+                  description="Não corrige um processo que nunca foi bem definido."
+                  delay={0.18}
+                  delayMs={200}
+                />
               </div>
-              <h2 className="text-[30px] sm:text-[38px] md:text-[46px] font-semibold leading-[1.08] tracking-[-0.025em] text-[#f2f2f2] text-balance">
-                O problema, muitas vezes, está antes da tecnologia.
-              </h2>
-            </Reveal>
 
-            <Reveal delay={0.05}>
-              <p className="text-[16px] md:text-[18px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]">
-                É comum empresas investirem em sites, sistemas e automações sem resolver o que
-                motivou o investimento:
-              </p>
-            </Reveal>
+              <Reveal delay={0.14}>
+                <p className="text-[16px] md:text-[17px] leading-[1.55] tracking-[-0.015em] text-[#d4d4d4] max-md:rounded-xl max-md:border max-md:border-[#242424] max-md:bg-[#121212]/90 max-md:p-4 md:rounded-xl md:border md:border-[#242424] md:bg-[#121212]/75 md:p-5 md:transition-colors md:duration-500 md:hover:border-[#3c2324] md:hover:bg-[#151212]">
+                  Por isso, minha primeira preocupação é entender a operação, os objetivos e a
+                  experiência dos clientes para direcionar soluções que realmente evoluem o negócio.
+                </p>
+              </Reveal>
 
-            {/* Chunking visual dos 3 contrastes centrais com revelação progressiva no scroll */}
-            <div className="w-full flex flex-col max-md:gap-2.5 md:divide-y md:divide-[#252525] md:border-y md:border-[#252525]">
-              <MobileDiagnosticRow
-                indexLabel="01"
-                title="Novo CRM"
-                description="Não organiza, por si só, um processo comercial desestruturado."
-                delay={0.06}
-                delayMs={40}
-              />
-              <MobileDiagnosticRow
-                indexLabel="02"
-                title="Novo site"
-                description="Não resolve uma comunicação que não deixa claro o valor da empresa."
-                delay={0.12}
-                delayMs={120}
-              />
-              <MobileDiagnosticRow
-                indexLabel="03"
-                title="Automação"
-                description="Não corrige um processo que nunca foi bem definido."
-                delay={0.18}
-                delayMs={200}
-              />
+              <Reveal delay={0.16} className="pt-1">
+                <ArrowButton label="Vamos conversar" href={WHATSAPP_CONTACT_URL} variant="primary" />
+              </Reveal>
             </div>
-
-            <Reveal delay={0.14}>
-              <p className="text-[16px] md:text-[17px] leading-[1.55] tracking-[-0.015em] text-[#d4d4d4] max-md:rounded-xl max-md:border max-md:border-[#242424] max-md:bg-[#121212]/90 max-md:p-4">
-                Por isso, minha primeira preocupação é entender a operação, os objetivos e a
-                experiência dos clientes para direcionar soluções que realmente evoluem o negócio.
-              </p>
-            </Reveal>
-
-            <Reveal delay={0.16} className="pt-1">
-              <ArrowButton label="Vamos conversar" href={WHATSAPP_CONTACT_URL} variant="primary" />
-            </Reveal>
           </div>
         </div>
       </section>

@@ -122,6 +122,12 @@ export function DynamicBackground({ isHome }: DynamicBackgroundProps) {
 
   const horizonScale = useTransform(smoothScroll, [0.35, 0.85, 1], [0.68, 1.05, 1.22]);
   const horizonOpacity = useTransform(smoothScroll, [0.25, 0.72, 1], [0.25, 0.78, 0.95]);
+  const midSectionPulse = useTransform(
+    smoothScroll,
+    [0.18, 0.38, 0.56, 0.78, 0.94],
+    [0.12, 0.85, 0.25, 0.72, 0.45]
+  );
+  const gridDriftY = useTransform(smoothScroll, [0, 1], ['0px', '-64px']);
 
   // Traço fluido SVG progressivo inspirado na continuidade entre seções
   const pathProgress = useTransform(smoothScroll, [diagThreshold[0], 0.96], [0.04, 1]);
@@ -153,9 +159,9 @@ export function DynamicBackground({ isHome }: DynamicBackgroundProps) {
       style={{ opacity: layerOpacity }}
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
     >
-      {/* Micro-grade arquitetônica difusa (sem maskImage pesada no mobile) */}
-      <div
-        className="absolute inset-0 opacity-[0.035] md:opacity-[0.045]"
+      {/* Micro-grade arquitetônica difusa (sem maskImage pesada no mobile; parallax sutil no desktop) */}
+      <motion.div
+        className="absolute -inset-y-16 inset-x-0 opacity-[0.035] md:opacity-[0.055]"
         style={
           isMobile
             ? {
@@ -164,6 +170,7 @@ export function DynamicBackground({ isHome }: DynamicBackgroundProps) {
                 backgroundSize: '32px 32px',
               }
             : {
+                y: gridDriftY,
                 backgroundImage:
                   'radial-gradient(rgba(241, 239, 233, 0.55) 1px, transparent 1px)',
                 backgroundSize: '32px 32px',
@@ -203,6 +210,22 @@ export function DynamicBackground({ isHome }: DynamicBackgroundProps) {
         />
       </motion.div>
 
+      {/* Pulso atmosférico intermediário por seção (somente desktop) */}
+      {!isMobile && (
+        <motion.div
+          style={{ opacity: midSectionPulse }}
+          className="absolute right-[8vw] top-[14vh] h-[54vmax] w-[54vmax] rounded-full"
+        >
+          <div
+            className="h-full w-full rounded-full"
+            style={{
+              background:
+                'radial-gradient(circle at center, rgba(158, 27, 30, 0.11) 0%, rgba(202, 162, 102, 0.03) 42%, rgba(8, 8, 8, 0) 72%)',
+            }}
+          />
+        </motion.div>
+      )}
+
       {/* Expansão atmosférica inferior para ancorar Projetos, Sobre e Contato */}
       <motion.div
         style={isMobile ? { opacity: horizonOpacity } : { scale: horizonScale, opacity: horizonOpacity }}
@@ -221,13 +244,13 @@ export function DynamicBackground({ isHome }: DynamicBackgroundProps) {
       {finePointer && (
         <motion.div
           style={{ x: cursorXOffset, y: cursorYOffset }}
-          className="absolute left-1/2 top-1/2 h-[48vmax] w-[48vmax] -translate-x-1/2 -translate-y-1/2 rounded-full will-change-transform"
+          className="absolute left-1/2 top-1/2 h-[52vmax] w-[52vmax] -translate-x-1/2 -translate-y-1/2 rounded-full will-change-transform"
         >
           <div
             className="h-full w-full rounded-full"
             style={{
               background:
-                'radial-gradient(circle at center, rgba(158, 27, 30, 0.09) 0%, rgba(241, 239, 233, 0.025) 32%, rgba(8, 8, 8, 0) 68%)',
+                'radial-gradient(circle at center, rgba(158, 27, 30, 0.115) 0%, rgba(241, 239, 233, 0.032) 34%, rgba(8, 8, 8, 0) 68%)',
             }}
           />
         </motion.div>

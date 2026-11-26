@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import { createPortal } from 'react-dom';
 import {
   AnimatePresence,
@@ -241,6 +241,8 @@ function VideoSlot({
   const hasVideo = Boolean(item.videoUrl.trim());
   const [inlineNotice, setInlineNotice] = useState(false);
   const [posterFailed, setPosterFailed] = useState(false);
+  const [canTilt, setCanTilt] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
   const { ref: cardRef } = useMobileScrollActive<HTMLDivElement>({
     mode: 'once',
     delayMs: 80,
@@ -251,6 +253,33 @@ function VideoSlot({
     pulseMs: 1100,
   });
 
+  const tiltXRaw = useMotionValue(0);
+  const tiltYRaw = useMotionValue(0);
+  const tiltX = useSpring(tiltXRaw, { stiffness: 120, damping: 24, mass: 0.7 });
+  const tiltY = useSpring(tiltYRaw, { stiffness: 120, damping: 24, mass: 0.7 });
+
+  useEffect(() => {
+    const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const sync = () => setCanTilt(mq.matches);
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
+
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    if (!canTilt || prefersReducedMotion) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width - 0.5;
+    const py = (e.clientY - rect.top) / rect.height - 0.5;
+    tiltXRaw.set(-py * 4.5);
+    tiltYRaw.set(px * 4.5);
+  };
+
+  const handleMouseLeave = () => {
+    tiltXRaw.set(0);
+    tiltYRaw.set(0);
+  };
+
   const handleAction = () => {
     if (hasVideo) {
       onOpenModal(item);
@@ -260,10 +289,18 @@ function VideoSlot({
   };
 
   return (
-    <div
-      ref={cardRef}
-      className="video-slot-card group relative mx-auto flex aspect-[9/16] w-full max-w-[360px] flex-col justify-between overflow-hidden rounded-2xl border border-[#252525] bg-[#121212] shadow-[0_24px_54px_-24px_rgba(17,17,17,0.35)] transition-[border-color,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#383838] hover:shadow-[0_28px_60px_-22px_rgba(17,17,17,0.45)] lg:ml-auto lg:mr-0"
-    >
+    <div className="perspective-1200">
+      <motion.div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={
+          canTilt && !prefersReducedMotion
+            ? { rotateX: tiltX, rotateY: tiltY }
+            : undefined
+        }
+        className="video-slot-card group relative mx-auto flex aspect-[9/16] w-full max-w-[360px] flex-col justify-between overflow-hidden rounded-2xl border border-[#252525] bg-[#121212] shadow-[0_24px_54px_-24px_rgba(17,17,17,0.35)] transition-[border-color,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#383838] hover:shadow-[0_32px_68px_-22px_rgba(17,17,17,0.52)] lg:ml-auto lg:mr-0"
+      >
       {/* Fundo do vídeo: poster real ou textura escura editorial sutil */}
       {hasVideo && item.posterUrl && !posterFailed ? (
         <img
@@ -313,7 +350,7 @@ function VideoSlot({
           aria-label={
             hasVideo ? `Reproduzir ${item.label}` : `Visualizar informações do ${item.label}`
           }
-          className="btn-interactive inline-flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-full bg-[#f2f2f2] text-[#080808] shadow-[0_18px_40px_-14px_rgba(0,0,0,0.9)] cursor-pointer active:scale-[0.97]"
+          className="btn-interactive inline-flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-full bg-[#f2f2f2] text-[#080808] shadow-[0_18px_40px_-14px_rgba(0,0,0,0.9)] cursor-pointer active:scale-[0.97] md:group-hover:ring-4 md:group-hover:ring-[#9e1b1e]/25"
         >
           <Play className="ml-0.5 h-5 w-5 md:h-6 md:w-6 fill-current" aria-hidden="true" />
         </button>
@@ -342,6 +379,7 @@ function VideoSlot({
         </div>
         <span className="text-[12px] md:text-[13px] text-[#a1a1a1]">{item.context}</span>
       </div>
+      </motion.div>
     </div>
   );
 }

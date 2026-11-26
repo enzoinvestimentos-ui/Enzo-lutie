@@ -3,6 +3,7 @@ import { Check, Mail } from 'lucide-react';
 import { Reveal } from './Reveal';
 import { RollingText } from './RollingText';
 import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
+import { handleSpotlightLeave, handleSpotlightMove } from '../utils/cursorSpotlight';
 
 export function ContactSection() {
   const [name, setName] = useState('');
@@ -85,105 +86,143 @@ export function ContactSection() {
   ];
 
   return (
-    <section id="contact" className="mx-auto w-full max-w-[1180px] px-6 py-14 md:py-24">
-      <div className="flex flex-col gap-10 lg:flex-row lg:items-stretch">
-        {/* Coluna Esquerda: Narrativa em camadas para decisão de contato */}
-        <div className="flex flex-1 flex-col justify-between gap-8">
-          <div className="flex flex-col gap-5">
-            <Reveal className="flex flex-col gap-3">
-              <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
-                Próximo passo
-              </span>
-              <h2 className="type-display-lg text-[#f2f2f2]">
-                Vamos entender o que seu negócio precisa.
-              </h2>
-            </Reveal>
+    <section
+      id="contact"
+      className="relative w-full md:bg-[radial-gradient(ellipse_54%_52%_at_18%_82%,rgba(158,27,30,0.085)_0%,rgba(8,8,8,0)_76%)]"
+    >
+      <div className="mx-auto w-full max-w-[1180px] px-6 py-14 md:py-24">
+        <div className="flex flex-col gap-10 lg:flex-row lg:items-stretch">
+          {/* Coluna Esquerda: Narrativa em camadas para decisão de contato */}
+          <div className="flex flex-1 flex-col justify-between gap-8">
+            <div className="flex flex-col gap-5">
+              <Reveal className="flex flex-col gap-3">
+                <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
+                  Próximo passo
+                </span>
+                <h2 className="type-display-lg text-[#f2f2f2]">
+                  Vamos entender o que seu negócio precisa.
+                </h2>
+              </Reveal>
 
-            <Reveal delay={0.05}>
-              <p className="max-w-[520px] text-[16px] md:text-[18px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]">
-                Nem sempre o caminho está claro desde o início. O primeiro passo é entender o
-                cenário para descobrir o que precisa mudar e quais frentes fazem sentido:
-              </p>
-            </Reveal>
+              <Reveal delay={0.05}>
+                <p className="max-w-[520px] text-[16px] md:text-[18px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]">
+                  Nem sempre o caminho está claro desde o início. O primeiro passo é entender o
+                  cenário para descobrir o que precisa mudar e quais frentes fazem sentido:
+                </p>
+              </Reveal>
 
-            {/* Chunking dos cenários de conversa */}
-            <ul className="grid max-w-[500px] grid-cols-2 gap-2.5 text-[13px] leading-[1.4] text-[#d4d4d4] md:flex md:flex-col md:gap-0 md:divide-y md:divide-[#252525] md:border-y md:border-[#252525] md:text-[15px] md:leading-[1.5]">
-              <li className="max-md:rounded-xl max-md:border max-md:border-[#222222] max-md:bg-[#111111] max-md:p-3.5 md:py-3">
-                <Reveal delay={0.06} className="flex flex-col gap-1.5 md:block">
-                  <span className="md:hidden text-[11px] font-semibold tracking-[0.06em] text-[#9e1b1e]">
-                    01
-                  </span>
-                  <span>Apresentação de serviços e fortalecimento da presença digital</span>
-                </Reveal>
-              </li>
-              <li className="max-md:rounded-xl max-md:border max-md:border-[#222222] max-md:bg-[#111111] max-md:p-3.5 md:py-3">
-                <Reveal delay={0.1} className="flex flex-col gap-1.5 md:block">
-                  <span className="md:hidden text-[11px] font-semibold tracking-[0.06em] text-[#9e1b1e]">
-                    02
-                  </span>
-                  <span>Organização de processo comercial e estruturação de CRM</span>
-                </Reveal>
-              </li>
-              <li className="max-md:rounded-xl max-md:border max-md:border-[#222222] max-md:bg-[#111111] max-md:p-3.5 md:py-3">
-                <Reveal delay={0.14} className="flex flex-col gap-1.5 md:block">
-                  <span className="md:hidden text-[11px] font-semibold tracking-[0.06em] text-[#9e1b1e]">
-                    03
-                  </span>
-                  <span>Redução de tarefas manuais e gargalos na operação</span>
-                </Reveal>
-              </li>
-              <li className="max-md:rounded-xl max-md:border max-md:border-[#222222] max-md:bg-[#111111] max-md:p-3.5 md:py-3">
-                <Reveal delay={0.18} className="flex flex-col gap-1.5 md:block">
-                  <span className="md:hidden text-[11px] font-semibold tracking-[0.06em] text-[#9e1b1e]">
-                    04
-                  </span>
-                  <span>Estrutura digital alinhada ao momento atual da empresa</span>
-                </Reveal>
-              </li>
-            </ul>
+              {/* Chunking dos cenários de conversa: grid interativo no mobile e desktop */}
+              <ul className="grid max-w-[540px] grid-cols-2 gap-2.5 md:gap-3 text-[13px] md:text-[14px] leading-[1.4] md:leading-[1.48] text-[#d4d4d4]">
+                <li
+                  onMouseMove={handleSpotlightMove}
+                  onMouseLeave={handleSpotlightLeave}
+                  className="group/item desktop-spotlight-surface rounded-xl border border-[#222222] bg-[#111111] p-3.5 md:p-4 md:transition-[transform,border-color,background-color] md:duration-300 md:hover:-translate-y-0.5 md:hover:border-[#422325] md:hover:bg-[#151212]"
+                >
+                  <Reveal delay={0.06} className="relative z-10 flex flex-col gap-1.5">
+                    <span className="text-[11px] font-semibold tabular-nums tracking-[0.06em] text-[#9e1b1e] md:text-[#666666] md:transition-colors md:duration-300 md:group-hover/item:text-[#9e1b1e]">
+                      01
+                    </span>
+                    <span className="md:transition-colors md:duration-300 md:group-hover/item:text-[#f2f2f2]">
+                      Apresentação de serviços e fortalecimento da presença digital
+                    </span>
+                  </Reveal>
+                </li>
+                <li
+                  onMouseMove={handleSpotlightMove}
+                  onMouseLeave={handleSpotlightLeave}
+                  className="group/item desktop-spotlight-surface rounded-xl border border-[#222222] bg-[#111111] p-3.5 md:p-4 md:transition-[transform,border-color,background-color] md:duration-300 md:hover:-translate-y-0.5 md:hover:border-[#422325] md:hover:bg-[#151212]"
+                >
+                  <Reveal delay={0.1} className="relative z-10 flex flex-col gap-1.5">
+                    <span className="text-[11px] font-semibold tabular-nums tracking-[0.06em] text-[#9e1b1e] md:text-[#666666] md:transition-colors md:duration-300 md:group-hover/item:text-[#9e1b1e]">
+                      02
+                    </span>
+                    <span className="md:transition-colors md:duration-300 md:group-hover/item:text-[#f2f2f2]">
+                      Organização de processo comercial e estruturação de CRM
+                    </span>
+                  </Reveal>
+                </li>
+                <li
+                  onMouseMove={handleSpotlightMove}
+                  onMouseLeave={handleSpotlightLeave}
+                  className="group/item desktop-spotlight-surface rounded-xl border border-[#222222] bg-[#111111] p-3.5 md:p-4 md:transition-[transform,border-color,background-color] md:duration-300 md:hover:-translate-y-0.5 md:hover:border-[#422325] md:hover:bg-[#151212]"
+                >
+                  <Reveal delay={0.14} className="relative z-10 flex flex-col gap-1.5">
+                    <span className="text-[11px] font-semibold tabular-nums tracking-[0.06em] text-[#9e1b1e] md:text-[#666666] md:transition-colors md:duration-300 md:group-hover/item:text-[#9e1b1e]">
+                      03
+                    </span>
+                    <span className="md:transition-colors md:duration-300 md:group-hover/item:text-[#f2f2f2]">
+                      Redução de tarefas manuais e gargalos na operação
+                    </span>
+                  </Reveal>
+                </li>
+                <li
+                  onMouseMove={handleSpotlightMove}
+                  onMouseLeave={handleSpotlightLeave}
+                  className="group/item desktop-spotlight-surface rounded-xl border border-[#222222] bg-[#111111] p-3.5 md:p-4 md:transition-[transform,border-color,background-color] md:duration-300 md:hover:-translate-y-0.5 md:hover:border-[#422325] md:hover:bg-[#151212]"
+                >
+                  <Reveal delay={0.18} className="relative z-10 flex flex-col gap-1.5">
+                    <span className="text-[11px] font-semibold tabular-nums tracking-[0.06em] text-[#9e1b1e] md:text-[#666666] md:transition-colors md:duration-300 md:group-hover/item:text-[#9e1b1e]">
+                      04
+                    </span>
+                    <span className="md:transition-colors md:duration-300 md:group-hover/item:text-[#f2f2f2]">
+                      Estrutura digital alinhada ao momento atual da empresa
+                    </span>
+                  </Reveal>
+                </li>
+              </ul>
 
-            <Reveal delay={0.14}>
-              <p className="max-w-[520px] text-[16px] font-medium leading-[1.55] tracking-[-0.015em] text-[#f2f2f2] max-md:border-l-2 max-md:border-[#9e1b1e]/75 max-md:pl-3.5">
-                Se existe algo que precisa ser compreendido, organizado ou desenvolvido, podemos
-                começar por uma conversa.
-              </p>
+              <Reveal delay={0.14}>
+                <p className="max-w-[520px] text-[16px] font-medium leading-[1.55] tracking-[-0.015em] text-[#f2f2f2] max-md:border-l-2 max-md:border-[#9e1b1e]/75 max-md:pl-3.5 md:border-t md:border-[#242424] md:pt-4">
+                  Se existe algo que precisa ser compreendido, organizado ou desenvolvido, podemos
+                  começar por uma conversa.
+                </p>
+              </Reveal>
+            </div>
+
+            <Reveal delay={0.16}>
+              <div ref={socialRowRef} className="flex items-center gap-3">
+                {socialLinks.map((social) => (
+                  <a
+                    key={social.name}
+                    href={social.href}
+                    target={social.isAnchor ? undefined : '_blank'}
+                    rel={social.isAnchor ? undefined : 'noopener noreferrer'}
+                    aria-label={social.name}
+                    className="btn-interactive inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#2a2a2a] bg-[#111111] text-[#f2f2f2]"
+                  >
+                    {social.icon}
+                  </a>
+                ))}
+              </div>
             </Reveal>
           </div>
 
-          <Reveal delay={0.16}>
-            <div ref={socialRowRef} className="flex items-center gap-3">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.name}
-                  href={social.href}
-                  target={social.isAnchor ? undefined : '_blank'}
-                  rel={social.isAnchor ? undefined : 'noopener noreferrer'}
-                  aria-label={social.name}
-                  className="btn-interactive inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#2a2a2a] bg-[#111111] text-[#f2f2f2]"
-                >
-                  {social.icon}
-                </a>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-
-        {/* Coluna Direita: Formulário editorial (escuro em repouso -> off-white quente #F1EFE9 no hover/foco) */}
-        <Reveal delay={0.1} className="flex-1">
-          <div
-            ref={formCardRef}
-            onMouseEnter={() => {
-              if (isFinePointer) setIsHovered(true);
-            }}
-            onMouseLeave={() => setIsHovered(false)}
-            onFocus={() => setIsFocusedWithin(true)}
-            onBlur={handleCardBlur}
-            className={`rounded-2xl border p-6 sm:p-7 md:p-9 transition-[border-color,background-color,color,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-              isEngaged
-                ? 'border-[#e2dfd7] bg-[#f1efe9] text-[#111111] shadow-[0_28px_60px_-24px_rgba(0,0,0,0.85)]'
-                : 'border-[#252525] bg-[#121212] text-[#f2f2f2]'
-            }`}
-          >
+          {/* Coluna Direita: Formulário editorial (escuro em repouso -> off-white quente #F1EFE9 no hover/foco) */}
+          <Reveal delay={0.1} className="relative flex-1">
+            <div
+              aria-hidden="true"
+              className={`pointer-events-none hidden md:block absolute -inset-6 -z-10 rounded-3xl transition-opacity duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                isEngaged ? 'opacity-100' : 'opacity-0'
+              }`}
+              style={{
+                background:
+                  'radial-gradient(ellipse at center, rgba(158, 27, 30, 0.2) 0%, rgba(8, 8, 8, 0) 72%)',
+              }}
+            />
+            <div
+              ref={formCardRef}
+              onMouseEnter={() => {
+                if (isFinePointer) setIsHovered(true);
+              }}
+              onMouseLeave={() => setIsHovered(false)}
+              onFocus={() => setIsFocusedWithin(true)}
+              onBlur={handleCardBlur}
+              className={`rounded-2xl border p-6 sm:p-7 md:p-9 transition-[border-color,background-color,color,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                isEngaged
+                  ? 'border-[#e2dfd7] bg-[#f1efe9] text-[#111111] shadow-[0_28px_60px_-24px_rgba(0,0,0,0.85)]'
+                  : 'border-[#252525] bg-[#121212] text-[#f2f2f2]'
+              }`}
+            >
             {submitted ? (
               <div className="flex min-h-[380px] flex-col items-start justify-center gap-4">
                 <span
@@ -340,8 +379,9 @@ export function ContactSection() {
                 </button>
               </form>
             )}
-          </div>
-        </Reveal>
+            </div>
+          </Reveal>
+        </div>
       </div>
     </section>
   );
