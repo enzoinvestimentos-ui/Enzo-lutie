@@ -1,12 +1,14 @@
 import { RollingText } from './RollingText';
 import { HairlineRule, Reveal } from './Reveal';
 import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface FooterProps {
   onNavigate: (path: string, hash?: string) => void;
 }
 
 export function Footer({ onNavigate }: FooterProps) {
+  const { t } = useLanguage();
   const { ref: linksContainerRef } = useMobileScrollActive<HTMLDivElement>({
     mode: 'pulse',
     delayMs: 120,
@@ -14,11 +16,11 @@ export function Footer({ onNavigate }: FooterProps) {
   });
 
   const quickLinks = [
-    { label: 'Início', path: '/', hash: '#hero-section' },
-    { label: 'Diagnóstico', path: '/', hash: '#bio-section' },
-    { label: 'Atuação', path: '/', hash: '#services' },
-    { label: 'Projetos', path: '/work', hash: '#work-hero' },
-    { label: 'Contato', path: '/', hash: '#contact' },
+    { key: 'home', label: t.footer.navItems.home, path: '/', hash: '#hero-section' },
+    { key: 'diagnosis', label: t.footer.navItems.diagnosis, path: '/', hash: '#bio-section' },
+    { key: 'practice', label: t.footer.navItems.practice, path: '/', hash: '#services' },
+    { key: 'projects', label: t.footer.navItems.projects, path: '/work', hash: '#work-hero' },
+    { key: 'contact', label: t.footer.navItems.contact, path: '/', hash: '#contact' },
   ];
 
   return (
@@ -29,19 +31,19 @@ export function Footer({ onNavigate }: FooterProps) {
           {/* Assinatura e posicionamento à esquerda */}
           <Reveal className="md:col-span-5 flex flex-col gap-3">
             <p className="max-w-[340px] text-[22px] md:text-[26px] font-medium leading-[1.2] tracking-[-0.02em] text-[#f2f2f2]">
-              Negócios primeiro. Tecnologia com propósito.
+              {t.footer.headline}
             </p>
             <p className="text-[16px] tracking-[-0.015em] text-[#a1a1a1]">
-              Estratégia, processos e soluções digitais.
+              {t.footer.subheadline}
             </p>
           </Reveal>
 
           {/* Links Rápidos */}
           <Reveal delay={0.08} className="md:col-span-4 flex flex-col gap-4">
-            <span className="text-[13px] font-medium text-[#8e8e8e]">Navegação</span>
+            <span className="text-[13px] font-medium text-[#8e8e8e]">{t.footer.navTitle}</span>
             <ul className="flex flex-col gap-2.5">
               {quickLinks.map((link) => (
-                <li key={link.label}>
+                <li key={link.key}>
                   <button
                     type="button"
                     onClick={() => onNavigate(link.path, link.hash)}
@@ -56,7 +58,7 @@ export function Footer({ onNavigate }: FooterProps) {
 
           {/* Canais */}
           <Reveal delay={0.14} className="md:col-span-3 flex flex-col gap-4">
-            <span className="text-[13px] font-medium text-[#8e8e8e]">Canais</span>
+            <span className="text-[13px] font-medium text-[#8e8e8e]">{t.footer.channelsTitle}</span>
             <div className="flex flex-wrap items-center gap-2 text-[16px] font-medium tracking-[-0.015em] text-[#d4d4d4]">
               <a
                 href="https://www.linkedin.com/"
@@ -85,7 +87,7 @@ export function Footer({ onNavigate }: FooterProps) {
                 onClick={() => onNavigate('/', '#contact')}
                 className="group transition-colors hover:text-[#ffffff] cursor-pointer"
               >
-                <RollingText text="E-mail" />
+                <RollingText text={t.footer.emailChannel} />
               </button>
             </div>
           </Reveal>
@@ -97,15 +99,15 @@ export function Footer({ onNavigate }: FooterProps) {
       <div className="pt-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <Reveal y={18} blur={6} duration={0.95} className="flex flex-col gap-2.5">
           <div className="type-display-xl select-none tracking-[-0.03em] text-[#f5f5f5]">
-            Enzo Lutie
+            {t.footer.signatureTitle}
           </div>
           <p className="text-[14px] md:text-[16px] font-bold tracking-[-0.015em] text-[#a1a1a1]">
-            Estratégias, Processos e Soluções Digitais
+            {t.footer.signatureSubtitle}
           </p>
         </Reveal>
 
         <span className="text-[13px] text-[#8e8e8e] md:text-right shrink-0">
-          © 2026 — Todos os direitos reservados.
+          {t.footer.copyright}
         </span>
       </div>
     </footer>

@@ -8,12 +8,16 @@ import {
   useSpring,
   useTransform,
 } from 'motion/react';
-import { VALUE_PERSPECTIVES, type ValuePerspectiveItem } from '../data/portfolioData';
+import { type ValuePerspectiveItem } from '../data/portfolioData';
 import { Reveal, useIsCompactMotion } from './Reveal';
 import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
 import { handleSpotlightLeave, handleSpotlightMove } from '../utils/cursorSpotlight';
+import { useLanguage } from '../i18n/LanguageContext';
 
 function PerspectiveMark({ id }: { id: ValuePerspectiveItem['iconId'] }) {
+  const { t } = useLanguage();
+  const marks = t.testimonials.marks;
+
   switch (id) {
     case 'site':
       return (
@@ -21,7 +25,7 @@ function PerspectiveMark({ id }: { id: ValuePerspectiveItem['iconId'] }) {
           <rect x="4" y="6" width="22" height="20" rx="3" stroke="currentColor" strokeWidth="2.2" />
           <line x1="4" y1="12" x2="26" y2="12" stroke="currentColor" strokeOpacity="0.55" strokeWidth="2.2" />
           <text x="36" y="21" fill="currentColor" fontSize="15" fontWeight="700" fontFamily="Archivo, sans-serif">
-            Site
+            {marks.site}
           </text>
         </svg>
       );
@@ -31,7 +35,7 @@ function PerspectiveMark({ id }: { id: ValuePerspectiveItem['iconId'] }) {
           <circle cx="10" cy="16" r="5" stroke="currentColor" strokeWidth="2.2" />
           <circle cx="24" cy="16" r="5" stroke="currentColor" strokeOpacity="0.55" strokeWidth="2.2" />
           <text x="38" y="21" fill="currentColor" fontSize="15" fontWeight="700" fontFamily="Archivo, sans-serif">
-            CRM
+            {marks.crm}
           </text>
         </svg>
       );
@@ -46,7 +50,7 @@ function PerspectiveMark({ id }: { id: ValuePerspectiveItem['iconId'] }) {
             strokeLinejoin="round"
           />
           <text x="44" y="21" fill="currentColor" fontSize="15" fontWeight="700" fontFamily="Archivo, sans-serif">
-            Fluxos
+            {marks.automation}
           </text>
         </svg>
       );
@@ -62,7 +66,7 @@ function PerspectiveMark({ id }: { id: ValuePerspectiveItem['iconId'] }) {
           />
           <circle cx="28" cy="9" r="3" fill="currentColor" />
           <text x="40" y="21" fill="currentColor" fontSize="15" fontWeight="700" fontFamily="Archivo, sans-serif">
-            Negócios
+            {marks.strategy}
           </text>
         </svg>
       );
@@ -72,6 +76,7 @@ function PerspectiveMark({ id }: { id: ValuePerspectiveItem['iconId'] }) {
 const CARD_FLIP_EASE = [0.37, 0, 0.63, 1] as const;
 
 function PerspectiveCard({ item, index }: { item: ValuePerspectiveItem; index: number }) {
+  const { t } = useLanguage();
   const [flipped, setFlipped] = useState(false);
   const [isFinePointer, setIsFinePointer] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
@@ -234,7 +239,7 @@ function PerspectiveCard({ item, index }: { item: ValuePerspectiveItem; index: n
             hasInteractedRef.current = true;
             setFlipped((prev) => !prev);
           }}
-          aria-label={`${item.pillarTitle}. Alternar cartão para visualizar síntese.`}
+          aria-label={`${item.pillarTitle}. ${t.testimonials.cardAriaSuffix}`}
           style={{
             rotateY,
             y: cardLiftY,
@@ -253,7 +258,7 @@ function PerspectiveCard({ item, index }: { item: ValuePerspectiveItem; index: n
             >
               <div className="flex items-center justify-between gap-2">
                 <span className="text-[12px] font-medium tracking-[0.02em] text-[#8e8e8e]">
-                  Perspectiva de valor
+                  {t.testimonials.cardKicker}
                 </span>
                 <RotateCw
                   className="h-3.5 w-3.5 shrink-0 text-[#a1a1a1]/60 transition-colors duration-300 group-hover/card:text-[#9e1b1e]"
@@ -306,30 +311,32 @@ function PerspectiveCard({ item, index }: { item: ValuePerspectiveItem; index: n
 }
 
 export function TestimonialsSection() {
+  const { t } = useLanguage();
+
   return (
     <section className="relative w-full max-md:border-t max-md:border-[#1c1c1c] md:border-t md:border-[#1c1c1c] md:bg-[radial-gradient(ellipse_60%_46%_at_50%_6%,rgba(158,27,30,0.075)_0%,rgba(8,8,8,0)_74%)]">
       <div className="mx-auto w-full max-w-[1180px] px-6 py-14 md:py-24">
         <div className="mb-8 md:mb-12 flex flex-col gap-3.5 max-w-[740px]">
           <Reveal>
             <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
-              Critério de decisão
+              {t.testimonials.kicker}
             </span>
           </Reveal>
           <Reveal delay={0.05}>
-            <h2 className="type-section-h2 text-[#f2f2f2]">O valor de cada solução</h2>
+            <h2 className="type-section-h2 text-[#f2f2f2]">{t.testimonials.title}</h2>
           </Reveal>
           <Reveal delay={0.1}>
             <p className="text-[17px] md:text-[19px] leading-[1.5] tracking-[-0.015em] text-[#a1a1a1]">
-              É essa perspectiva que orienta minhas decisões e a forma como participo de cada projeto.
+              {t.testimonials.subtitle}
             </p>
           </Reveal>
           <p className="sm:hidden text-[12px] font-medium tracking-[0.02em] text-[#9e1b1e]">
-            Toque para virar · Deslize →
+            {t.testimonials.mobileCue}
           </p>
         </div>
 
         <div className="no-scrollbar flex overflow-x-auto snap-x snap-mandatory gap-3.5 -mx-6 px-6 pb-2 sm:mx-0 sm:px-0 sm:pb-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible xl:grid-cols-4">
-          {VALUE_PERSPECTIVES.map((item, idx) => (
+          {t.testimonials.items.map((item, idx) => (
             <Reveal
               key={item.id}
               delay={idx * 0.06}

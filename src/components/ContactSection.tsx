@@ -4,13 +4,15 @@ import { Reveal } from './Reveal';
 import { RollingText } from './RollingText';
 import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
 import { handleSpotlightLeave, handleSpotlightMove } from '../utils/cursorSpotlight';
+import { useLanguage } from '../i18n/LanguageContext';
 
 export function ContactSection() {
+  const { t } = useLanguage();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [project, setProject] = useState('');
   const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState('');
+  const [hasValidationError, setHasValidationError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isFocusedWithin, setIsFocusedWithin] = useState(false);
   const [isFinePointer, setIsFinePointer] = useState(false);
@@ -49,15 +51,16 @@ export function ContactSection() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim() || !project.trim()) {
-      setError('Por favor, preencha todos os campos antes de enviar.');
+      setHasValidationError(true);
       return;
     }
-    setError('');
+    setHasValidationError(false);
     setSubmitted(true);
   };
 
   const socialLinks = [
     {
+      key: 'linkedin',
       name: 'LinkedIn',
       href: 'https://www.linkedin.com/',
       icon: (
@@ -67,6 +70,7 @@ export function ContactSection() {
       ),
     },
     {
+      key: 'instagram',
       name: 'Instagram',
       href: 'https://www.instagram.com/',
       icon: (
@@ -78,7 +82,8 @@ export function ContactSection() {
       ),
     },
     {
-      name: 'E-mail',
+      key: 'email',
+      name: t.contact.socialEmailLabel,
       href: '#contact-name',
       isAnchor: true,
       icon: <Mail className="h-4 w-4" strokeWidth={2} aria-hidden="true" />,
@@ -97,84 +102,43 @@ export function ContactSection() {
             <div className="flex flex-col gap-5">
               <Reveal className="flex flex-col gap-3">
                 <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
-                  Próximo passo
+                  {t.contact.kicker}
                 </span>
                 <h2 className="type-display-lg text-[#f2f2f2]">
-                  Vamos entender o que seu negócio precisa.
+                  {t.contact.headline}
                 </h2>
               </Reveal>
 
               <Reveal delay={0.05}>
                 <p className="max-w-[520px] text-[16px] md:text-[18px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]">
-                  Nem sempre o caminho está claro desde o início. O primeiro passo é entender o
-                  cenário para descobrir o que precisa mudar e quais frentes fazem sentido:
+                  {t.contact.intro}
                 </p>
               </Reveal>
 
               {/* Chunking dos cenários de conversa: grid interativo no mobile e desktop */}
               <ul className="grid max-w-[540px] grid-cols-2 gap-2.5 md:gap-3 text-[13px] md:text-[14px] leading-[1.4] md:leading-[1.48] text-[#d4d4d4]">
-                <li
-                  onMouseMove={handleSpotlightMove}
-                  onMouseLeave={handleSpotlightLeave}
-                  className="group/item desktop-spotlight-surface rounded-xl border border-[#222222] bg-[#111111] p-3.5 md:p-4 md:transition-[transform,border-color,background-color] md:duration-300 md:hover:-translate-y-0.5 md:hover:border-[#422325] md:hover:bg-[#151212]"
-                >
-                  <Reveal delay={0.06} className="relative z-10 flex flex-col gap-1.5">
-                    <span className="text-[11px] font-semibold tabular-nums tracking-[0.06em] text-[#9e1b1e] md:text-[#666666] md:transition-colors md:duration-300 md:group-hover/item:text-[#9e1b1e]">
-                      01
-                    </span>
-                    <span className="md:transition-colors md:duration-300 md:group-hover/item:text-[#f2f2f2]">
-                      Apresentação de serviços e fortalecimento da presença digital
-                    </span>
-                  </Reveal>
-                </li>
-                <li
-                  onMouseMove={handleSpotlightMove}
-                  onMouseLeave={handleSpotlightLeave}
-                  className="group/item desktop-spotlight-surface rounded-xl border border-[#222222] bg-[#111111] p-3.5 md:p-4 md:transition-[transform,border-color,background-color] md:duration-300 md:hover:-translate-y-0.5 md:hover:border-[#422325] md:hover:bg-[#151212]"
-                >
-                  <Reveal delay={0.1} className="relative z-10 flex flex-col gap-1.5">
-                    <span className="text-[11px] font-semibold tabular-nums tracking-[0.06em] text-[#9e1b1e] md:text-[#666666] md:transition-colors md:duration-300 md:group-hover/item:text-[#9e1b1e]">
-                      02
-                    </span>
-                    <span className="md:transition-colors md:duration-300 md:group-hover/item:text-[#f2f2f2]">
-                      Organização de processo comercial e estruturação de CRM
-                    </span>
-                  </Reveal>
-                </li>
-                <li
-                  onMouseMove={handleSpotlightMove}
-                  onMouseLeave={handleSpotlightLeave}
-                  className="group/item desktop-spotlight-surface rounded-xl border border-[#222222] bg-[#111111] p-3.5 md:p-4 md:transition-[transform,border-color,background-color] md:duration-300 md:hover:-translate-y-0.5 md:hover:border-[#422325] md:hover:bg-[#151212]"
-                >
-                  <Reveal delay={0.14} className="relative z-10 flex flex-col gap-1.5">
-                    <span className="text-[11px] font-semibold tabular-nums tracking-[0.06em] text-[#9e1b1e] md:text-[#666666] md:transition-colors md:duration-300 md:group-hover/item:text-[#9e1b1e]">
-                      03
-                    </span>
-                    <span className="md:transition-colors md:duration-300 md:group-hover/item:text-[#f2f2f2]">
-                      Redução de tarefas manuais e gargalos na operação
-                    </span>
-                  </Reveal>
-                </li>
-                <li
-                  onMouseMove={handleSpotlightMove}
-                  onMouseLeave={handleSpotlightLeave}
-                  className="group/item desktop-spotlight-surface rounded-xl border border-[#222222] bg-[#111111] p-3.5 md:p-4 md:transition-[transform,border-color,background-color] md:duration-300 md:hover:-translate-y-0.5 md:hover:border-[#422325] md:hover:bg-[#151212]"
-                >
-                  <Reveal delay={0.18} className="relative z-10 flex flex-col gap-1.5">
-                    <span className="text-[11px] font-semibold tabular-nums tracking-[0.06em] text-[#9e1b1e] md:text-[#666666] md:transition-colors md:duration-300 md:group-hover/item:text-[#9e1b1e]">
-                      04
-                    </span>
-                    <span className="md:transition-colors md:duration-300 md:group-hover/item:text-[#f2f2f2]">
-                      Estrutura digital alinhada ao momento atual da empresa
-                    </span>
-                  </Reveal>
-                </li>
+                {t.contact.scenarios.map((scenario, idx) => (
+                  <li
+                    key={idx}
+                    onMouseMove={handleSpotlightMove}
+                    onMouseLeave={handleSpotlightLeave}
+                    className="group/item desktop-spotlight-surface rounded-xl border border-[#222222] bg-[#111111] p-3.5 md:p-4 md:transition-[transform,border-color,background-color] md:duration-300 md:hover:-translate-y-0.5 md:hover:border-[#422325] md:hover:bg-[#151212]"
+                  >
+                    <Reveal delay={0.06 + idx * 0.04} className="relative z-10 flex flex-col gap-1.5">
+                      <span className="text-[11px] font-semibold tabular-nums tracking-[0.06em] text-[#9e1b1e] md:text-[#666666] md:transition-colors md:duration-300 md:group-hover/item:text-[#9e1b1e]">
+                        0{idx + 1}
+                      </span>
+                      <span className="md:transition-colors md:duration-300 md:group-hover/item:text-[#f2f2f2]">
+                        {scenario}
+                      </span>
+                    </Reveal>
+                  </li>
+                ))}
               </ul>
 
               <Reveal delay={0.14}>
                 <p className="max-w-[520px] text-[16px] font-medium leading-[1.55] tracking-[-0.015em] text-[#f2f2f2] max-md:border-l-2 max-md:border-[#9e1b1e]/75 max-md:pl-3.5 md:border-t md:border-[#242424] md:pt-4">
-                  Se existe algo que precisa ser compreendido, organizado ou desenvolvido, podemos
-                  começar por uma conversa.
+                  {t.contact.closing}
                 </p>
               </Reveal>
             </div>
@@ -183,7 +147,7 @@ export function ContactSection() {
               <div ref={socialRowRef} className="flex items-center gap-3">
                 {socialLinks.map((social) => (
                   <a
-                    key={social.name}
+                    key={social.key}
                     href={social.href}
                     target={social.isAnchor ? undefined : '_blank'}
                     rel={social.isAnchor ? undefined : 'noopener noreferrer'}
@@ -237,20 +201,22 @@ export function ContactSection() {
                     isEngaged ? 'text-[#111111]' : 'text-[#f2f2f2]'
                   }`}
                 >
-                  Conversa iniciada.
+                  {t.contact.successTitle}
                 </h3>
                 <p
                   className={`max-w-[400px] text-[16px] leading-[1.55] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                     isEngaged ? 'text-[#3f3f3c]' : 'text-[#a1a1a1]'
                   }`}
                 >
-                  Obrigado, {name}. Suas informações foram registradas para entendermos o cenário e
-                  os próximos passos da sua empresa.
+                  {t.contact.successBodyPrefix}
+                  {name}
+                  {t.contact.successBodySuffix}
                 </p>
                 <button
                   type="button"
                   onClick={() => {
                     setSubmitted(false);
+                    setHasValidationError(false);
                     setName('');
                     setEmail('');
                     setProject('');
@@ -261,7 +227,7 @@ export function ContactSection() {
                       : 'border-[#2a2a2a] text-[#f2f2f2]'
                   }`}
                 >
-                  Enviar nova mensagem
+                  {t.contact.resetLabel}
                 </button>
               </div>
             ) : (
@@ -272,14 +238,14 @@ export function ContactSection() {
                       isEngaged ? 'text-[#111111]' : 'text-[#f2f2f2]'
                     }`}
                   >
-                    Envie uma mensagem
+                    {t.contact.formTitle}
                   </h3>
                   <p
                     className={`text-[14px] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                       isEngaged ? 'text-[#52524e]' : 'text-[#8e8e8e]'
                     }`}
                   >
-                    Compartilhe o momento da empresa para iniciarmos a conversa.
+                    {t.contact.formSubtitle}
                   </p>
                 </div>
 
@@ -290,14 +256,14 @@ export function ContactSection() {
                       isEngaged ? 'text-[#3f3f3c]' : 'text-[#a1a1a1]'
                     }`}
                   >
-                    Nome
+                    {t.contact.nameLabel}
                   </label>
                   <input
                     id="contact-name"
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Seu nome"
+                    placeholder={t.contact.namePlaceholder}
                     required
                     className={`w-full rounded-xl border px-4 py-3.5 text-[16px] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] focus:outline-none ${
                       isEngaged
@@ -314,14 +280,14 @@ export function ContactSection() {
                       isEngaged ? 'text-[#3f3f3c]' : 'text-[#a1a1a1]'
                     }`}
                   >
-                    E-mail
+                    {t.contact.emailLabel}
                   </label>
                   <input
                     id="contact-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="voce@empresa.com.br"
+                    placeholder={t.contact.emailPlaceholder}
                     required
                     className={`w-full rounded-xl border px-4 py-3.5 text-[16px] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] focus:outline-none ${
                       isEngaged
@@ -338,14 +304,14 @@ export function ContactSection() {
                       isEngaged ? 'text-[#3f3f3c]' : 'text-[#a1a1a1]'
                     }`}
                   >
-                    Cenário ou projeto
+                    {t.contact.projectLabel}
                   </label>
                   <textarea
                     id="contact-project"
                     rows={4}
                     value={project}
                     onChange={(e) => setProject(e.target.value)}
-                    placeholder="Conte sobre o momento da empresa, desafios ou o que precisa ser estruturado..."
+                    placeholder={t.contact.projectPlaceholder}
                     required
                     className={`w-full resize-none rounded-xl border px-4 py-3.5 text-[16px] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] focus:outline-none ${
                       isEngaged
@@ -355,14 +321,14 @@ export function ContactSection() {
                   />
                 </div>
 
-                {error && (
+                {hasValidationError && (
                   <p
                     role="alert"
                     className={`text-[14px] font-medium transition-colors duration-300 ${
                       isEngaged ? 'text-[#991b1b]' : 'text-[#fca5a5]'
                     }`}
                   >
-                    {error}
+                    {t.contact.errorRequired}
                   </p>
                 )}
 
@@ -375,7 +341,7 @@ export function ContactSection() {
                       : 'bg-[#f2f2f2] text-[#080808]'
                   }`}
                 >
-                  <RollingText text="Iniciar uma conversa" />
+                  <RollingText text={t.contact.submitLabel} />
                 </button>
               </form>
             )}

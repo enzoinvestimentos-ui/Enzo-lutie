@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { EDITORIAL_EASE } from './Reveal';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface IntroSequenceProps {
   onComplete: () => void;
@@ -16,6 +17,7 @@ const WIPE_EASE = [0.76, 0, 0.24, 1] as const;
 type IntroPhase = 'enter' | 'wipe-in' | 'wipe-out';
 
 export function IntroSequence({ onComplete }: IntroSequenceProps) {
+  const { t } = useLanguage();
   const prefersReducedMotion = useReducedMotion();
   const [phase, setPhase] = useState<IntroPhase>('enter');
 
@@ -174,7 +176,7 @@ export function IntroSequence({ onComplete }: IntroSequenceProps) {
             transition={{ duration: 0.5, delay: 0.44, ease: EDITORIAL_EASE }}
             className="text-[12px] md:text-[13px] font-medium tracking-[0.14em] uppercase text-[#a1a1a1]"
           >
-            Estratégia · Processos · Tecnologia
+            {t.intro.subtitle}
           </motion.span>
         </div>
       </motion.div>

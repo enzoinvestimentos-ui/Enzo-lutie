@@ -12,13 +12,10 @@ import {
   type MotionValue,
 } from 'motion/react';
 import { Play, X } from 'lucide-react';
-import {
-  SOCIAL_PROOF_HEADER,
-  SOCIAL_PROOF_VIDEO,
-  type VideoTestimonialItem,
-} from '../data/socialProofData';
+import { type VideoTestimonialItem } from '../data/socialProofData';
 import { Reveal, EDITORIAL_EASE, useIsCompactMotion } from './Reveal';
 import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
+import { useLanguage } from '../i18n/LanguageContext';
 
 function getEmbedUrl(url: string): string | null {
   const trimmed = url.trim();
@@ -238,6 +235,7 @@ function VideoSlot({
   item: VideoTestimonialItem;
   onOpenModal: (video: VideoTestimonialItem) => void;
 }) {
+  const { t } = useLanguage();
   const hasVideo = Boolean(item.videoUrl.trim());
   const [inlineNotice, setInlineNotice] = useState(false);
   const [posterFailed, setPosterFailed] = useState(false);
@@ -336,7 +334,7 @@ function VideoSlot({
         </span>
         {!hasVideo && (
           <span className="text-[11px] font-medium tracking-[0.02em] text-[#737373]">
-            Espaço reservado
+            {t.socialProof.placeholderBadge}
           </span>
         )}
       </div>
@@ -348,7 +346,9 @@ function VideoSlot({
           type="button"
           onClick={handleAction}
           aria-label={
-            hasVideo ? `Reproduzir ${item.label}` : `Visualizar informações do ${item.label}`
+            hasVideo
+              ? `${t.socialProof.playAriaPrefix} ${item.label}`
+              : `${t.socialProof.infoAriaPrefix} ${item.label}`
           }
           className="btn-interactive inline-flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-full bg-[#f2f2f2] text-[#080808] shadow-[0_18px_40px_-14px_rgba(0,0,0,0.9)] cursor-pointer active:scale-[0.97] md:group-hover:ring-4 md:group-hover:ring-[#9e1b1e]/25"
         >
@@ -357,13 +357,11 @@ function VideoSlot({
 
         <div className="flex flex-col items-center gap-1">
           <span className="text-[12px] md:text-[13px] font-semibold tracking-[0.08em] uppercase text-[#e5e5e5]">
-            {hasVideo ? 'Assistir depoimento' : 'Depoimento em vídeo'}
+            {hasVideo ? t.socialProof.watchLabel : t.socialProof.placeholderLabel}
           </span>
           {!hasVideo && (
             <span className="text-[12px] text-[#8e8e8e] max-w-[260px]">
-              {inlineNotice
-                ? 'Adicione o arquivo ou link do vídeo em src/data/socialProofData.ts.'
-                : item.durationHint}
+              {inlineNotice ? t.socialProof.inlineMissingHint : item.durationHint}
             </span>
           )}
         </div>
@@ -589,6 +587,7 @@ function BottomWave({
 }
 
 export function SocialProofSection() {
+  const { t } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const isCompactMotion = useIsCompactMotion();
@@ -596,7 +595,9 @@ export function SocialProofSection() {
     typeof window !== 'undefined' ? window.matchMedia('(max-width: 767px)').matches : false
   );
   const [isInView, setIsInView] = useState(false);
-  const [activeVideo, setActiveVideo] = useState<VideoTestimonialItem | null>(null);
+  const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
+  const activeVideo =
+    activeVideoId && t.socialProof.video.id === activeVideoId ? t.socialProof.video : null;
 
   // Relógio contínuo compartilhado: quando visível, move ondas, luz, cenário e tipografia no mesmo fluxo
   const waveTime = useMotionValue(0);
@@ -704,15 +705,15 @@ export function SocialProofSection() {
   const videoCardFloatRot = useTransform(waveTime, (t) => Math.sin(t * 0.41 + 0.5) * 0.18);
 
   useEffect(() => {
-    if (!activeVideo) return;
+    if (!activeVideoId) return;
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setActiveVideo(null);
+        setActiveVideoId(null);
       }
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [activeVideo]);
+  }, [activeVideoId]);
 
   return (
     <section
@@ -856,7 +857,7 @@ export function SocialProofSection() {
                 className="inline-block origin-left md:will-change-transform"
               >
                 <span className="text-[13px] font-medium tracking-[0.02em] text-[#52524e]">
-                  {SOCIAL_PROOF_HEADER.kicker}
+                  {t.socialProof.kicker}
                 </span>
               </motion.div>
             </Reveal>
@@ -873,7 +874,7 @@ export function SocialProofSection() {
                 className="origin-left md:will-change-transform"
               >
                 <h2 id="social-proof-heading" className="type-section-h2 text-[#111111]">
-                  {SOCIAL_PROOF_HEADER.title}
+                  {t.socialProof.title}
                 </h2>
               </motion.div>
             </Reveal>
@@ -890,7 +891,7 @@ export function SocialProofSection() {
                 className="origin-left md:will-change-transform"
               >
                 <p className="text-[17px] md:text-[19px] leading-[1.5] tracking-[-0.015em] text-[#3f3f3c]">
-                  {SOCIAL_PROOF_HEADER.subtitle}
+                  {t.socialProof.subtitle}
                 </p>
               </motion.div>
             </Reveal>
@@ -908,7 +909,10 @@ export function SocialProofSection() {
               }
               className="md:will-change-transform"
             >
-              <VideoSlot item={SOCIAL_PROOF_VIDEO} onOpenModal={setActiveVideo} />
+              <VideoSlot
+                item={t.socialProof.video}
+                onOpenModal={(video) => setActiveVideoId(video.id)}
+              />
             </motion.div>
           </Reveal>
         </div>
@@ -923,7 +927,7 @@ export function SocialProofSection() {
                 role="dialog"
                 aria-modal="true"
                 aria-label={activeVideo.label}
-                onClick={() => setActiveVideo(null)}
+                onClick={() => setActiveVideoId(null)}
                 className="fixed inset-0 z-[90] overflow-y-auto"
               >
                 {/* Backdrop isolado como camada irmã para não aplicar backdrop-filter sobre o iframe */}
@@ -956,8 +960,8 @@ export function SocialProofSection() {
                       </div>
                       <button
                         type="button"
-                        onClick={() => setActiveVideo(null)}
-                        aria-label="Fechar visualização"
+                        onClick={() => setActiveVideoId(null)}
+                        aria-label={t.socialProof.closeModalAria}
                         className="btn-interactive inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#2a2a2a] bg-[#181818] text-[#f2f2f2] cursor-pointer"
                       >
                         <X className="h-4 w-4" aria-hidden="true" />

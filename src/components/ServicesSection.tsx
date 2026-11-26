@@ -1,8 +1,9 @@
 import { ArrowUpRight } from 'lucide-react';
-import { SERVICES, type ServiceItem } from '../data/portfolioData';
+import type { ServiceItem } from '../data/portfolioData';
 import { Reveal } from './Reveal';
 import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
 import { handleSpotlightLeave, handleSpotlightMove } from '../utils/cursorSpotlight';
+import { useLanguage } from '../i18n/LanguageContext';
 
 function ServiceCard({ service, idx }: { service: ServiceItem; idx: number }) {
   const { ref } = useMobileScrollActive<HTMLDivElement>({
@@ -63,6 +64,8 @@ function ServiceCard({ service, idx }: { service: ServiceItem; idx: number }) {
 }
 
 export function ServicesSection() {
+  const { t } = useLanguage();
+
   return (
     <section
       id="services"
@@ -74,23 +77,22 @@ export function ServicesSection() {
             <div className="flex items-center gap-2">
               <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#9e1b1e] md:hidden" />
               <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
-                Frentes integradas
+                {t.services.kicker}
               </span>
             </div>
           </Reveal>
           <Reveal delay={0.04}>
-            <h2 className="type-section-h2 text-[#f2f2f2]">Áreas de Atuação</h2>
+            <h2 className="type-section-h2 text-[#f2f2f2]">{t.services.title}</h2>
           </Reveal>
           <Reveal delay={0.08}>
             <p className="text-[17px] md:text-[19px] leading-[1.5] tracking-[-0.015em] text-[#a1a1a1]">
-              Áreas que costumam ser tratadas de forma isolada, mas que precisam operar juntas para
-              gerar resultado.
+              {t.services.subtitle}
             </p>
           </Reveal>
         </div>
 
         <div className="flex flex-col gap-4">
-          {SERVICES.map((service, idx) => (
+          {t.services.items.map((service, idx) => (
             <Reveal key={service.id} delay={idx * 0.05}>
               <ServiceCard service={service} idx={idx} />
             </Reveal>

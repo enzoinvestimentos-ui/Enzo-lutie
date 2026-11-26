@@ -1,10 +1,11 @@
 import { ArrowUpRight } from 'lucide-react';
-import { PROJECTS, PROJECT_DECISION_PILLARS, type ProjectItem } from '../data/portfolioData';
+import { type ProjectItem } from '../data/portfolioData';
 import { ArrowButton } from './ArrowButton';
 import { SafeImage } from './SafeImage';
 import { Reveal, HairlineRule } from './Reveal';
 import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
 import { handleSpotlightLeave, handleSpotlightMove } from '../utils/cursorSpotlight';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface ProjectsSectionProps {
   onSelectProject: (slug: string) => void;
@@ -20,6 +21,7 @@ export function ProjectCard({
   onSelect: (slug: string) => void;
   index?: number;
 }) {
+  const { t } = useLanguage();
   const { ref } = useMobileScrollActive<HTMLAnchorElement>({
     mode: 'once',
     delayMs: index * 85,
@@ -77,7 +79,7 @@ export function ProjectCard({
             {project.subtitle}
           </span>
           <span className="card-ink-cta shrink-0 font-medium text-[#d4d4d4] transition-[color,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0.5 group-hover:text-[#9e1b1e]">
-            Ver estudo
+            {t.projects.viewStudy}
           </span>
         </div>
       </div>
@@ -86,7 +88,8 @@ export function ProjectCard({
 }
 
 export function ProjectsSection({ onSelectProject, onViewAllWork }: ProjectsSectionProps) {
-  const featured = PROJECTS.filter((p) => p.featured);
+  const { t } = useLanguage();
+  const featured = t.projects.items.filter((p) => p.featured);
 
   return (
     <section
@@ -97,12 +100,12 @@ export function ProjectsSection({ onSelectProject, onViewAllWork }: ProjectsSect
         <div className="mb-8 md:mb-10 flex flex-col items-start justify-between gap-5 md:flex-row md:items-end">
           <Reveal className="flex flex-col gap-3">
             <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
-              Direcionamento aplicado
+              {t.projects.kicker}
             </span>
-            <h2 className="type-section-h2 max-w-[560px] text-[#f2f2f2]">Projetos</h2>
+            <h2 className="type-section-h2 max-w-[560px] text-[#f2f2f2]">{t.projects.title}</h2>
           </Reveal>
           <Reveal delay={0.06}>
-            <ArrowButton label="Explorar projetos selecionados" onClick={onViewAllWork} variant="primary" />
+            <ArrowButton label={t.projects.cta} onClick={onViewAllWork} variant="primary" />
           </Reveal>
         </div>
 
@@ -111,17 +114,17 @@ export function ProjectsSection({ onSelectProject, onViewAllWork }: ProjectsSect
         <div className="mb-10 md:mb-12 flex flex-col gap-6 py-7 md:py-8">
           <Reveal delay={0.04} className="flex flex-col gap-2 max-w-[740px]">
             <p className="text-[17px] md:text-[19px] font-medium leading-[1.45] tracking-[-0.015em] text-[#f2f2f2] max-md:border-l-2 max-md:border-[#9e1b1e]/80 max-md:pl-3.5">
-              Uma boa ideia só gera valor quando consegue se transformar em algo concreto.
+              {t.projects.introBold}
             </p>
             <p className="text-[15px] md:text-[16px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]">
-              Cada projeto parte de um desafio real e apresenta o raciocínio por trás das decisões em cinco camadas:
+              {t.projects.introSub}
             </p>
           </Reveal>
 
           <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-2 sm:gap-4 lg:grid-cols-5">
-            {PROJECT_DECISION_PILLARS.map((pillar, idx) => (
+            {t.projects.pillars.map((pillar, idx) => (
               <div
-                key={pillar.label}
+                key={idx}
                 onMouseMove={handleSpotlightMove}
                 onMouseLeave={handleSpotlightLeave}
                 className={`group/pillar desktop-spotlight-surface max-sm:rounded-xl max-sm:border max-sm:border-[#1f1f1f] max-sm:bg-[#121212]/80 max-sm:p-3 sm:rounded-xl sm:border sm:border-[#202020] sm:bg-[#121212]/75 sm:p-4 sm:transition-[transform,border-color,background-color] sm:duration-300 sm:hover:-translate-y-0.5 sm:hover:border-[#422325] sm:hover:bg-[#161212] ${

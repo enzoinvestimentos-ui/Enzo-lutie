@@ -1,7 +1,7 @@
 import { ArrowLeft } from 'lucide-react';
-import { PRACTICE_HIGHLIGHTS } from '../data/portfolioData';
 import { SafeImage } from './SafeImage';
 import { Reveal } from './Reveal';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface BlogDetailPageProps {
   slug: string;
@@ -9,7 +9,8 @@ interface BlogDetailPageProps {
 }
 
 export function BlogDetailPage({ slug, onBack }: BlogDetailPageProps) {
-  const article = PRACTICE_HIGHLIGHTS.find((a) => a.slug === slug) ?? PRACTICE_HIGHLIGHTS[0];
+  const { t } = useLanguage();
+  const article = t.thoughts.articles.find((a) => a.slug === slug) ?? t.thoughts.articles[0];
 
   return (
     <main id="article-section" className="mx-auto w-full max-w-[1180px] px-6 pt-32 pb-20">
@@ -19,7 +20,7 @@ export function BlogDetailPage({ slug, onBack }: BlogDetailPageProps) {
         className="group mb-10 inline-flex items-center gap-2 text-[15px] font-medium text-[#a1a1a1] transition-colors duration-300 hover:text-[#f5f5f5] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f5f5f5]"
       >
         <ArrowLeft className="h-4 w-4 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-x-1" />
-        <span>Voltar para Sobre</span>
+        <span>{t.thoughts.blogDetail.backLabel}</span>
       </button>
 
       <article className="mx-auto max-w-[820px]">

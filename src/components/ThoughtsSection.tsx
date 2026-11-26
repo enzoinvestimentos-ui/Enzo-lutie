@@ -1,10 +1,11 @@
 import { ArrowUpRight } from 'lucide-react';
-import { PRACTICE_HIGHLIGHTS, type PracticeHighlightItem } from '../data/portfolioData';
+import { type PracticeHighlightItem } from '../data/portfolioData';
 import { ArrowButton } from './ArrowButton';
 import { SafeImage } from './SafeImage';
 import { Reveal } from './Reveal';
 import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
 import { handleSpotlightLeave, handleSpotlightMove } from '../utils/cursorSpotlight';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface ThoughtsSectionProps {
   onSelectArticle: (slug: string) => void;
@@ -74,7 +75,8 @@ export function ArticleCard({
 }
 
 export function ThoughtsSection({ onSelectArticle, onViewAllArticles }: ThoughtsSectionProps) {
-  const featuredItems = PRACTICE_HIGHLIGHTS.filter((a) => a.featuredOnHome).slice(0, 2);
+  const { t } = useLanguage();
+  const featuredItems = t.thoughts.articles.filter((a) => a.featuredOnHome).slice(0, 2);
   const { ref: synthesisCardRef } = useMobileScrollActive<HTMLDivElement>({
     mode: 'once',
     delayMs: 140,
@@ -86,23 +88,19 @@ export function ThoughtsSection({ onSelectArticle, onViewAllArticles }: Thoughts
         <div className="mb-10 md:mb-12 grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
           <Reveal className="lg:col-span-5 flex flex-col gap-3">
             <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
-              Sobre mim
+              {t.thoughts.kicker}
             </span>
-            <h2 className="type-section-h2 text-[#f2f2f2]">Sobre e Parcerias</h2>
+            <h2 className="type-section-h2 text-[#f2f2f2]">{t.thoughts.title}</h2>
           </Reveal>
 
           <div className="lg:col-span-7 flex flex-col gap-3 text-[16px] md:text-[18px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]">
             <Reveal delay={0.05}>
               <p className="font-medium text-[#f2f2f2] max-md:border-l-2 max-md:border-[#9e1b1e]/80 max-md:pl-3.5 md:border-t md:border-[#242424] md:pt-4">
-                Atuo na interseção entre negócios, desenvolvimento comercial, direcionamento de
-                projetos e construção de soluções digitais.
+                {t.thoughts.leadPrimary}
               </p>
             </Reveal>
             <Reveal delay={0.1}>
-              <p>
-                Compreendo necessidades empresariais e conecto diferentes competências — da execução
-                técnica à direção criativa — para transformar problemas em projetos bem direcionados.
-              </p>
+              <p>{t.thoughts.leadSecondary}</p>
             </Reveal>
           </div>
         </div>
@@ -124,23 +122,22 @@ export function ThoughtsSection({ onSelectArticle, onViewAllArticles }: Thoughts
             >
               <div className="card-hover-content relative z-10 flex flex-1 flex-col justify-between gap-6">
                 <div className="card-ink-muted text-[13px] font-medium text-[#8e8e8e] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:text-[#52524e]">
-                  <span>Visão de Negócio</span>
+                  <span>{t.thoughts.synthesisTag}</span>
                 </div>
 
                 <div className="my-auto flex flex-col gap-3.5">
                   <h3 className="card-ink-title text-[22px] md:text-[24px] font-semibold leading-[1.22] tracking-[-0.02em] text-[#f2f2f2] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:text-[#111111]">
-                    Entender como a empresa gera valor antes de escolher a ferramenta.
+                    {t.thoughts.synthesisTitle}
                   </h3>
                   <p className="card-ink-caps text-[15px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:text-[#3a3a38]">
-                    Boas soluções não dependem apenas de conhecimento técnico, mas da capacidade de
-                    compreender operação, clientes e decisões para fazer as escolhas certas.
+                    {t.thoughts.synthesisBody}
                   </p>
                 </div>
               </div>
 
               <div className="relative z-10">
                 <ArrowButton
-                  label="Conhecer visão completa"
+                  label={t.thoughts.synthesisCta}
                   onClick={onViewAllArticles}
                   variant="primary"
                   adaptToCardHover

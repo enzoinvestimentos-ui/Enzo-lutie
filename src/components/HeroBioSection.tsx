@@ -14,6 +14,7 @@ import { Reveal, HairlineRule, EDITORIAL_EASE, useIsCompactMotion } from './Reve
 import { HERO_MEDIA, WHATSAPP_CONTACT_URL } from '../data/portfolioData';
 import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
 import { handleSpotlightLeave, handleSpotlightMove } from '../utils/cursorSpotlight';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface HeroBioSectionProps {
   onGetStarted?: () => void;
@@ -33,6 +34,7 @@ const PORTRAIT_FLIP_SPRING = {
 } as const;
 
 function MobileFlipPortrait() {
+  const { t } = useLanguage();
   const cardRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const [manualFlipped, setManualFlipped] = useState(false);
@@ -65,7 +67,7 @@ function MobileFlipPortrait() {
       <motion.button
         type="button"
         onClick={() => setManualFlipped((prev) => !prev)}
-        aria-label="Alternar cartão do retrato"
+        aria-label={t.hero.portraitAria}
         style={
           prefersReducedMotion
             ? {
@@ -82,8 +84,8 @@ function MobileFlipPortrait() {
         >
           <SafeImage
             src={HERO_MEDIA.frontAvatar}
-            alt="Retrato editorial em preto e branco"
-            fallbackTitle="Estratégia & Tecnologia"
+            alt={t.hero.portraitFrontAlt}
+            fallbackTitle={t.hero.portraitFallback}
             disableEntrance
             priority
             className="h-full w-full object-cover object-center"
@@ -97,8 +99,8 @@ function MobileFlipPortrait() {
         >
           <SafeImage
             src={HERO_MEDIA.backAvatar}
-            alt="Retrato editorial em fundo vermelho"
-            fallbackTitle="Estratégia & Tecnologia"
+            alt={t.hero.portraitBackAlt}
+            fallbackTitle={t.hero.portraitFallback}
             disableEntrance
             priority
             className="h-full w-full object-cover object-center"
@@ -106,7 +108,7 @@ function MobileFlipPortrait() {
         </div>
       </motion.button>
       <p className="mt-2.5 text-center text-[11px] font-medium uppercase tracking-[0.12em] text-[#7c7c7c] md:hidden">
-        Toque ou role para girar
+        {t.hero.portraitMobileHint}
       </p>
     </motion.div>
   );
@@ -165,6 +167,7 @@ function DesktopStickyPortrait({
   containerRef: RefObject<HTMLDivElement | null>;
   canHoverTilt: boolean;
 }) {
+  const { t } = useLanguage();
   const prefersReducedMotion = useReducedMotion();
   const [manualFlipped, setManualFlipped] = useState(false);
 
@@ -263,7 +266,7 @@ function DesktopStickyPortrait({
               onClick={() => setManualFlipped((f) => !f)}
               onMouseMove={handleAvatarMouseMove}
               onMouseLeave={handleAvatarMouseLeave}
-              aria-label="Alternar cartão do retrato"
+              aria-label={t.hero.portraitAria}
               style={
                 prefersReducedMotion
                   ? { rotateY: manualFlipped ? 180 : 0 }
@@ -280,8 +283,8 @@ function DesktopStickyPortrait({
               >
                 <SafeImage
                   src={HERO_MEDIA.frontAvatar}
-                  alt="Retrato editorial em preto e branco"
-                  fallbackTitle="Estratégia & Tecnologia"
+                  alt={t.hero.portraitFrontAlt}
+                  fallbackTitle={t.hero.portraitFallback}
                   disableEntrance
                   priority
                   className="h-full w-full object-cover object-center"
@@ -295,8 +298,8 @@ function DesktopStickyPortrait({
               >
                 <SafeImage
                   src={HERO_MEDIA.backAvatar}
-                  alt="Retrato editorial em fundo vermelho"
-                  fallbackTitle="Estratégia & Tecnologia"
+                  alt={t.hero.portraitBackAlt}
+                  fallbackTitle={t.hero.portraitFallback}
                   disableEntrance
                   priority
                   className="h-full w-full object-cover object-center"
@@ -306,7 +309,7 @@ function DesktopStickyPortrait({
           </motion.div>
 
           <p className="pointer-events-none mt-3 text-center text-[11px] font-medium tracking-[0.06em] text-[#8e8e8e] opacity-0 translate-y-1 transition-[opacity,transform] duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/portrait:opacity-100 group-hover/portrait:translate-y-0">
-            Clique para girar
+            {t.hero.portraitDesktopHint}
           </p>
         </motion.div>
       </div>
@@ -315,6 +318,7 @@ function DesktopStickyPortrait({
 }
 
 export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
+  const { t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const isCompactMotion = useIsCompactMotion();
@@ -366,7 +370,7 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
               className="flex items-center"
             >
               <span className="text-[13px] font-medium tracking-[0.02em] text-[#a1a1a1]">
-                Enzo Lutiê · Negócios, estratégia comercial e tecnologia
+                {t.hero.kicker}
               </span>
             </motion.div>
 
@@ -386,7 +390,7 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
               style={h1Settled || isCompactMotion ? { filter: 'none' } : undefined}
               className="type-display-lg text-[#f2f2f2]"
             >
-              Estratégia de negócios, processos e tecnologia.
+              {t.hero.headline}
             </motion.h1>
 
             <motion.div
@@ -395,12 +399,9 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
               transition={{ duration: 0.48, delay: 0.06, ease: EDITORIAL_EASE }}
               className="flex max-w-[560px] flex-col gap-3 text-[16px] md:text-[18px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]"
             >
-              <p>
-                Ajudo empresas a identificar oportunidades, superar gargalos e conectar estratégia
-                comercial, operação e soluções digitais para melhorar resultados.
-              </p>
+              <p>{t.hero.leadPrimary}</p>
               <p className="font-medium text-[#f2f2f2] max-md:border-l-2 max-md:border-[#9e1b1e] max-md:pl-3.5 md:border-t md:border-[#222222] md:pt-3.5">
-                A tecnologia entra como parte da solução, não como ponto de partida.
+                {t.hero.leadThesis}
               </p>
             </motion.div>
 
@@ -410,14 +411,14 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
               transition={{ duration: 0.48, delay: 0.12, ease: EDITORIAL_EASE }}
               className="flex flex-wrap items-center gap-3.5 pt-1 md:gap-4 md:pt-2"
             >
-              <ArrowButton label="Vamos conversar" href={WHATSAPP_CONTACT_URL} variant="primary" />
+              <ArrowButton label={t.hero.ctaPrimary} href={WHATSAPP_CONTACT_URL} variant="primary" />
               <button
                 ref={exploreBtnRef}
                 type="button"
                 onClick={onExploreProjects}
                 className="btn-interactive group inline-flex items-center justify-center rounded-full border border-[#2a2a2a] bg-transparent px-6 py-3.5 text-[15px] font-medium tracking-[-0.02em] text-[#f2f2f2] active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer"
               >
-                <RollingText text="Conhecer projetos" />
+                <RollingText text={t.hero.ctaSecondary} />
               </button>
             </motion.div>
 
@@ -448,13 +449,13 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
             transition={{ duration: 0.45, delay: 0.18, ease: EDITORIAL_EASE }}
             className="flex flex-wrap items-center justify-between gap-3 pt-4 text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]"
           >
-            <span className="text-[#a1a1a1]">Estratégia · Processos · Tecnologia</span>
+            <span className="text-[#a1a1a1]">{t.hero.bottomKeywords}</span>
             <div className="flex items-center gap-4 tabular-nums">
-              <span>Lumo · Krios Creative</span>
+              <span>{t.hero.bottomPartners}</span>
               <span aria-hidden="true" className="text-[#404040]">
                 ·
               </span>
-              <span>©2026</span>
+              <span>{t.hero.bottomYear}</span>
             </div>
           </motion.div>
         </div>
@@ -476,55 +477,42 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
                 <div className="flex items-center gap-2">
                   <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#9e1b1e] md:hidden" />
                   <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
-                    Diagnóstico
+                    {t.diagnosis.kicker}
                   </span>
                 </div>
                 <h2 className="text-[30px] sm:text-[38px] md:text-[46px] font-semibold leading-[1.08] tracking-[-0.025em] text-[#f2f2f2] text-balance">
-                  O problema, muitas vezes, está antes da tecnologia.
+                  {t.diagnosis.headline}
                 </h2>
               </Reveal>
 
               <Reveal delay={0.05}>
                 <p className="text-[16px] md:text-[18px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1]">
-                  É comum empresas investirem em sites, sistemas e automações sem resolver o que
-                  motivou o investimento:
+                  {t.diagnosis.intro}
                 </p>
               </Reveal>
 
               {/* Chunking visual dos 3 contrastes centrais com revelação progressiva no scroll */}
               <div className="w-full flex flex-col max-md:gap-2.5 md:gap-1.5">
-                <MobileDiagnosticRow
-                  indexLabel="01"
-                  title="Novo CRM"
-                  description="Não organiza, por si só, um processo comercial desestruturado."
-                  delay={0.06}
-                  delayMs={40}
-                />
-                <MobileDiagnosticRow
-                  indexLabel="02"
-                  title="Novo site"
-                  description="Não resolve uma comunicação que não deixa claro o valor da empresa."
-                  delay={0.12}
-                  delayMs={120}
-                />
-                <MobileDiagnosticRow
-                  indexLabel="03"
-                  title="Automação"
-                  description="Não corrige um processo que nunca foi bem definido."
-                  delay={0.18}
-                  delayMs={200}
-                />
+                {t.diagnosis.rows.map((row, rowIdx) => (
+                  <MobileDiagnosticRow
+                    key={row.indexLabel}
+                    indexLabel={row.indexLabel}
+                    title={row.title}
+                    description={row.description}
+                    delay={0.06 + rowIdx * 0.06}
+                    delayMs={40 + rowIdx * 80}
+                  />
+                ))}
               </div>
 
               <Reveal delay={0.14}>
                 <p className="text-[16px] md:text-[17px] leading-[1.55] tracking-[-0.015em] text-[#d4d4d4] max-md:rounded-xl max-md:border max-md:border-[#242424] max-md:bg-[#121212]/90 max-md:p-4 md:rounded-xl md:border md:border-[#242424] md:bg-[#121212]/75 md:p-5 md:transition-colors md:duration-500 md:hover:border-[#3c2324] md:hover:bg-[#151212]">
-                  Por isso, minha primeira preocupação é entender a operação, os objetivos e a
-                  experiência dos clientes para direcionar soluções que realmente evoluem o negócio.
+                  {t.diagnosis.closing}
                 </p>
               </Reveal>
 
               <Reveal delay={0.16} className="pt-1">
-                <ArrowButton label="Vamos conversar" href={WHATSAPP_CONTACT_URL} variant="primary" />
+                <ArrowButton label={t.diagnosis.cta} href={WHATSAPP_CONTACT_URL} variant="primary" />
               </Reveal>
             </div>
           </div>

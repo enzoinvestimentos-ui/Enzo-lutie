@@ -7,13 +7,11 @@ import {
   useReducedMotion,
   type MotionValue,
 } from 'motion/react';
-import { APPROACH_STEPS, type ApproachStep } from '../data/portfolioData';
+import type { ApproachStep } from '../data/portfolioData';
 import { Reveal, HairlineRule, useIsCompactMotion } from './Reveal';
 import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
 import { handleSpotlightLeave, handleSpotlightMove } from '../utils/cursorSpotlight';
-
-const QUOTE_TEXT =
-  'Não acredito em aplicar ferramentas ou metodologias simplesmente porque estão em alta.';
+import { useLanguage } from '../i18n/LanguageContext';
 
 function Word({
   word,
@@ -70,10 +68,11 @@ function ApproachStepCard({ step, index }: { step: ApproachStep; index: number }
 }
 
 export function QuoteSection() {
+  const { lang, t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const isCompactMotion = useIsCompactMotion();
-  const words = QUOTE_TEXT.split(' ');
+  const words = t.quote.manifesto.split(' ');
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -90,7 +89,7 @@ export function QuoteSection() {
 
   return (
     <section
-      aria-label="Abordagem e Critério"
+      aria-label={t.quote.sectionAria}
       className="relative w-full max-md:bg-[#0d0c0c] max-md:border-y max-md:border-[#1e1d1d] md:bg-[#0c0b0b] md:border-y md:border-[#1c1b1b]"
     >
       {/* Bloco Sticky de Manifesto (115vh no desktop para leitura fluida; pausa editorial no mobile) */}
@@ -124,20 +123,20 @@ export function QuoteSection() {
             <div className="flex items-center gap-2">
               <span aria-hidden="true" className="h-[2px] w-4 bg-[#9e1b1e] md:hidden" />
               <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
-                Critério de Trabalho
+                {t.quote.kicker}
               </span>
             </div>
           </Reveal>
 
           <p className="type-manifesto max-w-[840px] text-[#f2f2f2] max-md:text-[26px] max-md:leading-[1.2]">
             {prefersReducedMotion
-              ? QUOTE_TEXT
+              ? t.quote.manifesto
               : words.map((word, index) => {
                   const start = index / words.length;
                   const end = Math.min(1, start + 1 / words.length + 0.08);
                   return (
                     <Word
-                      key={`${word}-${index}`}
+                      key={`${lang}-${word}-${index}`}
                       word={word}
                       progress={smoothProgress}
                       range={[start, end]}
@@ -160,8 +159,7 @@ export function QuoteSection() {
 
           <Reveal delay={0.08}>
             <p className="max-w-[700px] text-[17px] md:text-[20px] leading-[1.55] tracking-[-0.015em] text-[#a1a1a1] max-md:border-l-2 max-md:border-[#2a2a2a] max-md:pl-3.5 md:border-t md:border-[#222222] md:pt-4">
-              Cada empresa possui uma realidade, estrutura e momento próprios. Antes de definir o
-              que fazer, compreendo o contexto para identificar onde uma mudança gera valor real.
+              {t.quote.subcopy}
             </p>
           </Reveal>
         </div>
@@ -173,18 +171,18 @@ export function QuoteSection() {
         <div className="pt-12 md:pt-14">
           <Reveal className="mb-6 md:mb-8 flex flex-col gap-2">
             <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
-              Método em quatro etapas
+              {t.quote.approachKicker}
             </span>
             <h3 className="text-[24px] md:text-[32px] font-semibold tracking-[-0.022em] text-[#f2f2f2]">
-              Como transformo diagnóstico em execução
+              {t.quote.approachTitle}
             </h3>
             <span className="text-[12px] font-medium text-[#787878] md:hidden">
-              Deslize as etapas →
+              {t.quote.mobileSwipeHint}
             </span>
           </Reveal>
 
           <div className="no-scrollbar max-md:flex max-md:overflow-x-auto max-md:snap-x max-md:snap-mandatory max-md:gap-3.5 max-md:-mx-6 max-md:px-6 max-md:pb-2 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-4">
-            {APPROACH_STEPS.map((step, index) => (
+            {t.quote.steps.map((step, index) => (
               <Reveal
                 key={step.number}
                 delay={index * 0.05}
