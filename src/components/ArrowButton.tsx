@@ -1,5 +1,6 @@
 import { ArrowUpRight } from 'lucide-react';
 import { RollingText } from './RollingText';
+import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
 
 interface ArrowButtonProps {
   label: string;
@@ -10,6 +11,7 @@ interface ArrowButtonProps {
   type?: 'button' | 'submit';
   fullWidth?: boolean;
   adaptToCardHover?: boolean;
+  scrollDelayMs?: number;
 }
 
 export function ArrowButton({
@@ -21,13 +23,28 @@ export function ArrowButton({
   type = 'button',
   fullWidth = false,
   adaptToCardHover = false,
+  scrollDelayMs = 160,
 }: ArrowButtonProps) {
+  const { ref: anchorRef } = useMobileScrollActive<HTMLAnchorElement>({
+    mode: 'pulse',
+    delayMs: scrollDelayMs,
+    pulseMs: 1100,
+    disabled: !href,
+  });
+
+  const { ref: buttonRef } = useMobileScrollActive<HTMLButtonElement>({
+    mode: 'pulse',
+    delayMs: scrollDelayMs,
+    pulseMs: 1100,
+    disabled: Boolean(href),
+  });
+
   const isSecondary = variant === 'secondary';
 
   const baseClasses = isSecondary
     ? 'border border-[#2a2a2a] bg-transparent text-[#f2f2f2]'
     : adaptToCardHover
-      ? 'bg-[#f2f2f2] text-[#080808] group-hover/card:bg-[#111111] group-hover/card:text-[#f1efe9]'
+      ? 'btn-card-adapted bg-[#f2f2f2] text-[#080808] group-hover/card:bg-[#111111] group-hover/card:text-[#f1efe9]'
       : 'bg-[#f2f2f2] text-[#080808]';
 
   const circleClasses = isSecondary
@@ -44,11 +61,11 @@ export function ArrowButton({
         aria-hidden="true"
       >
         <ArrowUpRight
-          className="h-4 w-4 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-5 group-hover:-translate-y-5"
+          className="arrow-icon-exit h-4 w-4 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-5 group-hover:-translate-y-5"
           strokeWidth={2}
         />
         <ArrowUpRight
-          className="absolute h-4 w-4 -translate-x-5 translate-y-5 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0 group-hover:translate-y-0"
+          className="arrow-icon-enter absolute h-4 w-4 -translate-x-5 translate-y-5 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0 group-hover:translate-y-0"
           strokeWidth={2}
         />
       </span>
@@ -62,6 +79,7 @@ export function ArrowButton({
   if (href) {
     return (
       <a
+        ref={anchorRef}
         href={href}
         target={href.startsWith('http') ? '_blank' : undefined}
         rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
@@ -73,8 +91,9 @@ export function ArrowButton({
   }
 
   return (
-    <button type={type} onClick={onClick} className={sharedClasses}>
+    <button ref={buttonRef} type={type} onClick={onClick} className={sharedClasses}>
       {content}
     </button>
   );
 }
+

@@ -1,11 +1,18 @@
 import { RollingText } from './RollingText';
 import { HairlineRule, Reveal } from './Reveal';
+import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
 
 interface FooterProps {
   onNavigate: (path: string, hash?: string) => void;
 }
 
 export function Footer({ onNavigate }: FooterProps) {
+  const { ref: linksContainerRef } = useMobileScrollActive<HTMLDivElement>({
+    mode: 'pulse',
+    delayMs: 120,
+    pulseMs: 950,
+  });
+
   const quickLinks = [
     { label: 'Início', path: '/', hash: '#hero-section' },
     { label: 'Diagnóstico', path: '/', hash: '#bio-section' },
@@ -17,7 +24,7 @@ export function Footer({ onNavigate }: FooterProps) {
   return (
     <footer className="mx-auto w-full max-w-[1180px] px-6 pt-10 pb-10">
       <HairlineRule />
-      <div className="pt-12 pb-12 md:pt-14 md:pb-16">
+      <div ref={linksContainerRef} className="pt-12 pb-12 md:pt-14 md:pb-16">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-12">
           {/* Assinatura e posicionamento à esquerda */}
           <Reveal className="md:col-span-5 flex flex-col gap-3">
@@ -85,19 +92,23 @@ export function Footer({ onNavigate }: FooterProps) {
         </div>
       </div>
 
-      {/* Marca Tipográfica Gigante + Copyright */}
+      {/* Assinatura Tipográfica + Copyright */}
       <HairlineRule />
-      <div className="pt-8 flex flex-col gap-5">
-        <Reveal y={18} blur={6} duration={0.95}>
+      <div className="pt-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <Reveal y={18} blur={6} duration={0.95} className="flex flex-col gap-2.5">
           <div className="type-display-xl select-none tracking-[-0.03em] text-[#f5f5f5]">
-            ESTRATÉGIA
+            Enzo Lutie
           </div>
+          <p className="text-[14px] md:text-[16px] font-bold tracking-[-0.015em] text-[#a1a1a1]">
+            Estratégias, Processos e Soluções Digitais
+          </p>
         </Reveal>
-        <div className="flex flex-wrap items-center justify-between gap-4 text-[13px] text-[#8e8e8e]">
-          <span>© 2026 — Todos os direitos reservados.</span>
-          <span>Estratégia, processos e soluções digitais.</span>
-        </div>
+
+        <span className="text-[13px] text-[#8e8e8e] md:text-right shrink-0">
+          © 2026 — Todos os direitos reservados.
+        </span>
       </div>
     </footer>
   );
 }
+

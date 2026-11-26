@@ -2,6 +2,7 @@ import { useEffect, useState, type FocusEvent, type FormEvent } from 'react';
 import { Check, Mail } from 'lucide-react';
 import { Reveal } from './Reveal';
 import { RollingText } from './RollingText';
+import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
 
 export function ContactSection() {
   const [name, setName] = useState('');
@@ -21,7 +22,22 @@ export function ContactSection() {
     return () => mq.removeEventListener('change', update);
   }, []);
 
-  const isEngaged = (isFinePointer && isHovered) || isFocusedWithin;
+  const { ref: socialRowRef } = useMobileScrollActive<HTMLDivElement>({
+    mode: 'pulse',
+    delayMs: 120,
+    pulseMs: 1000,
+  });
+  const { ref: formCardRef, isActive: isMobileFormEngaged } = useMobileScrollActive<HTMLDivElement>({
+    mode: 'once',
+    delayMs: 140,
+  });
+  const { ref: submitBtnRef } = useMobileScrollActive<HTMLButtonElement>({
+    mode: 'pulse',
+    delayMs: 360,
+    pulseMs: 1100,
+  });
+
+  const isEngaged = (isFinePointer && isHovered) || isFocusedWithin || isMobileFormEngaged;
 
   const handleCardBlur = (e: FocusEvent<HTMLDivElement>) => {
     if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
@@ -91,23 +107,43 @@ export function ContactSection() {
             </Reveal>
 
             {/* Chunking dos cenários de conversa */}
-            <ul className="flex max-w-[500px] flex-col divide-y divide-[#252525] border-y border-[#252525] text-[15px] leading-[1.5] text-[#d4d4d4]">
-              <li className="py-3">
-                <Reveal delay={0.06}>Apresentação de serviços e fortalecimento da presença digital</Reveal>
+            <ul className="grid max-w-[500px] grid-cols-2 gap-2.5 text-[13px] leading-[1.4] text-[#d4d4d4] md:flex md:flex-col md:gap-0 md:divide-y md:divide-[#252525] md:border-y md:border-[#252525] md:text-[15px] md:leading-[1.5]">
+              <li className="max-md:rounded-xl max-md:border max-md:border-[#222222] max-md:bg-[#111111] max-md:p-3.5 md:py-3">
+                <Reveal delay={0.06} className="flex flex-col gap-1.5 md:block">
+                  <span className="md:hidden text-[11px] font-semibold tracking-[0.06em] text-[#9e1b1e]">
+                    01
+                  </span>
+                  <span>Apresentação de serviços e fortalecimento da presença digital</span>
+                </Reveal>
               </li>
-              <li className="py-3">
-                <Reveal delay={0.1}>Organização de processo comercial e estruturação de CRM</Reveal>
+              <li className="max-md:rounded-xl max-md:border max-md:border-[#222222] max-md:bg-[#111111] max-md:p-3.5 md:py-3">
+                <Reveal delay={0.1} className="flex flex-col gap-1.5 md:block">
+                  <span className="md:hidden text-[11px] font-semibold tracking-[0.06em] text-[#9e1b1e]">
+                    02
+                  </span>
+                  <span>Organização de processo comercial e estruturação de CRM</span>
+                </Reveal>
               </li>
-              <li className="py-3">
-                <Reveal delay={0.14}>Redução de tarefas manuais e gargalos na operação</Reveal>
+              <li className="max-md:rounded-xl max-md:border max-md:border-[#222222] max-md:bg-[#111111] max-md:p-3.5 md:py-3">
+                <Reveal delay={0.14} className="flex flex-col gap-1.5 md:block">
+                  <span className="md:hidden text-[11px] font-semibold tracking-[0.06em] text-[#9e1b1e]">
+                    03
+                  </span>
+                  <span>Redução de tarefas manuais e gargalos na operação</span>
+                </Reveal>
               </li>
-              <li className="py-3">
-                <Reveal delay={0.18}>Estrutura digital alinhada ao momento atual da empresa</Reveal>
+              <li className="max-md:rounded-xl max-md:border max-md:border-[#222222] max-md:bg-[#111111] max-md:p-3.5 md:py-3">
+                <Reveal delay={0.18} className="flex flex-col gap-1.5 md:block">
+                  <span className="md:hidden text-[11px] font-semibold tracking-[0.06em] text-[#9e1b1e]">
+                    04
+                  </span>
+                  <span>Estrutura digital alinhada ao momento atual da empresa</span>
+                </Reveal>
               </li>
             </ul>
 
             <Reveal delay={0.14}>
-              <p className="max-w-[520px] text-[16px] font-medium leading-[1.55] tracking-[-0.015em] text-[#f2f2f2]">
+              <p className="max-w-[520px] text-[16px] font-medium leading-[1.55] tracking-[-0.015em] text-[#f2f2f2] max-md:border-l-2 max-md:border-[#9e1b1e]/75 max-md:pl-3.5">
                 Se existe algo que precisa ser compreendido, organizado ou desenvolvido, podemos
                 começar por uma conversa.
               </p>
@@ -115,7 +151,7 @@ export function ContactSection() {
           </div>
 
           <Reveal delay={0.16}>
-            <div className="flex items-center gap-3">
+            <div ref={socialRowRef} className="flex items-center gap-3">
               {socialLinks.map((social) => (
                 <a
                   key={social.name}
@@ -135,6 +171,7 @@ export function ContactSection() {
         {/* Coluna Direita: Formulário editorial (escuro em repouso -> off-white quente #F1EFE9 no hover/foco) */}
         <Reveal delay={0.1} className="flex-1">
           <div
+            ref={formCardRef}
             onMouseEnter={() => {
               if (isFinePointer) setIsHovered(true);
             }}
@@ -291,6 +328,7 @@ export function ContactSection() {
                 )}
 
                 <button
+                  ref={submitBtnRef}
                   type="submit"
                   className={`btn-interactive group mt-1 inline-flex w-full cursor-pointer items-center justify-center rounded-xl py-3.5 text-[16px] font-semibold tracking-[-0.02em] active:scale-[0.99] ${
                     isEngaged

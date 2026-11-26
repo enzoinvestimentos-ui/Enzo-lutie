@@ -140,7 +140,7 @@ export function DynamicBackground({ isHome }: DynamicBackgroundProps) {
           className="absolute inset-0 opacity-60"
           style={{
             background:
-              'radial-gradient(circle 68vw at 18% 72%, rgba(31, 107, 74, 0.11) 0%, rgba(8, 8, 8, 0) 64%), radial-gradient(circle 54vw at 84% 38%, rgba(241, 239, 233, 0.035) 0%, rgba(8, 8, 8, 0) 62%)',
+              'radial-gradient(circle 68vw at 18% 72%, rgba(158, 27, 30, 0.12) 0%, rgba(8, 8, 8, 0) 64%), radial-gradient(circle 54vw at 84% 38%, rgba(241, 239, 233, 0.035) 0%, rgba(8, 8, 8, 0) 62%)',
           }}
         />
       </div>
@@ -175,7 +175,7 @@ export function DynamicBackground({ isHome }: DynamicBackgroundProps) {
         }
       />
 
-      {/* Campo orgânico principal (verde floresta profundo controlado) */}
+      {/* Campo orgânico principal (vermelho editorial profundo controlado) */}
       <motion.div
         style={isMobile ? { x: emeraldX, y: emeraldY } : { x: emeraldX, y: emeraldY, scale: emeraldScale }}
         className="absolute -left-[12vw] top-[18vh] h-[72vmax] w-[72vmax] rounded-full md:will-change-transform"
@@ -184,7 +184,7 @@ export function DynamicBackground({ isHome }: DynamicBackgroundProps) {
           className="h-full w-full rounded-full"
           style={{
             background:
-              'radial-gradient(circle at center, rgba(31, 107, 74, 0.17) 0%, rgba(31, 107, 74, 0.06) 36%, rgba(8, 8, 8, 0) 70%)',
+              'radial-gradient(circle at center, rgba(158, 27, 30, 0.18) 0%, rgba(158, 27, 30, 0.065) 36%, rgba(8, 8, 8, 0) 70%)',
           }}
         />
       </motion.div>
@@ -212,7 +212,7 @@ export function DynamicBackground({ isHome }: DynamicBackgroundProps) {
           className="h-full w-full rounded-full"
           style={{
             background:
-              'radial-gradient(circle at center, rgba(31, 107, 74, 0.14) 0%, rgba(18, 18, 18, 0.45) 45%, rgba(8, 8, 8, 0) 74%)',
+              'radial-gradient(circle at center, rgba(158, 27, 30, 0.14) 0%, rgba(18, 18, 18, 0.45) 45%, rgba(8, 8, 8, 0) 74%)',
           }}
         />
       </motion.div>
@@ -227,7 +227,7 @@ export function DynamicBackground({ isHome }: DynamicBackgroundProps) {
             className="h-full w-full rounded-full"
             style={{
               background:
-                'radial-gradient(circle at center, rgba(31, 107, 74, 0.085) 0%, rgba(241, 239, 233, 0.025) 32%, rgba(8, 8, 8, 0) 68%)',
+                'radial-gradient(circle at center, rgba(158, 27, 30, 0.09) 0%, rgba(241, 239, 233, 0.025) 32%, rgba(8, 8, 8, 0) 68%)',
             }}
           />
         </motion.div>
@@ -248,10 +248,10 @@ export function DynamicBackground({ isHome }: DynamicBackgroundProps) {
             </filter>
           )}
           <linearGradient id="bg-ribbon-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="rgba(31, 107, 74, 0.04)" />
-            <stop offset="45%" stopColor="rgba(31, 107, 74, 0.2)" />
+            <stop offset="0%" stopColor="rgba(158, 27, 30, 0.04)" />
+            <stop offset="45%" stopColor="rgba(158, 27, 30, 0.21)" />
             <stop offset="78%" stopColor="rgba(241, 239, 233, 0.09)" />
-            <stop offset="100%" stopColor="rgba(31, 107, 74, 0.06)" />
+            <stop offset="100%" stopColor="rgba(158, 27, 30, 0.06)" />
           </linearGradient>
         </defs>
 

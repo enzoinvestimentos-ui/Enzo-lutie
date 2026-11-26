@@ -27,15 +27,15 @@ export function IntroSequence({ onComplete }: IntroSequenceProps) {
 
     const wipeInTimer = window.setTimeout(() => {
       setPhase('wipe-in');
-    }, 1050);
+    }, 2050);
 
     const wipeOutTimer = window.setTimeout(() => {
       setPhase('wipe-out');
-    }, 1520);
+    }, 2520);
 
     const doneTimer = window.setTimeout(() => {
       onComplete();
-    }, 2280);
+    }, 3280);
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -82,7 +82,7 @@ export function IntroSequence({ onComplete }: IntroSequenceProps) {
           className="absolute inset-0"
           style={{
             background:
-              'radial-gradient(circle 54vmax at 50% 50%, rgba(31, 107, 74, 0.22) 0%, rgba(241, 239, 233, 0.045) 38%, rgba(8, 8, 8, 0) 72%)',
+              'radial-gradient(circle 54vmax at 50% 50%, rgba(158, 27, 30, 0.24) 0%, rgba(241, 239, 233, 0.045) 38%, rgba(8, 8, 8, 0) 72%)',
           }}
         />
 
@@ -162,7 +162,7 @@ export function IntroSequence({ onComplete }: IntroSequenceProps) {
               initial={{ opacity: 0, scale: 0.6 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.34, delay: 0.56, ease: EDITORIAL_EASE }}
-              className="ml-[0.04em] inline-block font-extrabold text-[#1f6b4a]"
+              className="ml-[0.04em] inline-block font-extrabold text-[#9e1b1e]"
             >
               .
             </motion.span>
@@ -190,7 +190,7 @@ export function IntroSequence({ onComplete }: IntroSequenceProps) {
           delay: phase === 'wipe-in' ? 0 : 0.12,
           ease: WIPE_EASE,
         }}
-        className="absolute inset-0 z-20 bg-[#1f6b4a]"
+        className="absolute inset-0 z-20 bg-[#9e1b1e]"
       />
 
       <motion.div

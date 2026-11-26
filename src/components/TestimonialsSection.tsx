@@ -9,6 +9,7 @@ import {
 } from 'motion/react';
 import { VALUE_PERSPECTIVES, type ValuePerspectiveItem } from '../data/portfolioData';
 import { Reveal, useIsCompactMotion } from './Reveal';
+import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
 
 function PerspectiveMark({ id }: { id: ValuePerspectiveItem['iconId'] }) {
   switch (id) {
@@ -68,7 +69,7 @@ function PerspectiveMark({ id }: { id: ValuePerspectiveItem['iconId'] }) {
 
 const CARD_FLIP_EASE = [0.37, 0, 0.63, 1] as const;
 
-function PerspectiveCard({ item }: { item: ValuePerspectiveItem }) {
+function PerspectiveCard({ item, index }: { item: ValuePerspectiveItem; index: number }) {
   const [flipped, setFlipped] = useState(false);
   const [isFinePointer, setIsFinePointer] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
@@ -76,6 +77,12 @@ function PerspectiveCard({ item }: { item: ValuePerspectiveItem }) {
   const isCompactMotion = useIsCompactMotion();
   const hoverTimerRef = useRef<number | null>(null);
   const animControlsRef = useRef<ReturnType<typeof animate> | null>(null);
+  const hasInteractedRef = useRef(false);
+
+  const { ref: cardObserveRef, isActive: scrollGlimpse } = useMobileScrollActive<HTMLDivElement>({
+    mode: 'once',
+    delayMs: index * 110,
+  });
 
   const rotateY = useMotionValue(0);
 
@@ -145,6 +152,26 @@ function PerspectiveCard({ item }: { item: ValuePerspectiveItem }) {
     };
   }, [flipped, prefersReducedMotion, isCompactMotion, rotateY]);
 
+  // Adaptação 3D sutil no mobile: leve inclinação de presença ao entrar na tela (sem virar automaticamente)
+  useEffect(() => {
+    if (!scrollGlimpse || isFinePointer || prefersReducedMotion || hasInteractedRef.current || flipped) {
+      return;
+    }
+
+    setIsFlipping(true);
+    const controls = animate(rotateY, [0, 15, 0], {
+      duration: 1.05,
+      ease: CARD_FLIP_EASE,
+      onComplete: () => setIsFlipping(false),
+      onStop: () => setIsFlipping(false),
+    });
+    animControlsRef.current = controls;
+
+    return () => {
+      controls.stop();
+    };
+  }, [scrollGlimpse, isFinePointer, prefersReducedMotion, flipped, rotateY]);
+
   const handleMouseEnter = () => {
     if (!isFinePointer) return;
     if (hoverTimerRef.current !== null) {
@@ -168,13 +195,17 @@ function PerspectiveCard({ item }: { item: ValuePerspectiveItem }) {
 
   return (
     <div
+      ref={cardObserveRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className="perspective-1200 h-[340px] w-full"
     >
       <motion.button
         type="button"
-        onClick={() => setFlipped((prev) => !prev)}
+        onClick={() => {
+          hasInteractedRef.current = true;
+          setFlipped((prev) => !prev);
+        }}
         aria-label={`${item.pillarTitle}. Alternar cartão para visualizar síntese.`}
         style={{
           rotateY,
@@ -244,8 +275,8 @@ function PerspectiveCard({ item }: { item: ValuePerspectiveItem }) {
 
 export function TestimonialsSection() {
   return (
-    <section className="mx-auto w-full max-w-[1180px] px-6 py-14 md:py-24">
-      <div className="mb-10 md:mb-12 flex flex-col gap-3.5 max-w-[740px]">
+    <section className="mx-auto w-full max-w-[1180px] px-6 py-14 md:py-24 max-md:border-t max-md:border-[#1c1c1c]">
+      <div className="mb-8 md:mb-12 flex flex-col gap-3.5 max-w-[740px]">
         <Reveal>
           <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
             Critério de decisão
@@ -259,12 +290,20 @@ export function TestimonialsSection() {
             É essa perspectiva que orienta minhas decisões e a forma como participo de cada projeto.
           </p>
         </Reveal>
+        <p className="sm:hidden text-[12px] font-medium tracking-[0.02em] text-[#9e1b1e]">
+          Toque para virar · Deslize →
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="no-scrollbar flex overflow-x-auto snap-x snap-mandatory gap-3.5 -mx-6 px-6 pb-2 sm:mx-0 sm:px-0 sm:pb-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible xl:grid-cols-4">
         {VALUE_PERSPECTIVES.map((item, idx) => (
-          <Reveal key={item.id} delay={idx * 0.06} blur={0}>
-            <PerspectiveCard item={item} />
+          <Reveal
+            key={item.id}
+            delay={idx * 0.06}
+            blur={0}
+            className="w-[78vw] max-w-[300px] shrink-0 snap-center sm:w-auto sm:max-w-none"
+          >
+            <PerspectiveCard item={item} index={idx} />
           </Reveal>
         ))}
       </div>

@@ -18,6 +18,7 @@ import {
   type VideoTestimonialItem,
 } from '../data/socialProofData';
 import { Reveal, EDITORIAL_EASE, useIsCompactMotion } from './Reveal';
+import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
 
 function getEmbedUrl(url: string): string | null {
   const trimmed = url.trim();
@@ -240,6 +241,15 @@ function VideoSlot({
   const hasVideo = Boolean(item.videoUrl.trim());
   const [inlineNotice, setInlineNotice] = useState(false);
   const [posterFailed, setPosterFailed] = useState(false);
+  const { ref: cardRef } = useMobileScrollActive<HTMLDivElement>({
+    mode: 'once',
+    delayMs: 80,
+  });
+  const { ref: playBtnRef } = useMobileScrollActive<HTMLButtonElement>({
+    mode: 'pulse',
+    delayMs: 260,
+    pulseMs: 1100,
+  });
 
   const handleAction = () => {
     if (hasVideo) {
@@ -250,7 +260,10 @@ function VideoSlot({
   };
 
   return (
-    <div className="group relative mx-auto flex aspect-[9/16] w-full max-w-[360px] flex-col justify-between overflow-hidden rounded-2xl border border-[#252525] bg-[#121212] shadow-[0_24px_54px_-24px_rgba(17,17,17,0.35)] transition-[border-color,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#383838] hover:shadow-[0_28px_60px_-22px_rgba(17,17,17,0.45)] lg:ml-auto lg:mr-0">
+    <div
+      ref={cardRef}
+      className="video-slot-card group relative mx-auto flex aspect-[9/16] w-full max-w-[360px] flex-col justify-between overflow-hidden rounded-2xl border border-[#252525] bg-[#121212] shadow-[0_24px_54px_-24px_rgba(17,17,17,0.35)] transition-[border-color,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#383838] hover:shadow-[0_28px_60px_-22px_rgba(17,17,17,0.45)] lg:ml-auto lg:mr-0"
+    >
       {/* Fundo do vídeo: poster real ou textura escura editorial sutil */}
       {hasVideo && item.posterUrl && !posterFailed ? (
         <img
@@ -260,7 +273,7 @@ function VideoSlot({
           decoding="async"
           referrerPolicy="no-referrer"
           onError={() => setPosterFailed(true)}
-          className="absolute inset-0 h-full w-full object-cover opacity-80 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02]"
+          className="video-slot-poster absolute inset-0 h-full w-full object-cover opacity-80 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02]"
         />
       ) : (
         <div
@@ -268,7 +281,7 @@ function VideoSlot({
           className="absolute inset-0"
           style={{
             background:
-              'radial-gradient(circle at 50% 42%, rgba(31, 107, 74, 0.16) 0%, rgba(18, 18, 18, 0.96) 55%, rgba(12, 12, 12, 1) 100%)',
+              'radial-gradient(circle at 50% 42%, rgba(158, 27, 30, 0.18) 0%, rgba(18, 18, 18, 0.96) 55%, rgba(12, 12, 12, 1) 100%)',
           }}
         />
       )}
@@ -291,9 +304,10 @@ function VideoSlot({
         )}
       </div>
 
-      {/* Centro: Botão de reprodução (com transição verde #1F6B4A padronizada) */}
+      {/* Centro: Botão de reprodução (com transição vermelha #9E1B1E padronizada) */}
       <div className="relative z-10 flex flex-col items-center justify-center gap-3.5 px-6 text-center">
         <button
+          ref={playBtnRef}
           type="button"
           onClick={handleAction}
           aria-label={
@@ -360,17 +374,17 @@ function TopDesktopWave({
         className="h-full w-full overflow-visible"
       >
         <defs>
-          <linearGradient id="top-emerald-fade" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="top-crimson-fade" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#080808" stopOpacity="0" />
-            <stop offset="6%" stopColor="#0a1f16" stopOpacity="0.04" />
-            <stop offset="12%" stopColor="#0e2f21" stopOpacity="0.14" />
-            <stop offset="19%" stopColor="#13422e" stopOpacity="0.32" />
-            <stop offset="26%" stopColor="#18533a" stopOpacity="0.55" />
-            <stop offset="33%" stopColor="#1c6143" stopOpacity="0.78" />
-            <stop offset="39%" stopColor="#1e6747" stopOpacity="0.93" />
-            <stop offset="44%" stopColor="#1f6b4a" stopOpacity="0.99" />
-            <stop offset="46%" stopColor="#1f6b4a" stopOpacity="1" />
-            <stop offset="100%" stopColor="#1f6b4a" stopOpacity="1" />
+            <stop offset="6%" stopColor="#21090a" stopOpacity="0.04" />
+            <stop offset="12%" stopColor="#350d0e" stopOpacity="0.14" />
+            <stop offset="19%" stopColor="#4d1013" stopOpacity="0.32" />
+            <stop offset="26%" stopColor="#661316" stopOpacity="0.55" />
+            <stop offset="33%" stopColor="#7e1619" stopOpacity="0.78" />
+            <stop offset="39%" stopColor="#90191c" stopOpacity="0.93" />
+            <stop offset="44%" stopColor="#9b1a1d" stopOpacity="0.99" />
+            <stop offset="46%" stopColor="#9e1b1e" stopOpacity="1" />
+            <stop offset="100%" stopColor="#9e1b1e" stopOpacity="1" />
           </linearGradient>
           <filter id="wave-seam-top" x="-10%" y="-30%" width="120%" height="160%">
             <feGaussianBlur stdDeviation="9" />
@@ -378,12 +392,12 @@ function TopDesktopWave({
           <linearGradient id="wave-sunlight-rim" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="rgba(212, 175, 118, 0.08)" />
             <stop offset="45%" stopColor="rgba(212, 175, 118, 0.34)" />
-            <stop offset="80%" stopColor="rgba(72, 160, 120, 0.22)" />
+            <stop offset="80%" stopColor="rgba(186, 62, 65, 0.22)" />
             <stop offset="100%" stopColor="rgba(212, 175, 118, 0.1)" />
           </linearGradient>
         </defs>
 
-        <motion.path d={veilD} fill="rgba(31, 107, 74, 0.16)" />
+        <motion.path d={veilD} fill="rgba(158, 27, 30, 0.16)" />
         <motion.path
           d={shadowD}
           fill="none"
@@ -394,11 +408,11 @@ function TopDesktopWave({
         <motion.path
           d={shadowD}
           fill="none"
-          stroke="rgba(10, 32, 22, 0.22)"
+          stroke="rgba(38, 8, 10, 0.24)"
           strokeWidth="14"
           filter="url(#wave-seam-top)"
         />
-        <motion.path d={mainD} fill="url(#top-emerald-fade)" />
+        <motion.path d={mainD} fill="url(#top-crimson-fade)" />
       </svg>
     </motion.div>
   );
@@ -421,25 +435,25 @@ function TopMobileWave({ waveTime }: { waveTime: MotionValue<number> }) {
         className="h-full w-full overflow-visible"
       >
         <defs>
-          <linearGradient id="top-mobile-emerald-fade" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="top-mobile-crimson-fade" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#080808" stopOpacity="0" />
-            <stop offset="9%" stopColor="#0a1f16" stopOpacity="0.04" />
-            <stop offset="18%" stopColor="#0e2f21" stopOpacity="0.14" />
-            <stop offset="28%" stopColor="#13422e" stopOpacity="0.32" />
-            <stop offset="38%" stopColor="#18533a" stopOpacity="0.54" />
-            <stop offset="48%" stopColor="#1c6143" stopOpacity="0.76" />
-            <stop offset="57%" stopColor="#1e6747" stopOpacity="0.92" />
-            <stop offset="64%" stopColor="#1f6b4a" stopOpacity="0.98" />
-            <stop offset="70%" stopColor="#1f6b4a" stopOpacity="1" />
-            <stop offset="100%" stopColor="#1f6b4a" stopOpacity="1" />
+            <stop offset="9%" stopColor="#21090a" stopOpacity="0.04" />
+            <stop offset="18%" stopColor="#350d0e" stopOpacity="0.14" />
+            <stop offset="28%" stopColor="#4d1013" stopOpacity="0.32" />
+            <stop offset="38%" stopColor="#661316" stopOpacity="0.54" />
+            <stop offset="48%" stopColor="#7e1619" stopOpacity="0.76" />
+            <stop offset="57%" stopColor="#90191c" stopOpacity="0.92" />
+            <stop offset="64%" stopColor="#9b1a1d" stopOpacity="0.98" />
+            <stop offset="70%" stopColor="#9e1b1e" stopOpacity="1" />
+            <stop offset="100%" stopColor="#9e1b1e" stopOpacity="1" />
           </linearGradient>
         </defs>
-        <motion.path d={veilD} fill="rgba(31, 107, 74, 0.16)" />
+        <motion.path d={veilD} fill="rgba(158, 27, 30, 0.16)" />
         {/* Traços suaves em camadas sem feGaussianBlur para 60fps no WebKit mobile */}
         <motion.path d={shadowD} fill="none" stroke="rgba(202, 162, 102, 0.08)" strokeWidth="18" />
         <motion.path d={shadowD} fill="none" stroke="rgba(202, 162, 102, 0.14)" strokeWidth="9" />
-        <motion.path d={shadowD} fill="none" stroke="rgba(10, 32, 22, 0.12)" strokeWidth="7" />
-        <motion.path d={mainD} fill="url(#top-mobile-emerald-fade)" />
+        <motion.path d={shadowD} fill="none" stroke="rgba(38, 8, 10, 0.13)" strokeWidth="7" />
+        <motion.path d={mainD} fill="url(#top-mobile-crimson-fade)" />
       </svg>
     </div>
   );
@@ -485,16 +499,16 @@ function BottomWave({
         className="h-full w-full overflow-visible"
       >
         <defs>
-          <linearGradient id="bottom-emerald-fade" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#1f6b4a" stopOpacity="1" />
-            <stop offset="43%" stopColor="#1f6b4a" stopOpacity="1" />
-            <stop offset="49%" stopColor="#1c6244" stopOpacity="0.95" />
-            <stop offset="56%" stopColor="#175239" stopOpacity="0.82" />
-            <stop offset="63%" stopColor="#13422e" stopOpacity="0.64" />
-            <stop offset="70%" stopColor="#0f3424" stopOpacity="0.44" />
-            <stop offset="77%" stopColor="#0c261b" stopOpacity="0.25" />
-            <stop offset="84%" stopColor="#091912" stopOpacity="0.1" />
-            <stop offset="88%" stopColor="#080e0b" stopOpacity="0.03" />
+          <linearGradient id="bottom-crimson-fade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#9e1b1e" stopOpacity="1" />
+            <stop offset="43%" stopColor="#9e1b1e" stopOpacity="1" />
+            <stop offset="49%" stopColor="#90191c" stopOpacity="0.95" />
+            <stop offset="56%" stopColor="#761518" stopOpacity="0.82" />
+            <stop offset="63%" stopColor="#5a1114" stopOpacity="0.64" />
+            <stop offset="70%" stopColor="#3f0e10" stopOpacity="0.44" />
+            <stop offset="77%" stopColor="#270a0b" stopOpacity="0.25" />
+            <stop offset="84%" stopColor="#160708" stopOpacity="0.1" />
+            <stop offset="88%" stopColor="#0b0707" stopOpacity="0.03" />
             <stop offset="90%" stopColor="#080808" stopOpacity="0" />
             <stop offset="100%" stopColor="#080808" stopOpacity="0" />
           </linearGradient>
@@ -505,12 +519,12 @@ function BottomWave({
           )}
         </defs>
 
-        <motion.path d={veilD} fill="rgba(31, 107, 74, 0.16)" />
+        <motion.path d={veilD} fill="rgba(158, 27, 30, 0.16)" />
         {isMobile ? (
           <>
             <motion.path d={shadowD} fill="none" stroke="rgba(202, 162, 102, 0.09)" strokeWidth="26" />
             <motion.path d={shadowD} fill="none" stroke="rgba(202, 162, 102, 0.16)" strokeWidth="12" />
-            <motion.path d={shadowD} fill="none" stroke="rgba(10, 32, 22, 0.12)" strokeWidth="10" />
+            <motion.path d={shadowD} fill="none" stroke="rgba(38, 8, 10, 0.13)" strokeWidth="10" />
           </>
         ) : (
           <>
@@ -524,13 +538,13 @@ function BottomWave({
             <motion.path
               d={shadowD}
               fill="none"
-              stroke="rgba(10, 32, 22, 0.2)"
+              stroke="rgba(38, 8, 10, 0.22)"
               strokeWidth="14"
               filter="url(#wave-seam-bottom)"
             />
           </>
         )}
-        <motion.path d={mainD} fill="url(#bottom-emerald-fade)" />
+        <motion.path d={mainD} fill="url(#bottom-crimson-fade)" />
       </svg>
     </motion.div>
   );
@@ -669,7 +683,7 @@ export function SocialProofSection() {
       aria-labelledby="social-proof-heading"
       className="relative w-full"
     >
-      {/* Background orgânico: divisão fluida entre verde (#1F6B4A) e off-white (#F1EFE9) com transição contínua */}
+      {/* Background orgânico: divisão fluida entre vermelho (#9E1B1E) e off-white (#F1EFE9) com transição contínua */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 -top-48 -bottom-80 z-0 overflow-hidden"
@@ -691,12 +705,12 @@ export function SocialProofSection() {
               className="h-full w-full"
               style={{
                 backgroundImage:
-                  'radial-gradient(ellipse 68% 54% at 24% 34%, rgba(255, 255, 255, 0.52) 0%, rgba(241, 239, 233, 0) 70%), radial-gradient(ellipse 60% 52% at 82% 68%, rgba(31, 107, 74, 0.065) 0%, rgba(241, 239, 233, 0) 68%)',
+                  'radial-gradient(ellipse 68% 54% at 24% 34%, rgba(255, 255, 255, 0.52) 0%, rgba(241, 239, 233, 0) 70%), radial-gradient(ellipse 60% 52% at 82% 68%, rgba(158, 27, 30, 0.065) 0%, rgba(241, 239, 233, 0) 68%)',
               }}
             />
           </motion.div>
 
-          {/* Camada 2 do cenário reativo: gradiente verde-esmeralda difuso em fase própria */}
+          {/* Camada 2 do cenário reativo: gradiente carmim difuso em fase própria */}
           <motion.div
             style={
               prefersReducedMotion
@@ -711,7 +725,7 @@ export function SocialProofSection() {
               className="h-full w-full"
               style={{
                 backgroundImage:
-                  'radial-gradient(ellipse 52% 44% at 72% 24%, rgba(31, 107, 74, 0.08) 0%, rgba(241, 239, 233, 0) 72%), radial-gradient(ellipse 58% 48% at 22% 80%, rgba(214, 188, 146, 0.14) 0%, rgba(241, 239, 233, 0) 70%)',
+                  'radial-gradient(ellipse 52% 44% at 72% 24%, rgba(158, 27, 30, 0.08) 0%, rgba(241, 239, 233, 0) 72%), radial-gradient(ellipse 58% 48% at 22% 80%, rgba(214, 188, 146, 0.14) 0%, rgba(241, 239, 233, 0) 70%)',
               }}
             />
           </motion.div>
@@ -729,7 +743,7 @@ export function SocialProofSection() {
               className="h-full w-full rounded-full"
               style={{
                 background:
-                  'radial-gradient(ellipse at center, rgba(202, 162, 102, 0.24) 0%, rgba(31, 107, 74, 0.1) 46%, rgba(241, 239, 233, 0) 78%)',
+                  'radial-gradient(ellipse at center, rgba(202, 162, 102, 0.24) 0%, rgba(158, 27, 30, 0.1) 46%, rgba(241, 239, 233, 0) 78%)',
               }}
             />
           </motion.div>
@@ -747,7 +761,7 @@ export function SocialProofSection() {
               className="h-full w-full rounded-full"
               style={{
                 background:
-                  'radial-gradient(ellipse at center, rgba(196, 155, 96, 0.2) 0%, rgba(44, 128, 92, 0.12) 48%, rgba(241, 239, 233, 0) 78%)',
+                  'radial-gradient(ellipse at center, rgba(196, 155, 96, 0.2) 0%, rgba(176, 46, 50, 0.12) 48%, rgba(241, 239, 233, 0) 78%)',
               }}
             />
           </motion.div>
@@ -782,7 +796,7 @@ export function SocialProofSection() {
             className="h-full w-full"
             style={{
               background:
-                'radial-gradient(ellipse 75% 58% at 50% 42%, rgba(31, 107, 74, 0.34) 0%, rgba(16, 56, 39, 0.18) 46%, rgba(8, 8, 8, 0) 78%)',
+                'radial-gradient(ellipse 75% 58% at 50% 42%, rgba(158, 27, 30, 0.34) 0%, rgba(88, 15, 18, 0.18) 46%, rgba(8, 8, 8, 0) 78%)',
             }}
           />
         </motion.div>

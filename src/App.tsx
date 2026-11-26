@@ -44,6 +44,13 @@ export default function App() {
   const routeKey = getRouteKey(route);
   const [routeSettled, setRouteSettled] = useState(false);
 
+  useEffect(() => {
+    document.documentElement.dataset.introComplete = introComplete ? 'true' : 'false';
+    if (introComplete) {
+      window.dispatchEvent(new CustomEvent('intro:complete'));
+    }
+  }, [introComplete]);
+
   const handleIntroComplete = useCallback(() => {
     setIntroComplete(true);
   }, []);

@@ -45,7 +45,7 @@ export const SOCIAL_PROOF_VIDEO: VideoTestimonialItem = {
   id: 'video-principal',
   label: 'Depoimento em vídeo · Principal',
   orientation: 'portrait',
-  authorName: 'Bruna',
+  authorName: 'Depoimento Dra. Bruna',
   authorRole: 'Médica · Clínica especializada em odontologia',
   context: 'Presença digital e estruturação de CRM',
   durationHint: 'Formato 9:16 · Depoimento em vídeo',

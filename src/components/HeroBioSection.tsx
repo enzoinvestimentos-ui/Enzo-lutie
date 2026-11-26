@@ -12,6 +12,7 @@ import { RollingText } from './RollingText';
 import { SafeImage } from './SafeImage';
 import { Reveal, HairlineRule, EDITORIAL_EASE, useIsCompactMotion } from './Reveal';
 import { HERO_MEDIA, WHATSAPP_CONTACT_URL } from '../data/portfolioData';
+import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
 
 interface HeroBioSectionProps {
   onGetStarted?: () => void;
@@ -103,7 +104,50 @@ function MobileFlipPortrait() {
           />
         </div>
       </motion.button>
+      <p className="mt-2.5 text-center text-[11px] font-medium uppercase tracking-[0.12em] text-[#7c7c7c] md:hidden">
+        Toque ou role para girar
+      </p>
     </motion.div>
+  );
+}
+
+function MobileDiagnosticRow({
+  indexLabel,
+  title,
+  description,
+  delay,
+  delayMs,
+}: {
+  indexLabel: string;
+  title: string;
+  description: string;
+  delay: number;
+  delayMs: number;
+}) {
+  const { ref } = useMobileScrollActive<HTMLDivElement>({
+    mode: 'once',
+    delayMs,
+  });
+
+  return (
+    <div
+      ref={ref}
+      className="mobile-diagnostic-row py-3.5 transition-[background-color,border-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] max-md:rounded-xl max-md:border max-md:border-[#222222] max-md:bg-[#101010] max-md:px-4 max-md:py-3.5"
+    >
+      <Reveal delay={delay} className="flex flex-col sm:flex-row sm:items-baseline gap-1.5 sm:gap-3">
+        <div className="flex items-center gap-2 sm:w-[116px] sm:shrink-0">
+          <span
+            aria-hidden="true"
+            className="mobile-diagnostic-dot inline-block h-1.5 w-1.5 rounded-full bg-[#4a4a4a] transition-[background-color,box-shadow] duration-500 md:hidden"
+          />
+          <span className="text-[11px] font-semibold tabular-nums text-[#787878] md:hidden">
+            {indexLabel}
+          </span>
+          <span className="text-[14px] font-semibold text-[#f2f2f2]">{title}</span>
+        </div>
+        <span className="text-[15px] leading-[1.5] text-[#a1a1a1]">{description}</span>
+      </Reveal>
+    </div>
   );
 }
 
@@ -249,6 +293,11 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
   const isCompactMotion = useIsCompactMotion();
   const [h1Settled, setH1Settled] = useState(false);
   const [canHoverTilt, setCanHoverTilt] = useState(false);
+  const { ref: exploreBtnRef } = useMobileScrollActive<HTMLButtonElement>({
+    mode: 'pulse',
+    delayMs: 320,
+    pulseMs: 1100,
+  });
   const [isDesktop, setIsDesktop] = useState(() =>
     typeof window !== 'undefined' ? window.matchMedia('(min-width: 1024px)').matches : true
   );
@@ -323,7 +372,7 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
                 Ajudo empresas a identificar oportunidades, superar gargalos e conectar estratégia
                 comercial, operação e soluções digitais para melhorar resultados.
               </p>
-              <p className="font-medium text-[#f2f2f2]">
+              <p className="font-medium text-[#f2f2f2] max-md:border-l-2 max-md:border-[#9e1b1e] max-md:pl-3.5">
                 A tecnologia entra como parte da solução, não como ponto de partida.
               </p>
             </motion.div>
@@ -336,6 +385,7 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
             >
               <ArrowButton label="Vamos conversar" href={WHATSAPP_CONTACT_URL} variant="primary" />
               <button
+                ref={exploreBtnRef}
                 type="button"
                 onClick={onExploreProjects}
                 className="btn-interactive group inline-flex items-center justify-center rounded-full border border-[#2a2a2a] bg-transparent px-6 py-3.5 text-[15px] font-medium tracking-[-0.02em] text-[#f2f2f2] active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer"
@@ -345,7 +395,15 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
             </motion.div>
 
             {/* Retrato Mobile / Tablet único com giro 3D no scroll e toque */}
-            <div className="mt-3 lg:hidden">
+            <div className="relative mt-4 self-center lg:hidden">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -inset-6 -z-10 rounded-full opacity-80 md:hidden"
+                style={{
+                  background:
+                    'radial-gradient(circle at center, rgba(158, 27, 30, 0.16) 0%, rgba(8, 8, 8, 0) 70%)',
+                }}
+              />
               <MobileFlipPortrait />
             </div>
           </div>
@@ -378,7 +436,7 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
       {/* SEÇÃO 2: DIAGNÓSTICO / ANTES DA TECNOLOGIA */}
       <section
         id="bio-section"
-        className="relative z-10 mx-auto flex w-full max-w-[1180px] items-center px-6 py-14 md:py-20 lg:min-h-screen lg:py-24"
+        className="relative z-10 mx-auto flex w-full max-w-[1180px] items-center px-6 py-14 md:py-20 lg:min-h-screen lg:py-24 max-md:border-t max-md:border-[#1a1a1a] max-md:bg-[radial-gradient(ellipse_90%_55%_at_50%_0%,rgba(158,27,30,0.085)_0%,rgba(8,8,8,0)_100%)]"
       >
         <div className="grid w-full grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-12">
           {/* Espaçador Esquerdo ocupado visualmente pelo Retrato Sticky no Desktop */}
@@ -388,9 +446,12 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
           <div className="lg:col-span-6 flex flex-col items-start gap-5 md:gap-6 max-w-[560px]">
 
             <Reveal className="flex flex-col gap-3">
-              <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
-                Diagnóstico
-              </span>
+              <div className="flex items-center gap-2">
+                <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#9e1b1e] md:hidden" />
+                <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
+                  Diagnóstico
+                </span>
+              </div>
               <h2 className="text-[30px] sm:text-[38px] md:text-[46px] font-semibold leading-[1.08] tracking-[-0.025em] text-[#f2f2f2] text-balance">
                 O problema, muitas vezes, está antes da tecnologia.
               </h2>
@@ -404,41 +465,32 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
             </Reveal>
 
             {/* Chunking visual dos 3 contrastes centrais com revelação progressiva no scroll */}
-            <div className="w-full flex flex-col divide-y divide-[#252525] border-y border-[#252525]">
-              <div className="py-3.5">
-                <Reveal delay={0.06} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
-                  <span className="w-[116px] shrink-0 text-[14px] font-semibold text-[#f2f2f2]">
-                    Novo CRM
-                  </span>
-                  <span className="text-[15px] leading-[1.5] text-[#a1a1a1]">
-                    Não organiza, por si só, um processo comercial desestruturado.
-                  </span>
-                </Reveal>
-              </div>
-              <div className="py-3.5">
-                <Reveal delay={0.12} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
-                  <span className="w-[116px] shrink-0 text-[14px] font-semibold text-[#f2f2f2]">
-                    Novo site
-                  </span>
-                  <span className="text-[15px] leading-[1.5] text-[#a1a1a1]">
-                    Não resolve uma comunicação que não deixa claro o valor da empresa.
-                  </span>
-                </Reveal>
-              </div>
-              <div className="py-3.5">
-                <Reveal delay={0.18} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
-                  <span className="w-[116px] shrink-0 text-[14px] font-semibold text-[#f2f2f2]">
-                    Automação
-                  </span>
-                  <span className="text-[15px] leading-[1.5] text-[#a1a1a1]">
-                    Não corrige um processo que nunca foi bem definido.
-                  </span>
-                </Reveal>
-              </div>
+            <div className="w-full flex flex-col max-md:gap-2.5 md:divide-y md:divide-[#252525] md:border-y md:border-[#252525]">
+              <MobileDiagnosticRow
+                indexLabel="01"
+                title="Novo CRM"
+                description="Não organiza, por si só, um processo comercial desestruturado."
+                delay={0.06}
+                delayMs={40}
+              />
+              <MobileDiagnosticRow
+                indexLabel="02"
+                title="Novo site"
+                description="Não resolve uma comunicação que não deixa claro o valor da empresa."
+                delay={0.12}
+                delayMs={120}
+              />
+              <MobileDiagnosticRow
+                indexLabel="03"
+                title="Automação"
+                description="Não corrige um processo que nunca foi bem definido."
+                delay={0.18}
+                delayMs={200}
+              />
             </div>
 
             <Reveal delay={0.14}>
-              <p className="text-[16px] md:text-[17px] leading-[1.55] tracking-[-0.015em] text-[#d4d4d4]">
+              <p className="text-[16px] md:text-[17px] leading-[1.55] tracking-[-0.015em] text-[#d4d4d4] max-md:rounded-xl max-md:border max-md:border-[#242424] max-md:bg-[#121212]/90 max-md:p-4">
                 Por isso, minha primeira preocupação é entender a operação, os objetivos e a
                 experiência dos clientes para direcionar soluções que realmente evoluem o negócio.
               </p>
