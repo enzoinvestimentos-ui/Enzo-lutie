@@ -72,7 +72,7 @@ export function ArrowButton({
     </>
   );
 
-  const sharedClasses = `btn-interactive group inline-flex items-center justify-between gap-4 rounded-full py-2 pl-5 pr-2 active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer ${baseClasses} ${
+  const sharedClasses = `btn-interactive group inline-flex max-w-full items-center justify-between gap-3 sm:gap-4 rounded-full py-2 pl-5 pr-2 active:scale-[0.98] whitespace-normal text-left sm:whitespace-nowrap shrink-0 cursor-pointer ${baseClasses} ${
     fullWidth ? 'w-full' : ''
   } ${className}`;
 

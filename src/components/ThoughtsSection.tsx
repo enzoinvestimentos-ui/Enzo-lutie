@@ -57,7 +57,7 @@ export function ArticleCard({
         <ArrowUpRight className="h-4 w-4" strokeWidth={2} />
       </span>
 
-      <div className="card-hover-content card-hover-content-lift relative z-10 flex flex-col gap-3 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-0.5">
+      <div className="card-hover-content card-hover-content-lift relative z-10 flex min-w-0 flex-col gap-3 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-0.5">
         <div className="card-ink-muted text-[13px] font-normal text-[#a1a1a1] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:text-[#52524e]">
           <span>{article.tag}</span>
         </div>
@@ -107,20 +107,20 @@ export function ThoughtsSection({ onSelectArticle, onViewAllArticles }: Thoughts
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {featuredItems.map((article, idx) => (
-            <Reveal key={article.slug} delay={idx * 0.06}>
+            <Reveal key={article.slug} delay={idx * 0.06} className="min-w-0">
               <ArticleCard article={article} onSelect={onSelectArticle} index={idx} />
             </Reveal>
           ))}
 
           {/* Card de síntese: grafite em repouso -> off-white quente #F1EFE9 no hover */}
-          <Reveal delay={0.12} className="md:col-span-2 lg:col-span-1">
+          <Reveal delay={0.12} className="min-w-0 md:col-span-2 lg:col-span-1">
             <div
               ref={synthesisCardRef}
               onMouseMove={handleSpotlightMove}
               onMouseLeave={handleSpotlightLeave}
-              className="card-interactive group/card flex h-full min-h-[300px] md:min-h-[460px] flex-col justify-between gap-6 rounded-2xl border border-[#252525] bg-[#151515] p-6 text-[#f2f2f2] transition-[transform,border-color,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#e2dfd7] hover:bg-[#f1efe9] hover:shadow-[0_26px_54px_-24px_rgba(0,0,0,0.85)]"
+              className="card-interactive group/card flex h-full min-h-[300px] min-w-0 md:min-h-[460px] flex-col justify-between gap-6 rounded-2xl border border-[#252525] bg-[#151515] p-6 text-[#f2f2f2] transition-[transform,border-color,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#e2dfd7] hover:bg-[#f1efe9] hover:shadow-[0_26px_54px_-24px_rgba(0,0,0,0.85)]"
             >
-              <div className="card-hover-content relative z-10 flex flex-1 flex-col justify-between gap-6">
+              <div className="card-hover-content relative z-10 flex min-w-0 flex-1 flex-col justify-between gap-6">
                 <div className="card-ink-muted text-[13px] font-medium text-[#8e8e8e] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:text-[#52524e]">
                   <span>{t.thoughts.synthesisTag}</span>
                 </div>

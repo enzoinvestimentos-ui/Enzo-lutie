@@ -41,7 +41,7 @@ function ApproachStepCard({ step, index }: { step: ApproachStep; index: number }
       ref={ref}
       onMouseMove={handleSpotlightMove}
       onMouseLeave={handleSpotlightLeave}
-      className="card-interactive group flex h-full flex-col justify-between gap-5 rounded-2xl border border-[#252525] bg-[#121212] p-6 transition-[background-color,border-color,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#e2dfd7] hover:bg-[#f1efe9]"
+      className="card-interactive group flex h-full min-w-0 flex-col justify-between gap-5 rounded-2xl border border-[#252525] bg-[#121212] p-6 transition-[background-color,border-color,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#e2dfd7] hover:bg-[#f1efe9]"
     >
       <div className="card-hover-content relative z-10 flex h-full flex-col justify-between gap-5">
         <div className="flex flex-col gap-2">
@@ -90,7 +90,7 @@ export function QuoteSection() {
   return (
     <section
       aria-label={t.quote.sectionAria}
-      className="relative w-full max-md:bg-[#0d0c0c] max-md:border-y max-md:border-[#1e1d1d] md:bg-[#0c0b0b] md:border-y md:border-[#1c1b1b]"
+      className="relative w-full overflow-x-clip max-md:bg-[#0d0c0c] max-md:border-y max-md:border-[#1e1d1d] md:bg-[#0c0b0b] md:border-y md:border-[#1c1b1b]"
     >
       {/* Bloco Sticky de Manifesto (115vh no desktop para leitura fluida; pausa editorial no mobile) */}
       <div

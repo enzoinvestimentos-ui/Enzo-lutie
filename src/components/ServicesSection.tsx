@@ -16,15 +16,15 @@ function ServiceCard({ service, idx }: { service: ServiceItem; idx: number }) {
       ref={ref}
       onMouseMove={handleSpotlightMove}
       onMouseLeave={handleSpotlightLeave}
-      className="card-interactive group rounded-2xl border border-[#252525] bg-[#121212] px-5 py-6 transition-[background-color,border-color,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#e2dfd7] hover:bg-[#f1efe9] sm:px-6 md:py-7 lg:px-9 lg:py-8"
+      className="card-interactive group min-w-0 rounded-2xl border border-[#252525] bg-[#121212] px-5 py-6 transition-[background-color,border-color,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#e2dfd7] hover:bg-[#f1efe9] sm:px-6 md:py-7 lg:px-9 lg:py-8"
     >
-      <div className="card-hover-content relative z-10 flex flex-col justify-between gap-5 lg:flex-row lg:items-center lg:gap-8">
-        <div className="card-service-body flex max-w-[640px] flex-col gap-2 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1">
-          <div className="flex items-baseline gap-3">
-            <span className="card-ink-muted text-[13px] font-medium tabular-nums text-[#8e8e8e] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:text-[#9e1b1e]">
+      <div className="card-hover-content relative z-10 flex min-w-0 flex-col justify-between gap-5 lg:flex-row lg:items-center lg:gap-8">
+        <div className="card-service-body flex min-w-0 max-w-[640px] flex-col gap-2 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1">
+          <div className="flex min-w-0 items-baseline gap-3">
+            <span className="card-ink-muted shrink-0 text-[13px] font-medium tabular-nums text-[#8e8e8e] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:text-[#9e1b1e]">
               0{idx + 1}
             </span>
-            <h3 className="card-ink-title type-card-h3 text-[#f2f2f2] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:text-[#111111]">
+            <h3 className="card-ink-title type-card-h3 min-w-0 break-words text-[#f2f2f2] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:text-[#111111]">
               {service.title}
             </h3>
           </div>
@@ -33,18 +33,18 @@ function ServiceCard({ service, idx }: { service: ServiceItem; idx: number }) {
           </p>
         </div>
 
-        <div className="flex items-center gap-5 shrink-0">
-          <div className="card-ink-caps flex flex-wrap items-center max-md:gap-2 md:gap-x-3 md:gap-y-1.5 max-md:text-[12px] md:text-[15px] font-medium tracking-[-0.015em] text-[#8e8e8e] shrink-0 transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:text-[#3a3a38]">
+        <div className="flex w-full min-w-0 items-center gap-5 lg:w-auto lg:max-w-[46%] lg:shrink-0">
+          <div className="card-ink-caps flex w-full min-w-0 flex-wrap items-center max-md:gap-2 md:gap-x-3 md:gap-y-1.5 max-md:text-[12px] md:text-[15px] font-medium tracking-[-0.015em] text-[#8e8e8e] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:text-[#3a3a38] lg:w-auto">
             {service.capabilities.map((cap, index) => (
               <span
                 key={cap}
-                className="mobile-cap-pill inline-flex items-center gap-3 max-md:rounded-full max-md:border max-md:border-[#2a2a2a] max-md:px-2.5 max-md:py-1 transition-colors duration-500"
+                className="mobile-cap-pill inline-flex max-w-full items-center gap-3 max-md:rounded-full max-md:border max-md:border-[#2a2a2a] max-md:px-2.5 max-md:py-1 transition-colors duration-500"
               >
-                <span>{cap}</span>
+                <span className="min-w-0 break-words">{cap}</span>
                 {index < service.capabilities.length - 1 && (
                   <span
                     aria-hidden="true"
-                    className="card-cap-dot hidden md:inline-block h-1 w-1 rounded-full bg-[#f2f2f2]/30 transition-[transform,background-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-125 group-hover:bg-[#111111]"
+                    className="card-cap-dot hidden md:inline-block h-1 w-1 shrink-0 rounded-full bg-[#f2f2f2]/30 transition-[transform,background-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-125 group-hover:bg-[#111111]"
                   />
                 )}
               </span>
@@ -53,7 +53,7 @@ function ServiceCard({ service, idx }: { service: ServiceItem; idx: number }) {
 
           <span
             aria-hidden="true"
-            className="hidden lg:inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#2a2a2a] text-[#8e8e8e] opacity-40 transition-[opacity,transform,border-color,background-color,color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:border-[#111111] group-hover:bg-[#111111] group-hover:text-[#f1efe9]"
+            className="hidden lg:inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#2a2a2a] text-[#8e8e8e] opacity-40 transition-[opacity,transform,border-color,background-color,color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:border-[#111111] group-hover:bg-[#111111] group-hover:text-[#f1efe9]"
           >
             <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
           </span>

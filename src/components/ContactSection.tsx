@@ -98,7 +98,7 @@ export function ContactSection() {
       <div className="mx-auto w-full max-w-[1180px] px-6 py-14 md:py-24">
         <div className="flex flex-col gap-10 lg:flex-row lg:items-stretch">
           {/* Coluna Esquerda: Narrativa em camadas para decisão de contato */}
-          <div className="flex flex-1 flex-col justify-between gap-8">
+          <div className="flex min-w-0 flex-1 flex-col justify-between gap-8">
             <div className="flex flex-col gap-5">
               <Reveal className="flex flex-col gap-3">
                 <span className="text-[13px] font-medium tracking-[0.02em] text-[#8e8e8e]">
@@ -122,13 +122,13 @@ export function ContactSection() {
                     key={idx}
                     onMouseMove={handleSpotlightMove}
                     onMouseLeave={handleSpotlightLeave}
-                    className="group/item desktop-spotlight-surface rounded-xl border border-[#222222] bg-[#111111] p-3.5 md:p-4 md:transition-[transform,border-color,background-color] md:duration-300 md:hover:-translate-y-0.5 md:hover:border-[#422325] md:hover:bg-[#151212]"
+                    className="group/item desktop-spotlight-surface min-w-0 rounded-xl border border-[#222222] bg-[#111111] p-3.5 md:p-4 md:transition-[transform,border-color,background-color] md:duration-300 md:hover:-translate-y-0.5 md:hover:border-[#422325] md:hover:bg-[#151212]"
                   >
-                    <Reveal delay={0.06 + idx * 0.04} className="relative z-10 flex flex-col gap-1.5">
+                    <Reveal delay={0.06 + idx * 0.04} className="relative z-10 flex min-w-0 flex-col gap-1.5">
                       <span className="text-[11px] font-semibold tabular-nums tracking-[0.06em] text-[#9e1b1e] md:text-[#666666] md:transition-colors md:duration-300 md:group-hover/item:text-[#9e1b1e]">
                         0{idx + 1}
                       </span>
-                      <span className="md:transition-colors md:duration-300 md:group-hover/item:text-[#f2f2f2]">
+                      <span className="min-w-0 break-words md:transition-colors md:duration-300 md:group-hover/item:text-[#f2f2f2]">
                         {scenario}
                       </span>
                     </Reveal>
@@ -162,7 +162,7 @@ export function ContactSection() {
           </div>
 
           {/* Coluna Direita: Formulário editorial (escuro em repouso -> off-white quente #F1EFE9 no hover/foco) */}
-          <Reveal delay={0.1} className="relative flex-1">
+          <Reveal delay={0.1} className="relative min-w-0 flex-1">
             <div
               aria-hidden="true"
               className={`pointer-events-none hidden md:block absolute -inset-6 -z-10 rounded-3xl transition-opacity duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${

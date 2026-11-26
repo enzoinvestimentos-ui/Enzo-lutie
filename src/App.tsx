@@ -94,7 +94,7 @@ export default function App() {
   return (
     <LanguageProvider>
       <MotionConfig reducedMotion="user">
-        <div className="relative min-h-screen bg-[#080808] text-[#f2f2f2]">
+        <div className="relative min-h-screen overflow-x-clip bg-[#080808] text-[#f2f2f2]">
           {!introComplete && <IntroSequence onComplete={handleIntroComplete} />}
           <DynamicBackground isHome={route.page === 'home'} />
 
