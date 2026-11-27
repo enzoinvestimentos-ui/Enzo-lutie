@@ -209,6 +209,72 @@ html[data-intro-complete='true'] .hero-title-word--animate {
   }
 }
 
+/* Global subtle rack-focus microtransition on PT <-> EN switch */
+@keyframes lang-focus-shift-a {
+  0% {
+    filter: blur(0.8px);
+    opacity: 0.96;
+  }
+  26% {
+    filter: blur(1.6px);
+    opacity: 0.91;
+  }
+  99% {
+    filter: blur(0px);
+    opacity: 1;
+  }
+  100% {
+    filter: none;
+    opacity: 1;
+  }
+}
+
+@keyframes lang-focus-shift-b {
+  0% {
+    filter: blur(0.8px);
+    opacity: 0.96;
+  }
+  26% {
+    filter: blur(1.6px);
+    opacity: 0.91;
+  }
+  99% {
+    filter: blur(0px);
+    opacity: 1;
+  }
+  100% {
+    filter: none;
+    opacity: 1;
+  }
+}
+
+html[data-lang-focus='a'] .lang-focus-surface {
+  animation: lang-focus-shift-a 310ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+html[data-lang-focus='b'] .lang-focus-surface {
+  animation: lang-focus-shift-b 310ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (hover: none), (pointer: coarse), (max-width: 767px) {
+  html[data-lang-focus='a'] .lang-focus-surface {
+    animation-duration: 280ms;
+  }
+
+  html[data-lang-focus='b'] .lang-focus-surface {
+    animation-duration: 280ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-lang-focus='a'] .lang-focus-surface,
+  html[data-lang-focus='b'] .lang-focus-surface {
+    animation: none;
+    filter: none;
+    opacity: 1;
+  }
+}
+
 /* Subtle transient micro-blur during dark -> off-white card transitions */
 @keyframes card-hover-soften {
   0% {

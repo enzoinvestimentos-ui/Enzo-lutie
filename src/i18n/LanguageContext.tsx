@@ -1,4 +1,13 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
 import { TRANSLATIONS, type Language, type SiteTranslations } from './translations';
 
 const STORAGE_KEY = 'site-language';
@@ -34,19 +43,32 @@ function updateMetaContent(selector: string, content: string) {
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Language>(readInitialLanguage);
+  const langRef = useRef<Language>(lang);
+  langRef.current = lang;
 
-  const setLang = (next: Language) => {
+  const setLang = useCallback((next: Language) => {
+    if (next === langRef.current) return;
+    langRef.current = next;
+
+    if (
+      typeof document !== 'undefined' &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      const root = document.documentElement;
+      root.dataset.langFocus = root.dataset.langFocus === 'a' ? 'b' : 'a';
+    }
+
     setLangState(next);
     try {
       window.localStorage.setItem(STORAGE_KEY, next);
     } catch {
       // Ignore storage write errors
     }
-  };
+  }, []);
 
-  const toggleLang = () => {
-    setLang(lang === 'pt' ? 'en' : 'pt');
-  };
+  const toggleLang = useCallback(() => {
+    setLang(langRef.current === 'pt' ? 'en' : 'pt');
+  }, [setLang]);
 
   const t = TRANSLATIONS[lang];
 
@@ -65,7 +87,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       toggleLang,
       t,
     }),
-    [lang, t]
+    [lang, setLang, toggleLang, t]
   );
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;

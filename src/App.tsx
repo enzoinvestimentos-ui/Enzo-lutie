@@ -101,7 +101,7 @@ export default function App() {
           <ScrollProgressBar />
           <Navbar route={route} onNavigate={navigate} />
 
-          <div className="relative z-10">
+          <div className="relative z-10 lang-focus-surface">
             <AnimatePresence mode="wait">
               <motion.div
                 key={routeKey}
