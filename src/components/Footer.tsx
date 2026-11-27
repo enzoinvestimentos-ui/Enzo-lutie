@@ -2,6 +2,7 @@ import { RollingText } from './RollingText';
 import { HairlineRule, Reveal } from './Reveal';
 import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
 import { useLanguage } from '../i18n/LanguageContext';
+import { INSTAGRAM_URL, LINKEDIN_URL } from '../data/portfolioData';
 
 interface FooterProps {
   onNavigate: (path: string, hash?: string) => void;
@@ -61,7 +62,7 @@ export function Footer({ onNavigate }: FooterProps) {
             <span className="text-[13px] font-medium text-[#8e8e8e]">{t.footer.channelsTitle}</span>
             <div className="flex flex-wrap items-center gap-2 text-[16px] font-medium tracking-[-0.015em] text-[#d4d4d4]">
               <a
-                href="https://www.linkedin.com/"
+                href={LINKEDIN_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group transition-colors hover:text-[#ffffff]"
@@ -72,7 +73,7 @@ export function Footer({ onNavigate }: FooterProps) {
                 ·
               </span>
               <a
-                href="https://www.instagram.com/"
+                href={INSTAGRAM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group transition-colors hover:text-[#ffffff]"

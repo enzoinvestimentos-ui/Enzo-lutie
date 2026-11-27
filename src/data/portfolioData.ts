@@ -64,6 +64,9 @@ export const HERO_MEDIA = {
 export const WHATSAPP_CONTACT_URL =
   'https://api.whatsapp.com/send?phone=5551984049837&text=Fala%20Luti%C3%AA%2C%20tudo%20bem%3F%20';
 
+export const INSTAGRAM_URL = 'https://www.instagram.com/enzolutie/';
+export const LINKEDIN_URL = 'https://www.linkedin.com/in/enzo-brum-042546423/';
+
 export const APPROACH_STEPS: ApproachStep[] = [
   {
     number: '01',
