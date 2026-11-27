@@ -1,9 +1,18 @@
-import { useState, useEffect, useRef } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
+import { Fragment, useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
+import {
+  AnimatePresence,
+  animate,
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+  type AnimationPlaybackControls,
+} from 'motion/react';
 import { RollingText } from './RollingText';
 import { EDITORIAL_EASE } from './Reveal';
 import { WHATSAPP_CONTACT_URL } from '../data/portfolioData';
 import { useLanguage } from '../i18n/LanguageContext';
+import type { Language } from '../i18n/translations';
 
 export type RoutePath =
   | { page: 'home' }
@@ -19,9 +28,144 @@ interface NavbarProps {
 
 export function Navbar({ route, onNavigate }: NavbarProps) {
   const { lang, setLang, t } = useLanguage();
+  const prefersReducedMotion = useReducedMotion();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const langGroupRef = useRef<HTMLDivElement>(null);
+  const langBtnRefs = useRef<Record<Language, HTMLButtonElement | null>>({
+    pt: null,
+    en: null,
+  });
+  const prevLangRef = useRef<Language | null>(null);
+  const animControlsRef = useRef<AnimationPlaybackControls[]>([]);
+  const isAnimatingRef = useRef(false);
+
+  const pillX = useMotionValue(0);
+  const pillWidth = useMotionValue(0);
+  const pillReady = useMotionValue(0);
+  const travelArc = useMotionValue(0);
+  const sweepProgress = useMotionValue(0);
+  const travelDir = useMotionValue(1);
+
+  const pillFilter = useTransform(travelArc, (v) =>
+    v < 0.04 ? 'none' : `blur(${(v * 0.75).toFixed(2)}px)`
+  );
+  const highlightOpacity = useTransform(travelArc, [0, 0.14, 1], [0, 0.42, 0.9]);
+  const rimGlowOpacity = useTransform(travelArc, [0, 0.2, 1], [0, 0.35, 0.85]);
+  const highlightSweepX = useTransform([sweepProgress, travelDir], ([p, dir]) => {
+    const offset = (-75 + (p as number) * 150) * (dir as number);
+    return `${offset.toFixed(1)}%`;
+  });
+
+  const stopIndicatorAnimations = useCallback(() => {
+    animControlsRef.current.forEach((ctrl) => ctrl.stop());
+    animControlsRef.current = [];
+    isAnimatingRef.current = false;
+  }, []);
+
+  const syncIndicatorImmediate = useCallback(
+    (targetLang: Language) => {
+      const btn = langBtnRefs.current[targetLang];
+      if (!btn) return;
+      stopIndicatorAnimations();
+      pillX.set(btn.offsetLeft);
+      pillWidth.set(btn.offsetWidth);
+      travelArc.set(0);
+      sweepProgress.set(0);
+      pillReady.set(1);
+    },
+    [pillReady, pillWidth, pillX, stopIndicatorAnimations, sweepProgress, travelArc]
+  );
+
+  useLayoutEffect(() => {
+    const btn = langBtnRefs.current[lang];
+    if (!btn) return;
+
+    const targetX = btn.offsetLeft;
+    const targetW = btn.offsetWidth;
+    const prevLang = prevLangRef.current;
+    prevLangRef.current = lang;
+
+    if (prevLang === null || prevLang === lang || prefersReducedMotion) {
+      syncIndicatorImmediate(lang);
+      return;
+    }
+
+    stopIndicatorAnimations();
+    isAnimatingRef.current = true;
+    travelDir.set(lang === 'en' ? 1 : -1);
+    sweepProgress.set(0);
+    pillReady.set(1);
+
+    const glideEase = [0.22, 1, 0.36, 1] as const;
+    const duration = 0.4;
+
+    animControlsRef.current = [
+      animate(pillX, targetX, {
+        duration,
+        ease: glideEase,
+        onComplete: () => {
+          isAnimatingRef.current = false;
+          animControlsRef.current = [];
+        },
+      }),
+      animate(pillWidth, targetW, {
+        duration,
+        ease: glideEase,
+      }),
+      animate(sweepProgress, 1, {
+        duration,
+        ease: glideEase,
+      }),
+      animate(travelArc, [travelArc.get(), 1, 0], {
+        duration,
+        times: [0, 0.28, 1],
+        ease: ['easeOut', glideEase],
+      }),
+    ];
+  }, [
+    lang,
+    prefersReducedMotion,
+    pillReady,
+    pillWidth,
+    pillX,
+    stopIndicatorAnimations,
+    sweepProgress,
+    syncIndicatorImmediate,
+    travelArc,
+    travelDir,
+  ]);
+
+  useEffect(() => {
+    const groupEl = langGroupRef.current;
+    let cancelled = false;
+
+    if (typeof document !== 'undefined' && document.fonts?.ready) {
+      document.fonts.ready.then(() => {
+        if (!cancelled && !isAnimatingRef.current) {
+          syncIndicatorImmediate(prevLangRef.current ?? lang);
+        }
+      });
+    }
+
+    let ro: ResizeObserver | null = null;
+    if (groupEl && typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(() => {
+        if (!isAnimatingRef.current) {
+          syncIndicatorImmediate(prevLangRef.current ?? lang);
+        }
+      });
+      ro.observe(groupEl);
+    }
+
+    return () => {
+      cancelled = true;
+      ro?.disconnect();
+    };
+  }, [lang, syncIndicatorImmediate]);
+
+  useEffect(() => stopIndicatorAnimations, [stopIndicatorAnimations]);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -137,42 +281,67 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
 
             {/* Seletor de idioma minimalista PT | EN */}
             <div
+              ref={langGroupRef}
               role="group"
               aria-label={t.nav.languageSwitcherAria}
-              className="inline-flex items-center rounded-full border border-[#252525] bg-[#111111]/85 p-0.5 text-[11px] font-semibold tracking-[0.06em]"
+              className="relative inline-flex items-center rounded-full border border-[#252525] bg-[#111111]/85 p-0.5 text-[11px] font-semibold tracking-[0.06em]"
             >
+              {/* Indicador único persistente guiado por transform (sem unmount/FLIP) */}
+              <motion.span
+                aria-hidden="true"
+                style={{
+                  x: pillX,
+                  width: pillWidth,
+                  opacity: pillReady,
+                  filter: pillFilter,
+                  willChange: 'transform',
+                }}
+                className="pointer-events-none absolute top-0.5 bottom-0.5 left-0 z-0 overflow-hidden rounded-full bg-[#1c1a1a] ring-1 ring-[#9e1b1e]/55"
+              >
+                {/* Brilho fino no contorno apenas durante o deslocamento */}
+                <motion.span
+                  style={{ opacity: rimGlowOpacity }}
+                  className="pointer-events-none absolute inset-0 rounded-full shadow-[inset_0_1px_0_rgba(255,228,228,0.3),0_0_8px_rgba(158,27,30,0.24)]"
+                />
+                {/* Reflexo luminoso sutil acompanhando o deslize horizontal */}
+                <motion.span
+                  style={{
+                    x: highlightSweepX,
+                    opacity: highlightOpacity,
+                    background:
+                      'linear-gradient(108deg, transparent 16%, rgba(255, 232, 232, 0.08) 38%, rgba(255, 248, 248, 0.24) 50%, rgba(184, 40, 43, 0.22) 62%, transparent 84%)',
+                  }}
+                  className="pointer-events-none absolute inset-0 rounded-full"
+                />
+              </motion.span>
+
               {(['pt', 'en'] as const).map((code, idx) => {
                 const active = lang === code;
                 return (
-                  <span key={code} className="inline-flex items-center">
+                  <Fragment key={code}>
                     {idx === 1 && (
                       <span
                         aria-hidden="true"
-                        className="mx-0.5 text-[10px] text-[#353535] select-none"
+                        className="relative z-10 mx-0.5 text-[10px] text-[#353535] select-none"
                       >
                         |
                       </span>
                     )}
                     <button
+                      ref={(el) => {
+                        langBtnRefs.current[code] = el;
+                      }}
                       type="button"
                       onClick={() => setLang(code)}
                       aria-pressed={active}
                       aria-label={code === 'pt' ? t.nav.switchToPtAria : t.nav.switchToEnAria}
-                      className={`relative cursor-pointer rounded-full px-2 py-1 transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f5f5f5] ${
+                      className={`relative z-10 cursor-pointer rounded-full px-2 py-1 transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f5f5f5] ${
                         active ? 'text-[#f5f5f5]' : 'text-[#787878] hover:text-[#d4d4d4]'
                       }`}
                     >
-                      {active && (
-                        <motion.span
-                          layoutId="header-lang-active"
-                          transition={{ duration: 0.32, ease: EDITORIAL_EASE }}
-                          aria-hidden="true"
-                          className="absolute inset-0 rounded-full bg-[#1c1a1a] ring-1 ring-[#9e1b1e]/55"
-                        />
-                      )}
-                      <span className="relative z-10 uppercase">{code}</span>
+                      <span className="uppercase">{code}</span>
                     </button>
-                  </span>
+                  </Fragment>
                 );
               })}
             </div>

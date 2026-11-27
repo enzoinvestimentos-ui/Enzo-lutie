@@ -1,4 +1,12 @@
-import { useEffect, useRef, useState, type MouseEvent, type RefObject } from 'react';
+import {
+  Fragment,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type MouseEvent,
+  type RefObject,
+} from 'react';
 import {
   motion,
   useScroll,
@@ -10,7 +18,7 @@ import {
 import { ArrowButton } from './ArrowButton';
 import { RollingText } from './RollingText';
 import { SafeImage } from './SafeImage';
-import { Reveal, HairlineRule, EDITORIAL_EASE, useIsCompactMotion } from './Reveal';
+import { Reveal, HairlineRule, EDITORIAL_EASE } from './Reveal';
 import { HERO_MEDIA, WHATSAPP_CONTACT_URL } from '../data/portfolioData';
 import { useMobileScrollActive } from '../hooks/useMobileScrollActive';
 import { handleSpotlightLeave, handleSpotlightMove } from '../utils/cursorSpotlight';
@@ -318,11 +326,16 @@ function DesktopStickyPortrait({
 }
 
 export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
-  const isCompactMotion = useIsCompactMotion();
-  const [h1Settled, setH1Settled] = useState(false);
+  const prevLangRef = useRef(lang);
+  const lockStaticHeadlineRef = useRef(false);
+  if (prevLangRef.current !== lang) {
+    prevLangRef.current = lang;
+    lockStaticHeadlineRef.current = true;
+  }
+  const headlineWords = t.hero.headline.split(' ');
   const [canHoverTilt, setCanHoverTilt] = useState(false);
   const { ref: exploreBtnRef } = useMobileScrollActive<HTMLButtonElement>({
     mode: 'pulse',
@@ -374,24 +387,19 @@ export function HeroBioSection({ onExploreProjects }: HeroBioSectionProps) {
               </span>
             </motion.div>
 
-            <motion.h1
-              initial={
-                prefersReducedMotion
-                  ? false
-                  : {
-                      opacity: 0,
-                      y: 10,
-                      filter: isCompactMotion ? 'none' : 'blur(2px)',
-                    }
-              }
-              animate={{ opacity: 1, y: 0, filter: isCompactMotion ? 'none' : 'blur(0px)' }}
-              transition={{ duration: isCompactMotion ? 0.42 : 0.48, ease: EDITORIAL_EASE }}
-              onAnimationComplete={() => setH1Settled(true)}
-              style={h1Settled || isCompactMotion ? { filter: 'none' } : undefined}
-              className="type-display-lg text-[#f2f2f2]"
-            >
-              {t.hero.headline}
-            </motion.h1>
+            <h1 className="type-display-lg text-[#f2f2f2]">
+              {headlineWords.map((word, idx) => (
+                <Fragment key={idx}>
+                  {idx > 0 && ' '}
+                  <span
+                    className={`hero-title-word${lockStaticHeadlineRef.current ? '' : ' hero-title-word--animate'}`}
+                    style={{ '--word-index': idx } as CSSProperties}
+                  >
+                    {word}
+                  </span>
+                </Fragment>
+              ))}
+            </h1>
 
             <motion.div
               initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}

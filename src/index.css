@@ -130,6 +130,85 @@
   -webkit-backface-visibility: hidden;
 }
 
+/* Hero H1 exclusive fluid word-by-word entrance reveal */
+@keyframes hero-word-reveal {
+  0% {
+    opacity: 0.12;
+    transform: translate3d(0, 9px, 0);
+    filter: blur(4.5px);
+  }
+  99% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: none;
+  }
+}
+
+@keyframes hero-word-reveal-mobile {
+  0% {
+    opacity: 0.16;
+    transform: translate3d(0, 6px, 0);
+    filter: blur(2.5px);
+  }
+  99% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: none;
+  }
+}
+
+.hero-title-word {
+  display: inline-block;
+}
+
+html[data-intro-complete='false'] .hero-title-word--animate {
+  opacity: 0.12;
+  transform: translate3d(0, 9px, 0);
+  filter: blur(4.5px);
+}
+
+html[data-intro-complete='true'] .hero-title-word--animate {
+  animation-name: hero-word-reveal;
+  animation-duration: 780ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-delay: calc(var(--word-index, 0) * 200ms);
+  animation-fill-mode: both;
+}
+
+@media (hover: none), (pointer: coarse), (max-width: 767px) {
+  html[data-intro-complete='false'] .hero-title-word--animate {
+    opacity: 0.16;
+    transform: translate3d(0, 6px, 0);
+    filter: blur(2.5px);
+  }
+
+  html[data-intro-complete='true'] .hero-title-word--animate {
+    animation-name: hero-word-reveal-mobile;
+    animation-duration: 720ms;
+    animation-delay: calc(var(--word-index, 0) * 175ms);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-intro-complete='false'] .hero-title-word--animate,
+  html[data-intro-complete='true'] .hero-title-word--animate {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    animation: none;
+  }
+}
+
 /* Subtle transient micro-blur during dark -> off-white card transitions */
 @keyframes card-hover-soften {
   0% {
