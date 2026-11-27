@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { AnimatePresence, MotionConfig, motion } from 'motion/react';
-import { LanguageProvider } from './i18n/LanguageContext';
+import { LanguageProvider, useLanguage } from './i18n/LanguageContext';
 import { Navbar, type RoutePath } from './components/Navbar';
 import { ScrollProgressBar, EDITORIAL_EASE } from './components/Reveal';
 import { IntroSequence } from './components/IntroSequence';
@@ -40,6 +40,15 @@ function getRouteKey(route: RoutePath): string {
 }
 
 export default function App() {
+  return (
+    <LanguageProvider>
+      <AppShell />
+    </LanguageProvider>
+  );
+}
+
+function AppShell() {
+  const { registerFocusTarget } = useLanguage();
   const [route, setRoute] = useState<RoutePath>(() => parseRoute(window.location.pathname));
   const [introComplete, setIntroComplete] = useState(false);
   const routeKey = getRouteKey(route);
@@ -92,16 +101,15 @@ export default function App() {
   }, []);
 
   return (
-    <LanguageProvider>
-      <MotionConfig reducedMotion="user">
-        <div className="relative min-h-screen overflow-x-clip bg-[#080808] text-[#f2f2f2]">
-          {!introComplete && <IntroSequence onComplete={handleIntroComplete} />}
-          <DynamicBackground isHome={route.page === 'home'} />
+    <MotionConfig reducedMotion="user">
+      <div className="relative min-h-screen overflow-x-clip bg-[#080808] text-[#f2f2f2]">
+        {!introComplete && <IntroSequence onComplete={handleIntroComplete} />}
+        <DynamicBackground isHome={route.page === 'home'} />
 
-          <ScrollProgressBar />
-          <Navbar route={route} onNavigate={navigate} />
+        <ScrollProgressBar />
+        <Navbar route={route} onNavigate={navigate} />
 
-          <div className="relative z-10 lang-focus-surface">
+        <div ref={registerFocusTarget} className="relative z-10">
             <AnimatePresence mode="wait">
               <motion.div
                 key={routeKey}
@@ -157,9 +165,8 @@ export default function App() {
             </AnimatePresence>
 
             <Footer onNavigate={navigate} />
-          </div>
         </div>
-      </MotionConfig>
-    </LanguageProvider>
+      </div>
+    </MotionConfig>
   );
 }

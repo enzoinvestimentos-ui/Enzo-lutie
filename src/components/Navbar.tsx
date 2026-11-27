@@ -27,7 +27,8 @@ interface NavbarProps {
 }
 
 export function Navbar({ route, onNavigate }: NavbarProps) {
-  const { lang, setLang, t } = useLanguage();
+  const { lang, pendingLang, setLang, t } = useLanguage();
+  const activeLang = pendingLang ?? lang;
   const prefersReducedMotion = useReducedMotion();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -79,22 +80,22 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
   );
 
   useLayoutEffect(() => {
-    const btn = langBtnRefs.current[lang];
+    const btn = langBtnRefs.current[activeLang];
     if (!btn) return;
 
     const targetX = btn.offsetLeft;
     const targetW = btn.offsetWidth;
     const prevLang = prevLangRef.current;
-    prevLangRef.current = lang;
+    prevLangRef.current = activeLang;
 
-    if (prevLang === null || prevLang === lang || prefersReducedMotion) {
-      syncIndicatorImmediate(lang);
+    if (prevLang === null || prevLang === activeLang || prefersReducedMotion) {
+      syncIndicatorImmediate(activeLang);
       return;
     }
 
     stopIndicatorAnimations();
     isAnimatingRef.current = true;
-    travelDir.set(lang === 'en' ? 1 : -1);
+    travelDir.set(activeLang === 'en' ? 1 : -1);
     sweepProgress.set(0);
     pillReady.set(1);
 
@@ -125,7 +126,7 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
       }),
     ];
   }, [
-    lang,
+    activeLang,
     prefersReducedMotion,
     pillReady,
     pillWidth,
@@ -144,7 +145,7 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
     if (typeof document !== 'undefined' && document.fonts?.ready) {
       document.fonts.ready.then(() => {
         if (!cancelled && !isAnimatingRef.current) {
-          syncIndicatorImmediate(prevLangRef.current ?? lang);
+          syncIndicatorImmediate(prevLangRef.current ?? activeLang);
         }
       });
     }
@@ -153,7 +154,7 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
     if (groupEl && typeof ResizeObserver !== 'undefined') {
       ro = new ResizeObserver(() => {
         if (!isAnimatingRef.current) {
-          syncIndicatorImmediate(prevLangRef.current ?? lang);
+          syncIndicatorImmediate(prevLangRef.current ?? activeLang);
         }
       });
       ro.observe(groupEl);
@@ -163,7 +164,7 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
       cancelled = true;
       ro?.disconnect();
     };
-  }, [lang, syncIndicatorImmediate]);
+  }, [activeLang, syncIndicatorImmediate]);
 
   useEffect(() => stopIndicatorAnimations, [stopIndicatorAnimations]);
 
@@ -316,7 +317,7 @@ export function Navbar({ route, onNavigate }: NavbarProps) {
               </motion.span>
 
               {(['pt', 'en'] as const).map((code, idx) => {
-                const active = lang === code;
+                const active = activeLang === code;
                 return (
                   <Fragment key={code}>
                     {idx === 1 && (
